@@ -59,12 +59,6 @@ export function useSwiper(options = {}) {
       slideList[0]                     // 复制第一张
     ];
     
-    console.log('displaySlides computed:', {
-      originalLength: slideList.length,
-      displayLength: displayList.length,
-      circular: circular
-    });
-    
     return displayList;
   });
 
@@ -80,7 +74,6 @@ export function useSwiper(options = {}) {
     
     // 正常情况：减去复制项的影响
     const realIdx = currentIndex.value - 1;
-    console.log('realIndex computed:', currentIndex.value, '->', realIdx);
     return realIdx;
   });
 
@@ -94,14 +87,7 @@ export function useSwiper(options = {}) {
       (dragOffset.value / containerWidth.value) * 100 : 0;
     
     const transformValue = `translateX(-${baseOffset + dragPercentage}%)`;
-    
-    console.log('dynamicTransform computed:', {
-      currentIndex: currentIndex.value,
-      baseOffset: baseOffset,
-      dragPercentage: dragPercentage,
-      transform: transformValue
-    });
-    
+
     return transformValue;
   });
 
@@ -125,10 +111,7 @@ export function useSwiper(options = {}) {
    * @param {boolean} withTransition - 是否使用过渡动画
    */
   const goToSlide = (index, withTransition = true) => {
-    console.log('goToSlide called with index:', index, 'withTransition:', withTransition, 'isTransitioning:', isTransitioning.value);
-    
     if (isTransitioning.value && withTransition) {
-      console.log('goToSlide blocked by transition');
       return;
     }
     
@@ -136,31 +119,26 @@ export function useSwiper(options = {}) {
     const minIndex = 0;
     const maxIndex = displaySlides.value.length - 1;
     const clampedIndex = Math.max(minIndex, Math.min(index, maxIndex));
-    console.log('goToSlide index clamped:', index, '->', clampedIndex);
     
     transitionStyle.value = withTransition ? `transform ${duration}ms ease` : 'none';
     currentIndex.value = clampedIndex;
     
     if (withTransition && duration > 0) {
       isTransitioning.value = true;
-      console.log('goToSlide: isTransitioning set to true');
       // 确保只在过渡结束后重置状态
       setTimeout(() => {
         isTransitioning.value = false;
-        console.log('goToSlide: isTransitioning set to false after timeout');
       }, duration);
       
       // 额外的安全检查：如果duration太长，设置一个最大超时
       setTimeout(() => {
         if (isTransitioning.value) {
-          console.log('goToSlide: forcing isTransitioning to false after max timeout');
           isTransitioning.value = false;
         }
       }, Math.max(duration + 100, 1000)); // 最大1秒
     } else {
       // 如果没有过渡动画或duration为0，立即重置状态
       isTransitioning.value = false;
-      console.log('goToSlide: isTransitioning set to false immediately');
     }
   };
 
@@ -185,30 +163,20 @@ export function useSwiper(options = {}) {
    * 下一张
    */
   const next = () => {
-    console.log('触发 next ', isTransitioning.value);
     if (isTransitioning.value) {
-      console.log('next blocked by transition');
       return;
     }
     
     if (!slides.value || slides.value.length === 0) {
-      console.log('next blocked by empty slides');
       return;
     }
     
     const nextIndex = currentIndex.value + 1;
-    console.log('Next切换:', {
-      currentIndex: currentIndex.value,
-      nextIndex,
-      totalSlides: displaySlides.value.length,
-      isLastSlide: nextIndex === displaySlides.value.length - 1,
-      circular
-    });
+
     
     // 检查是否需要无缝跳转
     if (circular && nextIndex === displaySlides.value.length - 1) {
-      console.log('执行无缝跳转: 从索引', nextIndex, '跳转到索引 1');
-      
+   
       // 先执行正常的切换动画
       goToSlide(nextIndex);
       
@@ -216,8 +184,7 @@ export function useSwiper(options = {}) {
       setTimeout(() => {
         isSeamlessJumping.value = true;
         goToSlide(1, false); // 无动画跳转到真实的第一张
-        console.log('无缝跳转完成，当前索引:', currentIndex.value);
-        
+  
         // 等待DOM更新后恢复动画
         nextTick(() => {
           isSeamlessJumping.value = false;
@@ -235,30 +202,20 @@ export function useSwiper(options = {}) {
    * 上一张
    */
   const prev = () => {
-    console.log('触发prev', isTransitioning.value);
     if (isTransitioning.value) {
-      console.log('prev blocked by transition');
       return;
     }
     
     if (!slides.value || slides.value.length === 0) {
-      console.log('prev blocked by empty slides');
       return;
     }
     
     const prevIndex = currentIndex.value - 1;
-    console.log('Prev切换:', {
-      currentIndex: currentIndex.value,
-      prevIndex,
-      totalSlides: displaySlides.value.length,
-      isFirstSlide: prevIndex === 0,
-      circular
-    });
+
     
     // 检查是否需要无缝跳转
     if (circular && prevIndex === 0) {
-      console.log('执行无缝跳转: 从索引', prevIndex, '跳转到索引', displaySlides.value.length - 2);
-      
+ 
       // 先执行正常的切换动画
       goToSlide(prevIndex);
       
@@ -266,8 +223,7 @@ export function useSwiper(options = {}) {
       setTimeout(() => {
         isSeamlessJumping.value = true;
         goToSlide(displaySlides.value.length - 2, false); // 无动画跳转到真实的最后一张
-        console.log('无缝跳转完成，当前索引:', currentIndex.value);
-        
+     
         // 等待DOM更新后恢复动画
         nextTick(() => {
           isSeamlessJumping.value = false;
@@ -345,8 +301,6 @@ export function useSwiper(options = {}) {
    * 触摸开始
    */
   const handleTouchStart = (e) => {
-    console.log('handleTouchStart called');
-    
     if (isTransitioning.value || isSeamlessJumping.value) {
       return;
     }
@@ -372,12 +326,10 @@ export function useSwiper(options = {}) {
    */
   const handleTouchMove = (e) => {
     if (!isDragging.value && !mouseDown.value) {
-      console.log('Touch move ignored - no drag or mouse down');
       return;
     }
     
     if (isSeamlessJumping.value) {
-      console.log('Touch move ignored - seamless jumping');
       return; // 无缝跳转时不处理触摸移动
     }
     
@@ -387,7 +339,6 @@ export function useSwiper(options = {}) {
     
     // 计算拖拽偏移量
     dragOffset.value = -(touchCurrentX.value - touchStartX.value);
-    console.log('Touch move to:', touch.clientX, 'dragOffset:', dragOffset.value);
     
     // 防止默认滚动行为
     e.preventDefault();
@@ -397,17 +348,13 @@ export function useSwiper(options = {}) {
    * 触摸结束
    */
   const handleTouchEnd = () => {
-    console.log('handleTouchEnd called, isDragging:', isDragging.value, 'mouseDown:', mouseDown.value, 'dragOffset:', dragOffset.value);
-    
-    // 如果没有拖拽或鼠标按下，说明只是点击，不处理
+   // 如果没有拖拽或鼠标按下，说明只是点击，不处理
     if (!isDragging.value || !mouseDown.value) {
-      console.log('No drag detected, treating as click');
       return;
     }
 
     // 只要dragOffset在[-100, 100]区间内，认为只是点击，不执行任何操作
     if (Math.abs(dragOffset.value) <= 200) {
-      console.log('点击，dragOffset在[-100,100]，不执行任何操作');
       isDragging.value = false;
       mouseDown.value = false;
       dragOffset.value = 0;
@@ -416,24 +363,19 @@ export function useSwiper(options = {}) {
 
     // 如果状态被阻塞，强制重置
     if (isTransitioning.value) {
-      console.log('Resetting transition state due to blocked state');
-      resetTransitionState();
+     resetTransitionState();
     }
     
     const touchDiff = touchEndX.value - touchStartX.value;
-    console.log('Touch diff:', touchDiff, 'threshold:', SWIPE_THRESHOLD);
-
+    
     // 检查是否有足够的滑动距离
     if (Math.abs(touchDiff) > SWIPE_THRESHOLD) {
       if (touchDiff > 0) {
-        console.log('向右滑动，显示上一张');
         prev(); // 向右滑动，显示上一张
       } else {
-        console.log('向左滑动，显示下一张');
         next(); // 向左滑动，显示下一张
       }
     } else {
-      console.log('Swipe distance not enough, resetting autoplay');
       resetAutoplay(); // 滑动距离不够，重置自动播放
     }
 

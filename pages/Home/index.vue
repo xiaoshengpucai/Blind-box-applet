@@ -575,10 +575,10 @@
 	 * @param {Object} event - 轮播图事件对象
 	 */
 	const handleSwiperChange = (event) => {
-		console.log('Swiper changed:', event);
-		console.log('Current index:', event.current);
-		console.log('Previous index:', event.previous);
-		console.log('Slide:', event.slide);
+		// console.log('Swiper changed:', event);
+		// console.log('Current index:', event.current);
+		// console.log('Previous index:', event.previous);
+		// console.log('Slide:', event.slide);
 	};
 
 

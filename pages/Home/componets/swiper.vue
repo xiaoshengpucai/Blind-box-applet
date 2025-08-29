@@ -143,7 +143,7 @@
 	 * @param {Object} data - 切换数据
 	 */
 	const handleChange = (data) => {
-		console.log('Swiper change event:', data);
+		// console.log('Swiper change event:', data);
 		emit('change', data);
 	};
 
