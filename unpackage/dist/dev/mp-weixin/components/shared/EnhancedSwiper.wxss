@@ -1,0 +1,230 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.enhanced-swiper.data-v-976540e0 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.swiper-header.data-v-976540e0 {
+  display: flex;
+  align-self: flex-start;
+  align-items: center;
+  width: 65%;
+  height: 40rpx;
+  background-color: #cd4438;
+  margin-left: 24rpx;
+  margin-bottom: -7px;
+  border: 6px solid #cd4438;
+  border-bottom: 0;
+  border-radius: 30rpx 30rpx 0 0;
+  z-index: 10;
+}
+.swiper-header .header-icon.data-v-976540e0 {
+  width: 40rpx;
+  height: 40rpx;
+  padding: 10rpx;
+  position: relative;
+  top: -5rpx;
+  line-height: 40rpx;
+}
+.swiper-header .header-title.data-v-976540e0 {
+  display: flex;
+  line-height: 40rpx;
+  padding: 0 20rpx;
+}
+.swiper-header .header-title .title-text.data-v-976540e0 {
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: bold;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-style: italic;
+}
+.decoration-icons.data-v-976540e0 {
+  position: absolute;
+  top: -10rpx;
+  right: 0;
+  width: 30%;
+  height: 180rpx;
+  z-index: 99;
+  overflow: visible;
+}
+.decoration-icons .decoration-item.data-v-976540e0 {
+  position: absolute;
+}
+.decoration-icons .decoration-item:nth-child(1) image.data-v-976540e0 {
+  width: 60rpx;
+  left: 10rpx;
+  top: 30rpx;
+  z-index: 1;
+  animation: roleAnimation-976540e0 2s linear infinite;
+}
+.decoration-icons .decoration-item:nth-child(2) image.data-v-976540e0 {
+  width: 100rpx;
+  left: 40rpx;
+  top: 25rpx;
+  z-index: 3;
+  animation: fly-976540e0 3s linear infinite;
+}
+.decoration-icons .decoration-item:nth-child(3) image.data-v-976540e0 {
+  width: 70rpx;
+  left: 130rpx;
+  top: 20rpx;
+  z-index: 2;
+  animation: roleAnimation-976540e0 1.5s linear infinite;
+}
+.swiper-main.data-v-976540e0 {
+  position: relative;
+  cursor: grab;
+}
+.swiper-main.data-v-976540e0:active {
+  cursor: grabbing;
+}
+.swiper-wrapper.data-v-976540e0 {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+.swiper-wrapper .swiper-slide.data-v-976540e0 {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.swiper-wrapper-fade.data-v-976540e0 {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.swiper-wrapper-fade .swiper-slide-fade.data-v-976540e0 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.swiper-wrapper-fade .swiper-slide-fade.active.data-v-976540e0 {
+  animation: fadeIn-976540e0 0.5s ease-in-out;
+}
+.swiper-controls.data-v-976540e0 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10rpx;
+  pointer-events: none;
+}
+.swiper-controls .control-btn.data-v-976540e0 {
+  pointer-events: auto;
+}
+.swiper-controls .control-btn.data-v-976540e0:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.swiper-controls .control-btn.data-v-976540e0:hover:not(:disabled) {
+  background-color: rgba(0, 0, 0, 0.7);
+  transform: scale(1.1);
+}
+.swiper-indicators.data-v-976540e0 {
+  position: absolute;
+  bottom: 20rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+.swiper-indicators .indicator-dot.active.data-v-976540e0 {
+  background-color: #cd4438;
+  transform: scale(1.2);
+}
+.swiper-indicators .indicator-dot.data-v-976540e0:hover {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+.swiper-floor.data-v-976540e0 {
+  position: absolute;
+  bottom: -20rpx;
+  right: 40rpx;
+  display: flex;
+  gap: 10rpx;
+  z-index: 5;
+}
+.swiper-floor .floor-dot.data-v-976540e0 {
+  width: 12rpx;
+  height: 12rpx;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+}
+@keyframes fadeIn-976540e0 {
+from {
+    opacity: 0;
+}
+to {
+    opacity: 1;
+}
+}
+@keyframes fly-976540e0 {
+0% {
+    transform: scale(-1, 1) translateX(0) translateY(0);
+}
+50% {
+    transform: scale(-1, 1) translateX(-20%) translateY(-20rpx);
+}
+100% {
+    transform: scale(-1, 1) translateX(0);
+}
+}
+@keyframes roleAnimation-976540e0 {
+0% {
+    transform: rotate(0);
+}
+50% {
+    transform: rotate(-20deg);
+}
+100% {
+    transform: rotate(0);
+}
+}
+@media screen and (max-width: 750rpx) {
+.swiper-header.data-v-976540e0 {
+    width: 80%;
+}
+.decoration-icons.data-v-976540e0 {
+    width: 40%;
+}
+.swiper-controls.data-v-976540e0 {
+    padding: 0 10rpx;
+}
+.swiper-controls .control-btn.data-v-976540e0 {
+    width: 50rpx;
+    height: 50rpx;
+}
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "",
+  "usingComponents": {
+    "up-popup": "../../../node-modules/uview-plus/components/u-popup/u-popup"
+  }
+}

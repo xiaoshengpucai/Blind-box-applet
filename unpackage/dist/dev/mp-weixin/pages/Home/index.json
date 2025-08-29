@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "",
+  "usingComponents": {
+    "up-icon": "../../node-modules/uview-plus/components/u-icon/u-icon",
+    "status-bar": "../../components/status-bar",
+    "swiper": "./componets/swiper",
+    "trendy-tab-vue": "./componets/trendy-tab"
+  }
+}

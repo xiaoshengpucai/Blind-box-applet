@@ -1,0 +1,1 @@
+<view class="{{['nav', virtualHostClass]}}" style="{{virtualHostStyle}}" hidden="{{virtualHostHidden || false}}" id="{{d}}"><view class="status-bar" style="{{'height:' + a}}"></view><view class="nav-bar" style="{{'height:' + c}}"><view class="nav-bar-content" style="{{'padding-right:' + b}}"><slot></slot></view></view></view>

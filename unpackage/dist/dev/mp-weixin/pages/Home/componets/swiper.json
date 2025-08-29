@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "enhanced-swiper": "../../../components/shared/EnhancedSwiper"
+  }
+}

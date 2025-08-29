@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "home": "../Home/index",
+    "mall": "../Mall/index",
+    "profile": "../Profile/index",
+    "warehouse": "../Warehouse/index",
+    "custom-tab-bar": "../../components/custom-tab-bar"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/Home/index",
+    "pages/Mall/index",
+    "pages/Warehouse/index",
+    "pages/Profile/index",
+    "pages/Home/componets/trendy-tab",
+    "pages/Home/detail",
+    "pages/Home/componets/chlid-swiper",
+    "pages/Home/componets/preview"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "custom": true,
+    "list": [
+      {
+        "pagePath": "pages/index/index"
+      },
+      {
+        "pagePath": "pages/Mall/index"
+      },
+      {
+        "pagePath": "pages/Warehouse/index"
+      },
+      {
+        "pagePath": "pages/Profile/index"
+      }
+    ]
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "usingComponents": {}
+}

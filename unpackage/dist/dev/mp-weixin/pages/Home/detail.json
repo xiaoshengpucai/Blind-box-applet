@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "up-icon": "../../node-modules/uview-plus/components/u-icon/u-icon",
+    "status-bar": "../../components/status-bar",
+    "chlid-swiper-vue": "./componets/chlid-swiper",
+    "preview-vue": "./componets/preview"
+  }
+}

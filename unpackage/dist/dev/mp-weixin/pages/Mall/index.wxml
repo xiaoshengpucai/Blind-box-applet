@@ -1,0 +1,1 @@
+<view class="{{['mall', 'data-v-9849a389', virtualHostClass]}}" style="{{virtualHostStyle}}" hidden="{{virtualHostHidden || false}}" id="{{a}}"> 商城 </view>

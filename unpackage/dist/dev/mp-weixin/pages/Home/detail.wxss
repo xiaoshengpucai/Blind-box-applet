@@ -1,0 +1,122 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+body.data-v-a42b862d {
+  background-color: #fff;
+}
+.bg.data-v-a42b862d {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  background: url("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201712%2F05%2F20171205051539_HUvhM.thumb.400_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1755698284&t=0a49f5933badc42403a845e150616790") no-repeat;
+  background-size: 100%;
+  background-image: url("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201712%2F05%2F20171205051539_HUvhM.thumb.400_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1755698284&t=0a49f5933badc42403a845e150616790");
+}
+.nav-bar-content.data-v-a42b862d {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+.back.data-v-a42b862d {
+  width: 40rpx;
+  height: 40rpx;
+  background-color: #fffef4;
+  border-radius: 10rpx;
+  margin-left: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.main.data-v-a42b862d {
+  height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+}
+.card.data-v-a42b862d {
+  overflow: hidden;
+}
+.p-detail-content.data-v-a42b862d {
+  width: 220rpx;
+  height: 300rpx;
+  border-radius: 10rpx;
+  border: 2px solid #58F5DD;
+  overflow: hidden;
+}
+.raffle.data-v-a42b862d {
+  width: 80vw;
+  height: 85rpx;
+  position: fixed;
+  left: 50%;
+  bottom: 60rpx;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 10rpx;
+}
+.raffle .raffle-type.data-v-a42b862d {
+  width: 180rpx;
+  height: 80rpx;
+  background-color: #2E2E2E;
+  border-radius: 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.raffle .raffle-type .raffle-title.data-v-a42b862d {
+  background-color: #505050;
+  width: 120rpx;
+  height: 40rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  top: -5rpx;
+  border-radius: 0 0 10rpx 10rpx;
+  -webkit-clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+          clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+  /* 创建梯形 */
+  transform: rotateX(20deg);
+}
+.raffle .raffle-type .raffle-title .raffle-text.data-v-a42b862d {
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 800;
+  transform: rotateX(-20deg) skewX(-10deg);
+}
+.raffle .raffle-type .raffle-price.data-v-a42b862d {
+  color: #FFD342;
+  line-height: 40rpx;
+  font-size: 24rpx;
+  font-weight: 800;
+}
