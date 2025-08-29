@@ -25,3 +25,9 @@ uniapp-project/
 ├── manifest.json         # 应用配置
 ├── pages.json            # 页面路由配置
 └── uni.scss              # 全局样式
+
+
+/* 
+ * 修改readme.md 测试git commit
+ */
+11111 --->>  22222
