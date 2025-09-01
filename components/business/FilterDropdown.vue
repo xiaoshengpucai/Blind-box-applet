@@ -235,7 +235,6 @@ defineExpose({
   transform-origin: top;
   transform: rotateX(-90deg);
   transition: all 0.5s ease-in-out;
-  z-index: 100;
   backdrop-filter: blur(10rpx);
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
   

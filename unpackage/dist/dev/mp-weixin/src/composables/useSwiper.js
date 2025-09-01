@@ -10,6 +10,7 @@ function useSwiper(options = {}) {
     switchMode = "slide"
   } = options;
   const currentIndex = common_vendor.ref(circular ? 1 : 0);
+  const isInitialized = common_vendor.ref(false);
   const isTransitioning = common_vendor.ref(false);
   common_vendor.ref(null);
   const transitionStyle = common_vendor.ref(`transform ${duration}ms ease`);
@@ -28,7 +29,7 @@ function useSwiper(options = {}) {
       return [];
     if (!circular)
       return slideList;
-    return [
+    const displayList = [
       slideList[slideList.length - 1],
       // 复制最后一张
       ...slideList,
@@ -36,6 +37,7 @@ function useSwiper(options = {}) {
       slideList[0]
       // 复制第一张
     ];
+    return displayList;
   });
   const realIndex = common_vendor.computed(() => {
     if (!circular)
@@ -44,75 +46,99 @@ function useSwiper(options = {}) {
       return slides.value.length - 1;
     if (currentIndex.value === displaySlides.value.length - 1)
       return 0;
-    return currentIndex.value - 1;
+    const realIdx = currentIndex.value - 1;
+    return realIdx;
   });
   const dynamicTransform = common_vendor.computed(() => {
     const baseOffset = currentIndex.value * 100;
     const dragPercentage = isDragging.value && !isSeamlessJumping.value && containerWidth.value > 0 ? dragOffset.value / containerWidth.value * 100 : 0;
-    return `translateX(-${baseOffset + dragPercentage}%)`;
+    const transformValue = `translateX(-${baseOffset + dragPercentage}%)`;
+    return transformValue;
   });
   const dynamicTransition = common_vendor.computed(() => {
     if (isDragging.value || isSeamlessJumping.value) {
       return "none";
     }
-    return `transform ${duration}ms ease`;
+    return transitionStyle.value;
   });
   const goToSlide = (index, withTransition = true) => {
-    if (isTransitioning.value && withTransition)
+    if (isTransitioning.value && withTransition) {
       return;
+    }
+    const minIndex = 0;
+    const maxIndex = displaySlides.value.length - 1;
+    const clampedIndex = Math.max(minIndex, Math.min(index, maxIndex));
     transitionStyle.value = withTransition ? `transform ${duration}ms ease` : "none";
-    currentIndex.value = index;
-    if (withTransition) {
+    currentIndex.value = clampedIndex;
+    if (withTransition && duration > 0) {
       isTransitioning.value = true;
       setTimeout(() => {
         isTransitioning.value = false;
       }, duration);
+      setTimeout(() => {
+        if (isTransitioning.value) {
+          isTransitioning.value = false;
+        }
+      }, Math.max(duration + 100, 1e3));
+    } else {
+      isTransitioning.value = false;
     }
   };
+  const resetTransitionState = () => {
+    isTransitioning.value = false;
+    isSeamlessJumping.value = false;
+  };
   const next = () => {
-    if (isTransitioning.value)
+    if (isTransitioning.value) {
       return;
+    }
+    if (!slides.value || slides.value.length === 0) {
+      return;
+    }
     const nextIndex = currentIndex.value + 1;
-    common_vendor.index.__f__("log", "at src/composables/useSwiper.js:118", "Next切换:", {
-      currentIndex: currentIndex.value,
-      nextIndex,
-      totalSlides: displaySlides.value.length,
-      isLastSlide: nextIndex === displaySlides.value.length - 1,
-      circular
-    });
-    goToSlide(nextIndex);
     if (circular && nextIndex === displaySlides.value.length - 1) {
-      common_vendor.index.__f__("log", "at src/composables/useSwiper.js:129", "执行无缝跳转: 从索引", nextIndex, "跳转到索引 1");
+      goToSlide(nextIndex);
       setTimeout(() => {
         isSeamlessJumping.value = true;
         goToSlide(1, false);
-        common_vendor.index.__f__("log", "at src/composables/useSwiper.js:134", "无缝跳转完成，当前索引:", currentIndex.value);
         common_vendor.nextTick$1(() => {
           isSeamlessJumping.value = false;
         });
       }, duration);
-      return;
+    } else {
+      goToSlide(nextIndex);
     }
     resetAutoplay();
   };
   const prev = () => {
-    if (isTransitioning.value)
+    if (isTransitioning.value) {
       return;
+    }
+    if (!slides.value || slides.value.length === 0) {
+      return;
+    }
     const prevIndex = currentIndex.value - 1;
-    goToSlide(prevIndex);
     if (circular && prevIndex === 0) {
+      goToSlide(prevIndex);
       setTimeout(() => {
         isSeamlessJumping.value = true;
-        goToSlide(slides.value.length, false);
+        goToSlide(displaySlides.value.length - 2, false);
         common_vendor.nextTick$1(() => {
           isSeamlessJumping.value = false;
         });
       }, duration);
-      return;
+    } else {
+      goToSlide(prevIndex);
     }
     resetAutoplay();
   };
   const goToRealIndex = (realIndex2) => {
+    if (isTransitioning.value || isSeamlessJumping.value) {
+      resetTransitionState();
+      if (isTransitioning.value || isSeamlessJumping.value) {
+        return;
+      }
+    }
     const targetIndex = circular ? realIndex2 + 1 : realIndex2;
     goToSlide(targetIndex);
     resetAutoplay();
@@ -139,8 +165,9 @@ function useSwiper(options = {}) {
   };
   const SWIPE_THRESHOLD = 50;
   const handleTouchStart = (e) => {
-    if (isTransitioning.value)
+    if (isTransitioning.value || isSeamlessJumping.value) {
       return;
+    }
     const touch = e.touches ? e.touches[0] : e;
     touchStartX.value = touch.clientX;
     touchCurrentX.value = touch.clientX;
@@ -154,8 +181,12 @@ function useSwiper(options = {}) {
     stopAutoplay();
   };
   const handleTouchMove = (e) => {
-    if (!isDragging.value && !mouseDown.value)
+    if (!isDragging.value && !mouseDown.value) {
       return;
+    }
+    if (isSeamlessJumping.value) {
+      return;
+    }
     const touch = e.touches ? e.touches[0] : e;
     touchCurrentX.value = touch.clientX;
     touchEndX.value = touch.clientX;
@@ -163,8 +194,18 @@ function useSwiper(options = {}) {
     e.preventDefault();
   };
   const handleTouchEnd = () => {
-    if (!isDragging.value && !mouseDown.value)
+    if (!isDragging.value || !mouseDown.value) {
       return;
+    }
+    if (Math.abs(dragOffset.value) <= 150) {
+      isDragging.value = false;
+      mouseDown.value = false;
+      dragOffset.value = 0;
+      return;
+    }
+    if (isTransitioning.value) {
+      resetTransitionState();
+    }
     const touchDiff = touchEndX.value - touchStartX.value;
     if (Math.abs(touchDiff) > SWIPE_THRESHOLD) {
       if (touchDiff > 0) {
@@ -181,9 +222,28 @@ function useSwiper(options = {}) {
       dragOffset.value = 0;
     });
   };
+  const initializeSwiper = () => {
+    if (isInitialized.value)
+      return;
+    isTransitioning.value = false;
+    isSeamlessJumping.value = false;
+    if (circular && slides.value && slides.value.length > 0) {
+      currentIndex.value = 1;
+    } else {
+      currentIndex.value = 0;
+    }
+    isInitialized.value = true;
+  };
   common_vendor.onMounted(() => {
+    initializeSwiper();
     startAutoplay();
   });
+  common_vendor.watch(() => slides.value, (newSlides) => {
+    if (newSlides && newSlides.length > 0) {
+      isInitialized.value = false;
+      initializeSwiper();
+    }
+  }, { immediate: true });
   common_vendor.onUnmounted(() => {
     stopAutoplay();
   });
@@ -204,6 +264,7 @@ function useSwiper(options = {}) {
     prev,
     goToSlide,
     goToRealIndex,
+    resetTransitionState,
     // 自动播放控制
     startAutoplay,
     stopAutoplay,

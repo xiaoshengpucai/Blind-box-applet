@@ -3,11 +3,11 @@
  * @description 统一的API请求管理，包含缓存、错误处理、重试机制等
  */
 import axios from 'axios';
-import mpAdapter from 'axios-miniprogram-adapter';
+import mpAdapter from 'axios-miniprogram-adapter'
 
 // ==================== 配置常量 ====================
 const API_CONFIG = {
-  BASE_URL: 'https://tea.qingnian8.com/api',
+  BASE_URL: 'http://localhost:3000/api/',
   TIMEOUT: 10000,
   RETRY_TIMES: 3,
   RETRY_DELAY: 1000,

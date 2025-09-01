@@ -18,9 +18,6 @@ const _sfc_main = {
       type: Array,
       required: true
       // 暂时移除验证器进行调试
-      // validator: (value) => {
-      //   return value.every((item) => typeof item.src === 'string' || typeof item.imageUrl === 'string');
-      // }
     },
     autoplay: {
       type: Boolean,
@@ -36,8 +33,8 @@ const _sfc_main = {
     },
     switchModeL: {
       type: String,
-      default: "fade"
-      //fade or slide
+      default: "slide"
+      // 改为slide模式以显示向左切换效果
     },
     circular: {
       type: Boolean,
@@ -50,7 +47,6 @@ const _sfc_main = {
   },
   emits: ["change", "click", "image-load", "image-error"],
   setup(__props, { emit: __emit }) {
-    var _a, _b, _c, _d, _e;
     const props = __props;
     const emit = __emit;
     const borderConfig = {
@@ -103,48 +99,24 @@ const _sfc_main = {
       marginLeft: "40rpx",
       marginRight: "24rpx"
     }));
-    const handleSwiperChange = (data) => {
+    const handleChange = (data) => {
       emit("change", data);
-    };
-    const handleSlideClick = (data) => {
-      emit("click", data);
     };
     const handleImageLoad = (data) => {
       emit("image-load", data);
     };
     const handleImageError = (data) => {
-      common_vendor.index.__f__("warn", "at pages/Home/componets/swiper.vue:175", "轮播图图片加载失败:", data);
+      common_vendor.index.__f__("warn", "at pages/Home/componets/swiper.vue:172", "轮播图图片加载失败:", data);
       emit("image-error", data);
     };
-    common_vendor.index.__f__("log", "at pages/Home/componets/swiper.vue:183", "轮播图组件初始化:", {
-      slideData: props.slide,
-      slideCount: (_a = props.slide) == null ? void 0 : _a.length,
-      imageField,
-      firstImageUrl: ((_c = (_b = props.slide) == null ? void 0 : _b[0]) == null ? void 0 : _c[imageField]) || ((_e = (_d = props.slide) == null ? void 0 : _d[0]) == null ? void 0 : _e.imageUrl),
-      rawSlideData: JSON.stringify(props.slide),
-      propsType: typeof props.slide,
-      isArray: Array.isArray(props.slide),
-      config: {
-        switchModeL: props.switchModeL,
-        circular: props.circular,
-        autoplay: props.autoplay
-      }
-    });
     common_vendor.watch(() => props.slide, (newSlide) => {
-      common_vendor.index.__f__("log", "at pages/Home/componets/swiper.vue:200", "轮播图数据变化:", {
-        newSlide,
-        count: newSlide == null ? void 0 : newSlide.length,
-        type: typeof newSlide,
-        isArray: Array.isArray(newSlide)
-      });
     }, { immediate: true, deep: true });
     return (_ctx, _cache) => {
       return {
-        a: common_vendor.o(handleSwiperChange),
-        b: common_vendor.o(handleSlideClick),
-        c: common_vendor.o(handleImageLoad),
-        d: common_vendor.o(handleImageError),
-        e: common_vendor.p({
+        a: common_vendor.o(handleChange),
+        b: common_vendor.o(handleImageLoad),
+        c: common_vendor.o(handleImageError),
+        d: common_vendor.p({
           slides: __props.slide,
           mode: __props.switchModeL,
           autoplay: __props.autoplay,
@@ -161,14 +133,14 @@ const _sfc_main = {
           ["header-icon"]: headerIcon,
           ["show-decorations"]: true,
           decorations: decorationIcons,
-          ["show-controls"]: __props.indicatorDots,
+          ["show-controls"]: true,
           ["show-indicators"]: __props.circular,
           ["show-floor"]: true,
           ["floor-dots"]: 10,
           ["image-field"]: imageField,
           ["custom-style"]: customSwiperStyle.value
         }),
-        f: common_vendor.gei(_ctx, "")
+        e: common_vendor.gei(_ctx, "")
       };
     };
   }

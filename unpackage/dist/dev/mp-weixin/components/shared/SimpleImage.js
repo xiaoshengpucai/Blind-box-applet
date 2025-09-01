@@ -51,11 +51,10 @@ const _sfc_main = {
       display: "block"
     }));
     const handleLoad = (e) => {
-      common_vendor.index.__f__("log", "at components/shared/SimpleImage.vue:85", "图片加载成功:", props.src);
       emit("load", e);
     };
     const handleError = (e) => {
-      common_vendor.index.__f__("warn", "at components/shared/SimpleImage.vue:93", "图片加载失败:", props.src);
+      common_vendor.index.__f__("warn", "at components/shared/SimpleImage.vue:92", "图片加载失败:", props.src);
       emit("error", e);
     };
     return (_ctx, _cache) => {

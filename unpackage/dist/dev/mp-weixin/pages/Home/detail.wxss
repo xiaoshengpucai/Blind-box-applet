@@ -24,7 +24,7 @@
 /* 透明度 */
 /* 文章场景相关 */
 body.data-v-a42b862d {
-  background-color: #fff;
+  background-color: white;
 }
 .bg.data-v-a42b862d {
   width: 100vw;
@@ -37,12 +37,6 @@ body.data-v-a42b862d {
   background-size: 100%;
   background-image: url("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201712%2F05%2F20171205051539_HUvhM.thumb.400_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1755698284&t=0a49f5933badc42403a845e150616790");
 }
-.nav-bar-content.data-v-a42b862d {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-}
 .back.data-v-a42b862d {
   width: 40rpx;
   height: 40rpx;
@@ -54,10 +48,11 @@ body.data-v-a42b862d {
   justify-content: center;
   position: absolute;
   top: 50%;
+  left: 0;
   transform: translateY(-50%);
 }
 .main.data-v-a42b862d {
-  height: 100vh;
+  height: 100%;
   width: 100vw;
   box-sizing: border-box;
 }

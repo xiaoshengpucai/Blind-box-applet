@@ -1,7 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const API_CONFIG = {
-  BASE_URL: "https://tea.qingnian8.com/api",
+  BASE_URL: "http://localhost:3000/api/",
   TIMEOUT: 1e4,
   RETRY_TIMES: 3,
   RETRY_DELAY: 1e3,

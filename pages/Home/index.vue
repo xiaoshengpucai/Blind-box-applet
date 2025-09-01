@@ -19,85 +19,55 @@
 				</view>
 				<!-- 筛选下拉菜单 -->
 				<view class="filter-dropdown" @click="handleSortSelection" :style="filterDropdownStyle">
-					<view 
-						class="filter-option filter-option-new" 
-						:class="{ 'active': currentSortType === 'new' }"
-						data-type="new"
-					>
+					<view class="filter-option filter-option-new" :class="{ 'active': currentSortType === 'new' }"
+						data-type="new">
 						最新发布
-				</view>
-					<view 
-						class="filter-option filter-option-price-desc" 
-						:class="{ 'active': currentSortType === 'priceDesc' }"
-						data-type="priceDesc"
-					>
+					</view>
+					<view class="filter-option filter-option-price-desc"
+						:class="{ 'active': currentSortType === 'priceDesc' }" data-type="priceDesc">
 						价格从高到低
-			</view>
-					<view 
-						class="filter-option filter-option-price-asc" 
-						:class="{ 'active': currentSortType === 'priceAsc' }"
-						data-type="priceAsc"
-					>
+					</view>
+					<view class="filter-option filter-option-price-asc"
+						:class="{ 'active': currentSortType === 'priceAsc' }" data-type="priceAsc">
 						价格从低到高
-		</view>
+					</view>
+				</view>
 			</view>
-		</view>
 		</status-bar>
-		
+
 		<!-- 背景装饰区域 -->
 		<view class="background-decoration">
 			<image class="background-image" :src="backgroundImage" mode="aspectFill"></image>
-				</view>
-		
+		</view>
+
 		<!-- 导航图标区域 -->
 		<view class="navigation-section" :style="{ marginTop: statusBarHeight + 'px' }" @touchmove.stop.prevent="() => {}">
-			<view 
-				class="navigation-item" 
-				v-for="(navItem, index) in navigationList" 
-				:key="navItem.id"
-				:class="['animate-float', `nav-item-${index}`]"
-				:style="{ 
+			<view class="navigation-item" v-for="(navItem, index) in navigationList" :key="navItem.id"
+				:class="['animate-float', `nav-item-${index}`]" :style="{ 
 					top: calculateNavigationItemTop(index) + 'px', 
 					animationDelay: index * 0.2 + 's' 
-				}"
-			>
-				<image 
-					class="navigation-icon" 
-					:style="{ top: calculateNavigationItemTop(index) + 'px' }"
-					@click="handleNavigationClick(navItem.text)" 
-					:src="navItem.src" 
-					mode="aspectFit" 
-					lazy-load
-				/>
-							</view>
-						</view>
-		
+				}">
+				<image class="navigation-icon" :style="{ top: calculateNavigationItemTop(index) + 'px' }"
+					@click="handleNavigationClick(navItem.text)" :src="navItem.src" mode="aspectFit" lazy-load />
+			</view>
+		</view>
+
 		<!-- 主内容区域 -->
-		<view class="main-content" :style="{ marginTop: navigationHeight + 'px' }">
+		<view class="main-content" :style="{ paddingTop: navigationHeight + 'px' }">
 			<scroll-view scroll-y @scroll="handleContentScroll" :style="{ height: calculateScrollViewHeight() + 'px' }">
 				<!-- 轮播图区域 -->
-				<view class="carousel-section">				
+				<view class="carousel-section">
 					<!-- 使用原始数据 -->
-					<Swiper 
-						:slide="carouselData" 
-						:switchModeL="carouselConfig.switchMode" 
-						:circular="carouselConfig.circular"
-						:indicatorDots="carouselConfig.indicatorDots" 
-						:autoplay="carouselConfig.autoplay" 
-						:interval="carouselConfig.interval" 
-						:duration="carouselConfig.duration"
-						@change="handleSwiperChange"
-					/>
-					</view>
-				
+					<Swiper :slide="carouselData" :switchModeL="carouselConfig.switchMode"
+						:circular="carouselConfig.circular" :indicatorDots="carouselConfig.indicatorDots"
+						:autoplay="carouselConfig.autoplay" :interval="carouselConfig.interval"
+						:duration="carouselConfig.duration" @change="handleSwiperChange" />
+				</view>
+
 				<!-- 福利卡片区域 -->
 				<view class="welfare-section">
-					<view 
-						class="welfare-card" 
-						v-for="welfareItem in welfareCardList" 
-						:key="welfareItem.id"
-						@click="handleWelfareCardClick(welfareItem)"
-					>
+					<view class="welfare-card" v-for="welfareItem in welfareCardList" :key="welfareItem.id"
+						@click="handleWelfareCardClick(welfareItem)">
 						<view :class="welfareItem.backgroundClass"></view>
 						<view :class="welfareItem.contentClass">
 							<view :class="welfareItem.titleClass">{{ welfareItem.title }}</view>
@@ -105,12 +75,13 @@
 								<text class="button-text" :style="{ color: welfareItem.buttonColor }">
 									{{ welfareItem.buttonText }}
 								</text>
-								<up-icon class="button-icon" name="play-right-fill" size="10" :color="welfareItem.buttonColor"></up-icon>
+								<up-icon class="button-icon" name="play-right-fill" size="10"
+									:color="welfareItem.buttonColor"></up-icon>
 							</view>
 						</view>
 					</view>
-							</view>
-				
+				</view>
+
 				<!-- 商品列表组件 -->
 				<TrendyTabVue :productList="productList"></TrendyTabVue>
 			</scroll-view>
@@ -134,7 +105,7 @@
 	// ==================== 常量定义 ====================
 	const BACKGROUND_IMAGE_URL = 'https://pica.zhimg.com/100/v2-211f3f93123fafec7b424efa838fe542_r.jpg';
 	const THROTTLE_DELAY = {
-		PAGE_CLICK: 300,  // 降低页面点击节流延迟，提升响应性
+		PAGE_CLICK: 300, // 降低页面点击节流延迟，提升响应性
 		FILTER_TOGGLE: 300,
 		SCROLL: 200
 	};
@@ -146,19 +117,19 @@
 
 	// ==================== 响应式数据 ====================
 	const backgroundImage = BACKGROUND_IMAGE_URL;
-	
+
 	// 页面全局点击事件处理 - 优化节流延迟并增加注释
 	const handlePageClick = throttle(() => {
 		// 如果筛选下拉框未显示，直接返回，避免不必要的操作
 		if (!isFilterDropdownVisible.value) return;
-		
+
 		// 隐藏筛选下拉框
 		hideFilterDropdown();
 	}, THROTTLE_DELAY.PAGE_CLICK);
 
 	// ==================== 状态栏相关 ====================
 	const statusBarHeight = ref(0);
-	
+
 	/**
 	 * 处理状态栏高度变化
 	 * @param {number} height - 状态栏高度
@@ -170,7 +141,7 @@
 	// ==================== 筛选下拉框相关 ====================
 	const isFilterDropdownVisible = ref(false);
 	const currentSortType = ref('');
-	
+
 	/**
 	 * 筛选下拉框样式 - 使用computed优化性能
 	 */
@@ -183,9 +154,9 @@
 	 * 筛选文字颜色样式 - 根据当前排序状态动态变化
 	 */
 	const filterTextStyle = computed(() => ({
-		color: currentSortType.value === SORT_TYPES.NEW ? '#fff' : '#BD9731'
+		color: currentSortType.value === '' ? '#fff' : (currentSortType.value === SORT_TYPES.NEW ? '#fff' : '#bd9731')
 	}));
-
+	
 	/**
 	 * 显示筛选下拉框
 	 */
@@ -212,7 +183,7 @@
 	}, THROTTLE_DELAY.FILTER_TOGGLE);
 
 	// ==================== 商品数据管理 ====================
-	
+
 	/**
 	 * 生成唯一ID的工具函数
 	 * @returns {string} 唯一ID
@@ -224,11 +195,10 @@
 	/**
 	 * 初始商品数据 - 使用更规范的数据结构和命名
 	 */
-	const initialProductData = [
-		{
+	const initialProductData = [{
 			id: generateUniqueId(),
 			title: '三丽鸥公仔系列',
-			price: 6.10,  // 使用数字类型，便于排序
+			price: 6.10, // 使用数字类型，便于排序
 			imageUrl: 'https://img1.baidu.com/it/u=1299369810,3742035215&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=1082',
 			createTime: Date.now()
 		},
@@ -326,7 +296,7 @@
 		[SORT_TYPES.NEW]: (products) => {
 			return [...products].sort((a, b) => b.createTime - a.createTime);
 		},
-		
+
 		/**
 		 * 按价格降序排序（高到低）
 		 * @param {Array} products - 商品列表
@@ -335,7 +305,7 @@
 		[SORT_TYPES.PRICE_DESC]: (products) => {
 			return [...products].sort((a, b) => b.price - a.price);
 		},
-		
+
 		/**
 		 * 按价格升序排序（低到高）
 		 * @param {Array} products - 商品列表
@@ -352,19 +322,19 @@
 	 */
 	const handleSortSelection = (event) => {
 		const sortType = event.target.dataset.type;
-		
+		console.log(sortType,'排序类型----------------')
 		// 如果点击的是当前已选中的排序类型，直接返回
 		if (currentSortType.value === sortType) return;
-		
+
 		// 更新当前排序类型
 		currentSortType.value = sortType;
-		
+
 		// 根据排序类型对商品进行排序
 		if (sortProducts[sortType]) {
 			productList.value = sortProducts[sortType](productList.value);
 			console.log(`商品已按${getSortTypeName(sortType)}排序`);
 		}
-		
+
 		// 排序后隐藏下拉框
 		hideFilterDropdown();
 	};
@@ -387,8 +357,7 @@
 	/**
 	 * 导航菜单列表 - 使用更规范的数据结构
 	 */
-	const navigationList = [
-		{
+	const navigationList = [{
 			id: 1,
 			text: '无限',
 			path: 'infinite',
@@ -424,8 +393,7 @@
 	/**
 	 * 轮播图数据 - 重构为更清晰的结构
 	 */
-	const carouselData = ref([
-		{
+	const carouselData = ref([{
 			id: 1,
 			title: '轮播图1',
 			imageUrl: 'https://tse4-mm.cn.bing.net/th/id/OIP-C.QmHur5XIHx_hAyq12RQJ_wHaEH?cb=iwc2&rs=1&pid=ImgDetMain',
@@ -435,7 +403,7 @@
 		},
 		{
 			id: 2,
-			title: '轮播图2', 
+			title: '轮播图2',
 			imageUrl: 'https://tse1-mm.cn.bing.net/th/id/OIP-C.xGTInVTOkiPa4bx7tQWxzwHaEn?cb=iwc2&rs=1&pid=ImgDetMain',
 			linkUrl: '#',
 			sortOrder: 2,
@@ -479,19 +447,18 @@
 	 * 轮播图配置参数 - 集中管理配置项
 	 */
 	const carouselConfig = {
-		switchMode: 'slide',     // 切换模式: fade | slide
-		indicatorDots: true,     // 是否显示指示点
-		autoplay: true,          // 是否自动播放
-		interval: 4000,          // 自动播放间隔时间(ms)
-		duration: 600,           // 切换动画持续时间(ms)
-		circular: true           // 是否启用循环播放
+		switchMode: 'slide', // 切换模式: fade | slide
+		indicatorDots: true, // 是否显示指示点
+		autoplay: true, // 是否自动播放
+		interval: 4000, // 自动播放间隔时间(ms)
+		duration: 600, // 切换动画持续时间(ms)
+		circular: true // 是否启用循环播放
 	};
 	// ==================== 福利卡片数据配置 ====================
 	/**
 	 * 福利卡片列表 - 重构为数据驱动的方式
 	 */
-	const welfareCardList = [
-		{
+	const welfareCardList = [{
 			id: 'diy',
 			title: 'DIV赏',
 			buttonText: '查看详情',
@@ -549,9 +516,9 @@
 	 */
 	const calculateScrollViewHeight = () => {
 		const windowInfo = uni.getWindowInfo();
-		return windowInfo.windowHeight - navigationHeight.value;
+		return windowInfo.windowHeight - navigationHeight.value - statusBarHeight.value;
 	};
-
+	
 	/**
 	 * 处理导航点击事件 - 重构为更清晰的函数名
 	 * @param {string} navigationPath - 导航路径
@@ -596,7 +563,7 @@
 	const initializeComponent = () => {
 		// 获取组件实例
 		componentInstance.value = getCurrentInstance()?.proxy;
-		
+
 		// 延迟获取导航栏高度，确保DOM渲染完成
 		setTimeout(() => {
 			calculateNavigationHeight();
@@ -617,8 +584,7 @@
 			.selectAll('.navigation-item')
 			.boundingClientRect((data) => {
 				if (data && data.length > 0) {
-				navigationHeight.value = data[0].bottom;
-					console.log('导航栏高度已计算:', navigationHeight.value);
+					navigationHeight.value = data[0].height;
 				}
 			})
 			.exec();
@@ -627,9 +593,9 @@
 
 <style lang="scss" scoped>
 	// ==================== 页面主体样式 ====================
-	.home-container {
+	.main-content{
 		height: 100%;
-		overflow: hidden;
+		box-sizing: border-box;
 	}
 
 	// ==================== 头部导航栏样式 ====================
@@ -638,38 +604,38 @@
 		justify-content: flex-end;
 		align-items: center;
 		position: relative;
+		z-index: 10;
 	}
 
 	// 导航按钮通用样式 - 使用BEM命名规范
 	.nav-button {
-			width: 50rpx;
-			height: 50rpx;
-			padding: 10rpx;
-			border-radius: 20rpx;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			margin-right: 20rpx;
-			background-color: #1f1f1f;
+		width: 50rpx;
+		height: 50rpx;
+		padding: 10rpx;
+		border-radius: 20rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-right: 20rpx;
+		background-color: #1f1f1f;
 		transition: all 0.3s ease; // 添加过渡动画
-		
 		&:active {
 			transform: scale(0.95); // 点击反馈
 		}
-		}
+	}
 
 	// 筛选按钮特殊样式
 	.filter-button {
-			width: 100rpx;
-			padding: 10rpx 0rpx;
+		width: 100rpx;
+		padding: 10rpx 0rpx;
 
 		.filter-text {
-				color: #fff;
-				display: inline-block;
-				font-size: 18rpx;
-				margin: 0;
-				padding: 0;
-				margin-top: 5rpx;
+			color: #fff;
+			display: inline-block;
+			font-size: 18rpx;
+			margin: 0;
+			padding: 0;
+			margin-top: 5rpx;
 			transition: color 0.3s ease; // 文字颜色过渡
 		}
 	}
@@ -690,18 +656,18 @@
 		transform-origin: top;
 		transform: rotateX(-90deg);
 		transition: all 0.5s ease-in-out;
-		z-index: 1;
+		z-index: 100; // 提升层级，确保下拉框处于最顶层
 		backdrop-filter: blur(10rpx); // 添加背景模糊效果
 	}
 
 	.filter-option {
-			font-size: 20rpx;
-			padding: 10rpx;
-			height: 50rpx;
-			line-height: 50rpx;
-			text-align: center;
-			color: #fff;
-			width: 100%;
+		font-size: 20rpx;
+		padding: 10rpx;
+		height: 50rpx;
+		line-height: 50rpx;
+		text-align: center;
+		color: #fff;
+		width: 100%;
 		cursor: pointer;
 		transition: all 0.2s ease;
 
@@ -730,42 +696,45 @@
 		height: 400rpx;
 		background: linear-gradient(to right, rgba(242, 95, 74, 1), rgba(252, 132, 116, 0.9));
 		overflow: hidden;
+		box-sizing: content-box;
 		z-index: -1; // 确保背景在最底层
 
 		// 底部渐变遮罩效果
 		&::after {
 			content: '';
 			position: absolute;
+			box-sizing: content-box;
 			bottom: 0;
 			left: 0;
 			width: 100%;
 			height: 40%;
-			background: linear-gradient(
-				to bottom, 
-				rgba(255, 255, 255, 0) 0%, 
-				rgba(255, 255, 255, 0.4) 30%, 
-				rgba(255, 255, 255, 1) 90%
-			);
+			background: linear-gradient(to bottom,
+					rgba(255, 255, 255, 0) 0%,
+					rgba(255, 255, 255, 0.4) 30%,
+					rgba(255, 255, 255, 1) 90%);
 			mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
 			-webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
 			pointer-events: none;
 		}
-		}
-
-	.background-image {
-			position: absolute;
-			left: -100rpx;
-			width: 100%;
-			height: 100%;
-		mask-image: linear-gradient(
-			to right, 
-			rgba(0, 0, 0, 1), 
-			rgba(0, 0, 0, 1), 
-			rgba(0, 0, 0, 2), 
-			rgba(0, 0, 0, 0)
-		);
 	}
 
+	.background-image {
+		position: absolute;
+		box-sizing: content-box;
+		left: -100rpx;
+		width: 100%;
+		height: 100%;
+		mask-image: linear-gradient(to right,
+				rgba(0, 0, 0, 1),
+				rgba(0, 0, 0, 1),
+				rgba(0, 0, 0, 2),
+				rgba(0, 0, 0, 0));
+	}
+	// .main-content {
+	// 	flex: 1 1 auto;
+	// 	min-height: 0;
+	// 	overflow: hidden;
+	// }
 	// ==================== 导航图标区域样式 ====================
 	.navigation-section {
 		width: 100%;
@@ -774,20 +743,19 @@
 		position: fixed;
 		top: 0;
 		left: 0;
-		z-index: 10; // 确保导航在合适的层级
 	}
 
 	.navigation-item {
-			width: 100%;
-			display: flex;
-			justify-content: space-around;
-			align-items: center;
+		width: 100%;
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
 	}
 
 	.navigation-icon {
-				position: absolute;
-				height: 140rpx;
-				width: 140rpx;
+		position: absolute;
+		height: 140rpx;
+		width: 140rpx;
 		transition: all 0.3s ease;
 		cursor: pointer;
 
@@ -807,10 +775,10 @@
 	}
 
 	.welfare-card {
-			display: flex;
-			justify-content: space-evenly;
-			align-items: center;
-			position: relative;
+		display: flex;
+		justify-content: space-evenly;
+		align-items: center;
+		position: relative;
 		cursor: pointer;
 		transition: transform 0.3s ease;
 
@@ -821,193 +789,193 @@
 
 	// ==================== DIY卡片样式 ====================
 	.welfare-bg-diy {
-				width: 180rpx;
-				height: 160rpx;
-				border: 8rpx solid #b3d3ff;
-				background-color: #67a3f7;
-				transform: skewX(-15deg);
-				border-radius: 15px;
-				position: relative;
-				left: 20rpx;
+		width: 180rpx;
+		height: 160rpx;
+		border: 8rpx solid #b3d3ff;
+		background-color: #67a3f7;
+		transform: skewX(-15deg);
+		border-radius: 15px;
+		position: relative;
+		left: 20rpx;
 
 		// DIY卡片左侧阴影效果
 		&::before {
-				content: '';
-				width: 180rpx;
-				height: 160rpx;
-				position: absolute;
-				left: -35rpx;
-				top: -8rpx;
-				border-left: 8rpx solid #b3d3ff;
-				border-top: 8rpx solid #b3d3ff;
-				border-bottom: 8rpx solid #b3d3ff;
-				background-color: #67a3f7;
-				transform: skewX(15deg);
-				border-radius: 30rpx 0 15rpx 30rpx;
-				z-index: -2;
+			content: '';
+			width: 180rpx;
+			height: 160rpx;
+			position: absolute;
+			left: -35rpx;
+			top: -8rpx;
+			border-left: 8rpx solid #b3d3ff;
+			border-top: 8rpx solid #b3d3ff;
+			border-bottom: 8rpx solid #b3d3ff;
+			background-color: #67a3f7;
+			transform: skewX(15deg);
+			border-radius: 30rpx 0 15rpx 30rpx;
+			z-index: -2;
 		}
-			}
+	}
 
 	// ==================== 专属福利卡片样式 ====================
 	.welfare-bg-exclusive {
-				width: 220rpx;
-				height: 160rpx;
-				background-color: #ed776f;
-				transform: skewX(-15deg);
-				border: 8rpx solid #ffb3ae;
-				border-radius: 30rpx;
-			}
+		width: 220rpx;
+		height: 160rpx;
+		background-color: #ed776f;
+		transform: skewX(-15deg);
+		border: 8rpx solid #ffb3ae;
+		border-radius: 30rpx;
+	}
 
 	.welfare-content-exclusive {
-				position: relative;
-				padding: 0 18rpx;
-			}
+		position: relative;
+		padding: 0 18rpx;
+	}
 
 	// ==================== ROLL房卡片样式 ====================
 	.welfare-bg-roll {
-				width: 180rpx;
-				height: 160rpx;
-				border: 8rpx solid #9d8bee;
-				background-color: #715dc9;
-				transform: skewX(-15deg);
-				border-radius: 15px;
-				position: relative;
-				left: -15rpx;
+		width: 180rpx;
+		height: 160rpx;
+		border: 8rpx solid #9d8bee;
+		background-color: #715dc9;
+		transform: skewX(-15deg);
+		border-radius: 15px;
+		position: relative;
+		left: -15rpx;
 
 		// ROLL卡片右侧阴影效果
 		&::before {
-				content: '';
-				position: absolute;
-				width: 160rpx;
-				height: 100%;
-				right: -32rpx;
-				top: -8rpx;
-				border-right: 8rpx solid #9d8bee;
-				border-top: 8rpx solid #9d8bee;
-				border-bottom: 8rpx solid #9d8bee;
-				background-color: #715dc9;
-				border-radius: 0rpx 30rpx 30rpx 0rpx;
-				transform: skewX(15deg);
-				z-index: -1;
+			content: '';
+			position: absolute;
+			width: 160rpx;
+			height: 100%;
+			right: -32rpx;
+			top: -8rpx;
+			border-right: 8rpx solid #9d8bee;
+			border-top: 8rpx solid #9d8bee;
+			border-bottom: 8rpx solid #9d8bee;
+			background-color: #715dc9;
+			border-radius: 0rpx 30rpx 30rpx 0rpx;
+			transform: skewX(15deg);
+			z-index: -1;
 		}
-			}
+	}
 
 	// ==================== 福利卡片内容样式 ====================
 	.welfare-content {
-				position: absolute;
-				left: -10rpx;
-				top: 5rpx;
-				width: 220rpx;
-				height: 180rpx;
-				border-radius: 15px;
-				display: flex;
-				transform: skewX(-15deg);
-				flex-direction: column;
-				justify-content: center;
-				align-items: center;
-				overflow: hidden;
-			}
+		position: absolute;
+		left: -10rpx;
+		top: 5rpx;
+		width: 220rpx;
+		height: 180rpx;
+		border-radius: 15px;
+		display: flex;
+		transform: skewX(-15deg);
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		overflow: hidden;
+	}
 
 	// DIY卡片背景文字
 	.welfare-content-diy::before {
-				content: 'DIY';
-				position: absolute;
-				top: -20rpx;
-				left: 50rpx;
-				text-shadow: none;
-				font-weight: bold;
-				font-family: 'stkaiti';
-				color: white;
-				font-size: 60rpx;
-				transform: scale(1.6);
-				letter-spacing: 5rpx;
-				text-transform: uppercase;
-				opacity: 0.2;
-			}
+		content: 'DIY';
+		position: absolute;
+		top: -20rpx;
+		left: 50rpx;
+		text-shadow: none;
+		font-weight: bold;
+		font-family: 'stkaiti';
+		color: white;
+		font-size: 60rpx;
+		transform: scale(1.6);
+		letter-spacing: 5rpx;
+		text-transform: uppercase;
+		opacity: 0.2;
+	}
 
 	// 专属福利卡片背景文字
 	.welfare-content-exclusive::after {
-				content: 'ZHUANSHU';
-				position: absolute;
-				top: -20rpx;
-				left: 100rpx;
-				text-shadow: none;
-				font-weight: bold;
-				font-family: 'stkaiti';
-				color: white;
-				font-size: 60rpx;
-				transform: scale(1.4);
-				letter-spacing: 5rpx;
-				text-transform: uppercase;
-				opacity: 0.3;
-			}
+		content: 'ZHUANSHU';
+		position: absolute;
+		top: -20rpx;
+		left: 100rpx;
+		text-shadow: none;
+		font-weight: bold;
+		font-family: 'stkaiti';
+		color: white;
+		font-size: 60rpx;
+		transform: scale(1.4);
+		letter-spacing: 5rpx;
+		text-transform: uppercase;
+		opacity: 0.3;
+	}
 
 	// ROLL房卡片背景文字
 	.welfare-content-roll::before {
-				content: 'Roll';
-				position: absolute;
-				top: -20rpx;
-				left: 60rpx;
-				text-shadow: none;
-				font-weight: bold;
-				font-family: 'stkaiti';
-				color: white;
-				font-size: 60rpx;
-				transform: scale(1.6);
-				letter-spacing: 5rpx;
-				text-transform: uppercase;
-				opacity: 0.2;
-			}
+		content: 'Roll';
+		position: absolute;
+		top: -20rpx;
+		left: 60rpx;
+		text-shadow: none;
+		font-weight: bold;
+		font-family: 'stkaiti';
+		color: white;
+		font-size: 60rpx;
+		transform: scale(1.6);
+		letter-spacing: 5rpx;
+		text-transform: uppercase;
+		opacity: 0.2;
+	}
 
 	// ==================== 福利卡片标题样式 ====================
 	.welfare-title {
-				transform: scale(1.5);
-				font-family: 'stkaiti';
-				color: white;
-				font-weight: bold;
-				letter-spacing: 2rpx;
-				padding: 5rpx 0;
-			}
+		transform: scale(1.5);
+		font-family: 'stkaiti';
+		color: white;
+		font-weight: bold;
+		letter-spacing: 2rpx;
+		padding: 5rpx 0;
+	}
 
 	// 各类卡片标题特殊阴影效果
 	.welfare-title-diy {
-		text-shadow: 
-			-1px -1px 0 #246bcf, 
-			1px -1px 0 #246bcf, 
-			-1px 1px 0 #246bcf, 
+		text-shadow:
+			-1px -1px 0 #246bcf,
+			1px -1px 0 #246bcf,
+			-1px 1px 0 #246bcf,
 			1px 1px 0 #246bcf;
 	}
 
 	.welfare-title-exclusive {
-		text-shadow: 
-			-1px -1px 0 red, 
-			1px -1px 0 red, 
-			-1px 1px 0 red, 
+		text-shadow:
+			-1px -1px 0 red,
+			1px -1px 0 red,
+			-1px 1px 0 red,
 			1px 1px 0 red;
 	}
 
 	.welfare-title-roll {
-		text-shadow: 
-			-1px -1px 0 #302756, 
-			1px -1px 0 #302756, 
-			-1px 1px 0 #302756, 
+		text-shadow:
+			-1px -1px 0 #302756,
+			1px -1px 0 #302756,
+			-1px 1px 0 #302756,
 			1px 1px 0 #302756;
 	}
 
 	// ==================== 福利卡片按钮样式 ====================
 	.welfare-button {
-				height: 40rpx;
-				border-radius: 20rpx;
-				font-size: 24rpx;
-				background-color: #fff;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				margin-top: 10rpx;
-				padding: 0rpx 15rpx;
-				font-weight: bold;
-				letter-spacing: 2rpx;
-				transform: skewX(15deg);
+		height: 40rpx;
+		border-radius: 20rpx;
+		font-size: 24rpx;
+		background-color: #fff;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: 10rpx;
+		padding: 0rpx 15rpx;
+		font-weight: bold;
+		letter-spacing: 2rpx;
+		transform: skewX(15deg);
 		transition: all 0.2s ease;
 		cursor: pointer;
 
@@ -1017,8 +985,8 @@
 	}
 
 	.button-text {
-				padding-right: 5rpx;
-			}
+		padding-right: 5rpx;
+	}
 
 	.button-icon {
 		flex-shrink: 0;
@@ -1038,9 +1006,12 @@
 	 * 浮动动画 - 为导航图标添加生动效果
 	 */
 	@keyframes float {
-		0%, 100% {
+
+		0%,
+		100% {
 			transform: translateY(0);
 		}
+
 		50% {
 			transform: translateY(-5px);
 		}
@@ -1062,7 +1033,7 @@
 			height: auto;
 			gap: 20rpx;
 		}
-		
+
 		.navigation-icon {
 			width: 120rpx;
 			height: 120rpx;

@@ -112,7 +112,10 @@
           :class="{ 'active': realIndex === index }"
           :style="dotStyle"
           @click.stop="() => goToRealIndex(index)"
-        ></view>
+        >
+          <!-- 调试信息 -->
+          <text v-if="realIndex === index" class="debug-text"></text>
+        </view>
       </view>
     </view>
     
@@ -342,7 +345,7 @@ const {
 // ==================== 节流处理 ====================
 const throttledNext = useThrottle(next, 300);
 const throttledPrev = useThrottle(prev, 300);
-
+console.log('realIndex', realIndex.value);
 // ==================== 计算属性 ====================
 /**
  * 容器样式
@@ -383,10 +386,9 @@ const swiperStyle = computed(() => {
  * 控制按钮样式
  */
 const controlButtonStyle = computed(() => ({
-  width: '60rpx',
-  height: '60rpx',
-  borderRadius: '50%',
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  width: '100rpx',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.4)',
   border: 'none',
   display: 'flex',
   alignItems: 'center',
@@ -396,38 +398,10 @@ const controlButtonStyle = computed(() => ({
 }));
 
 /**
- * 指示器点样式
+ * 指示器点样式 - 已移至CSS中定义
  */
-const dotStyle = computed(() => ({
-  width: '40rpx',
-  height: '15rpx',
-  borderRadius: '25rpx',
-  backgroundColor: 'rgba(255, 255, 255, 0.3)',
-  margin: '0 10rpx',
-  cursor: 'pointer',
-  transition: 'all 0.3s ease'
-}));
+const dotStyle = computed(() => ({}));
 
-/**
- * 是否可以向前
- */
-// const canGoPrev = computed(() => {
-//   const result = props.circular || realIndex.value > 0;
-//   console.log('canGoPrev计算', {
-//     circular: props.circular,
-//     realIndex: realIndex.value,
-//     result,
-//     slidesLength: props.slides?.length || 0
-//   });
-//   return result;
-// });
-
-/**
- * 是否可以向后
- */
-// const canGoNext = computed(() => {
-//   return props.circular || realIndex.value < props.slides.length - 1;
-// });
 
 // ==================== 方法 ====================
 /**
@@ -470,14 +444,14 @@ const goToSlide = (index) => {
  * @param {Object} slide - 幻灯片数据
  * @param {number} index - 索引
  */
-// const handleSlideClick = (slide, index) => {
-//   console.log('-------handleSlideClick', { slide, index, realIndex: realIndex.value });
-//   emit('click', {
-//     slide,
-//     index: props.mode === 'slide' ? realIndex.value : index, // 使用真实索引
-//     realIndex: realIndex.value
-//   });
-// };
+const handleSlideClick = (slide, index) => {
+  console.log('-------handleSlideClick', { slide, index, realIndex: realIndex.value });
+  emit('click', {
+    slide,
+    index: props.mode === 'slide' ? realIndex.value : index, // 使用真实索引
+    realIndex: realIndex.value
+  });
+};
 
 /**
  * 处理图片加载成功
@@ -591,7 +565,7 @@ watch(() => props.autoplay, (autoplay) => {
   width: 65%;
   height: 40rpx;
   background-color: #cd4438;
-  margin-left: 24rpx;
+  margin-left: -16rpx;
   margin-bottom: -7px;
   border: 6px solid #cd4438;
   border-bottom: 0;
@@ -635,30 +609,27 @@ watch(() => props.autoplay, (autoplay) => {
   
   .decoration-item {
     position: absolute;
-    
     &:nth-child(1) image {
       width: 60rpx;
       left: 10rpx;
       top: 30rpx;
       z-index: 1;
-      animation: roleAnimation 2s linear infinite;
     }
     
     &:nth-child(2) image {
       width: 100rpx;
-      left: 40rpx;
+      left: 30rpx;
       top: 25rpx;
       z-index: 3;
-      animation: fly 3s linear infinite;
     }
     
     &:nth-child(3) image {
       width: 70rpx;
-      left: 130rpx;
+      left: 10rpx;
       top: 20rpx;
       z-index: 2;
-      animation: roleAnimation 1.5s linear infinite;
     }
+    
   }
 }
 
@@ -714,17 +685,23 @@ watch(() => props.autoplay, (autoplay) => {
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
-  padding: 0 10rpx;
   pointer-events: none;
-  z-index: 100; // 提高层级
-  
+  z-index: 100; // 提高层级  
+  .control-btn.control-prev {
+    right: 120rpx;
+  }
+  .control-btn.control-next {
+    left: 120rpx;
+  }
   .control-btn {
+    width: 60rpx;
     pointer-events: auto;
     z-index: 101; // 确保按钮在最上层
     position: relative; // 确保z-index生效
-    
+
+
     &:disabled {
       opacity: 0.3;
       cursor: not-allowed;
@@ -759,13 +736,34 @@ watch(() => props.autoplay, (autoplay) => {
   z-index: 10;
   
   .indicator-dot {
+    width: 40rpx;
+    height: 15rpx;
+    border-radius: 25rpx;
+    background-color: rgba(255, 255, 255, 0.3);
+    margin: 0 10rpx;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
     &.active {
-      background-color: #cd4438;
+      background-color: #cd4438 !important; // 使用 !important 确保优先级
       transform: scale(1.2);
+      box-shadow: 0 0 10rpx rgba(205, 68, 56, 0.5); // 添加发光效果
     }
     
     &:hover {
       background-color: rgba(255, 255, 255, 0.6);
+    }
+    
+    // 调试文本样式
+    .debug-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-size: 20rpx;
+      font-weight: bold;
+      pointer-events: none;
     }
   }
 }
@@ -773,7 +771,7 @@ watch(() => props.autoplay, (autoplay) => {
 // 底部装饰
 .swiper-floor {
   position: absolute;
-  bottom: -20rpx;
+  bottom: 2rpx;
   right: 40rpx;
   display: flex;
   gap: 10rpx;
@@ -793,16 +791,18 @@ watch(() => props.autoplay, (autoplay) => {
   to { opacity: 1; }
 }
 
-@keyframes fly {
-  0% { transform: scale(-1, 1) translateX(0) translateY(0); }
-  50% { transform: scale(-1, 1) translateX(-20%) translateY(-20rpx); }
-  100% { transform: scale(-1, 1) translateX(0); }
+@keyframes roleAnimation {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(10deg); }
+  100% { transform: rotate(0deg); }
 }
 
-@keyframes roleAnimation {
-  0% { transform: rotate(0); }
-  50% { transform: rotate(-20deg); }
-  100% { transform: rotate(0); }
+// 使用Sass循环为每个装饰元素分配不同的动画延迟
+@for $i from 1 through 8 {
+  .decoration-item:nth-child(#{$i}) {
+    animation: roleAnimation 1.2s ease-in-out infinite;
+    animation-delay: #{($i - 1) * 0.15}s;
+  }
 }
 
 // 响应式适配
@@ -821,6 +821,7 @@ watch(() => props.autoplay, (autoplay) => {
     .control-btn {
       width: 50rpx;
       height: 50rpx;
+      margin: 0 10rpx;
     }
   }
 }

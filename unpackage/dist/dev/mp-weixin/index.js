@@ -45,7 +45,7 @@ const _sfc_main = {
       opacity: isFilterDropdownVisible.value ? "1" : "0"
     }));
     const filterTextStyle = common_vendor.computed(() => ({
-      color: currentSortType.value === SORT_TYPES.NEW ? "#fff" : "#BD9731"
+      color: currentSortType.value === "" ? "#fff" : currentSortType.value === SORT_TYPES.NEW ? "#fff" : "#bd9731"
     }));
     const showFilterDropdown = () => {
       isFilterDropdownVisible.value = true;
@@ -179,12 +179,13 @@ const _sfc_main = {
     };
     const handleSortSelection = (event) => {
       const sortType = event.target.dataset.type;
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:325", sortType, "排序类型----------------");
       if (currentSortType.value === sortType)
         return;
       currentSortType.value = sortType;
       if (sortProducts[sortType]) {
         productList.value = sortProducts[sortType](productList.value);
-        common_vendor.index.__f__("log", "at pages/Home/index.vue:382", `商品已按${getSortTypeName(sortType)}排序`);
+        common_vendor.index.__f__("log", "at pages/Home/index.vue:335", `商品已按${getSortTypeName(sortType)}排序`);
       }
       hideFilterDropdown();
     };
@@ -264,7 +265,7 @@ const _sfc_main = {
     ]);
     const carouselSlides = common_vendor.computed(() => {
       const slides = carouselData.value;
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:485", "carouselSlides computed:", {
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:436", "carouselSlides computed:", {
         slides,
         length: slides == null ? void 0 : slides.length,
         isArray: Array.isArray(slides),
@@ -272,7 +273,7 @@ const _sfc_main = {
       });
       return slides;
     });
-    common_vendor.index.__f__("log", "at pages/Home/index.vue:493", "carouselSlides computed:", carouselSlides.value);
+    common_vendor.index.__f__("log", "at pages/Home/index.vue:444", "carouselSlides computed:", carouselSlides.value);
     const carouselConfig = {
       switchMode: "slide",
       // 切换模式: fade | slide
@@ -328,13 +329,15 @@ const _sfc_main = {
     }, THROTTLE_DELAY.SCROLL);
     const calculateScrollViewHeight = () => {
       const windowInfo = common_vendor.index.getWindowInfo();
-      return windowInfo.windowHeight - navigationHeight.value;
+      return windowInfo.windowHeight - navigationHeight.value - statusBarHeight.value;
     };
     const handleNavigationClick = (navigationPath) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:577", `导航点击: ${navigationPath}`);
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:527", `导航点击: ${navigationPath}`);
     };
     const handleWelfareCardClick = (welfareItem) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:586", `福利卡片点击: ${welfareItem.title}`);
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:536", `福利卡片点击: ${welfareItem.title}`);
+    };
+    const handleSwiperChange = (event) => {
     };
     common_vendor.onMounted(() => {
       initializeComponent();
@@ -348,14 +351,13 @@ const _sfc_main = {
     };
     const calculateNavigationHeight = () => {
       if (!componentInstance.value) {
-        common_vendor.index.__f__("warn", "at pages/Home/index.vue:618", "组件实例未准备就绪");
+        common_vendor.index.__f__("warn", "at pages/Home/index.vue:578", "组件实例未准备就绪");
         return;
       }
       const query = common_vendor.index.createSelectorQuery().in(componentInstance.value);
       query.selectAll(".navigation-item").boundingClientRect((data) => {
         if (data && data.length > 0) {
-          navigationHeight.value = data[0].bottom;
-          common_vendor.index.__f__("log", "at pages/Home/index.vue:628", "导航栏高度已计算:", navigationHeight.value);
+          navigationHeight.value = data[0].height;
         }
       }).exec();
     };
@@ -401,7 +403,8 @@ const _sfc_main = {
         o: statusBarHeight.value + "px",
         p: common_vendor.o(() => {
         }),
-        q: common_vendor.p({
+        q: common_vendor.o(handleSwiperChange),
+        r: common_vendor.p({
           slide: carouselData.value,
           switchModeL: carouselConfig.switchMode,
           circular: carouselConfig.circular,
@@ -410,7 +413,7 @@ const _sfc_main = {
           interval: carouselConfig.interval,
           duration: carouselConfig.duration
         }),
-        r: common_vendor.f(welfareCardList, (welfareItem, k0, i0) => {
+        s: common_vendor.f(welfareCardList, (welfareItem, k0, i0) => {
           return {
             a: common_vendor.n(welfareItem.backgroundClass),
             b: common_vendor.t(welfareItem.title),
@@ -428,14 +431,14 @@ const _sfc_main = {
             j: common_vendor.o(($event) => handleWelfareCardClick(welfareItem), welfareItem.id)
           };
         }),
-        s: common_vendor.p({
+        t: common_vendor.p({
           productList: productList.value
         }),
-        t: common_vendor.o((...args) => common_vendor.unref(handleContentScroll) && common_vendor.unref(handleContentScroll)(...args)),
-        v: calculateScrollViewHeight() + "px",
-        w: navigationHeight.value + "px",
-        x: common_vendor.o((...args) => common_vendor.unref(handlePageClick) && common_vendor.unref(handlePageClick)(...args)),
-        y: common_vendor.gei(_ctx, "")
+        v: common_vendor.o((...args) => common_vendor.unref(handleContentScroll) && common_vendor.unref(handleContentScroll)(...args)),
+        w: calculateScrollViewHeight() + "px",
+        x: navigationHeight.value + "px",
+        y: common_vendor.o((...args) => common_vendor.unref(handlePageClick) && common_vendor.unref(handlePageClick)(...args)),
+        z: common_vendor.gei(_ctx, "")
       };
     };
   }

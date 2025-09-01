@@ -177,6 +177,7 @@ const _sfc_main = {
       next,
       prev,
       goToRealIndex,
+      resetTransitionState,
       startAutoplay,
       stopAutoplay,
       resetAutoplay,
@@ -193,6 +194,7 @@ const _sfc_main = {
     });
     src_composables_useThrottle.useThrottle(next, 300);
     src_composables_useThrottle.useThrottle(prev, 300);
+    common_vendor.index.__f__("log", "at components/shared/EnhancedSwiper.vue:348", "realIndex", realIndex.value);
     const containerStyle = common_vendor.computed(() => {
       const width = typeof props.width === "number" ? `${props.width}rpx` : props.width;
       const height = typeof props.height === "number" ? `${props.height}rpx` : props.height;
@@ -217,10 +219,9 @@ const _sfc_main = {
       };
     });
     const controlButtonStyle = common_vendor.computed(() => ({
-      width: "60rpx",
-      height: "60rpx",
-      borderRadius: "50%",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      width: "100rpx",
+      height: "100%",
+      backgroundColor: "rgba(0, 0, 0, 0.4)",
       border: "none",
       display: "flex",
       alignItems: "center",
@@ -228,46 +229,25 @@ const _sfc_main = {
       cursor: "pointer",
       transition: "all 0.3s ease"
     }));
-    const dotStyle = common_vendor.computed(() => ({
-      width: "40rpx",
-      height: "15rpx",
-      borderRadius: "25rpx",
-      backgroundColor: "rgba(255, 255, 255, 0.3)",
-      margin: "0 10rpx",
-      cursor: "pointer",
-      transition: "all 0.3s ease"
-    }));
-    const canGoPrev = common_vendor.computed(() => {
-      return props.circular || realIndex.value > 0;
-    });
-    const canGoNext = common_vendor.computed(() => {
-      return props.circular || realIndex.value < props.slides.length - 1;
-    });
+    const dotStyle = common_vendor.computed(() => ({}));
     const getSlideImage = (slide) => {
       if (!slide)
         return "";
       return slide[props.imageField] || slide.src || slide.imageUrl || slide.url || slide.image || "";
-    };
-    const goToSlide = (index) => {
-      goToRealIndex(index);
-      emit("change", {
-        current: index,
-        slide: props.slides[index]
-      });
-    };
-    const handleSlideClick = (slide, index) => {
-      emit("click", {
-        slide,
-        index: props.mode === "slide" ? index - 1 : index,
-        // slide模式需要减1（因为有复制项）
-        realIndex: realIndex.value
-      });
     };
     const handleImageLoad = (slide, index) => {
       emit("image-load", { slide, index });
     };
     const handleImageError = (slide, index) => {
       emit("image-error", { slide, index });
+    };
+    const handlePrevClick = () => {
+      common_vendor.index.__f__("log", "at components/shared/EnhancedSwiper.vue:478", "------prev button clicked, isTransitioning:", isTransitioning.value);
+      prev();
+    };
+    const handleNextClick = () => {
+      common_vendor.index.__f__("log", "at components/shared/EnhancedSwiper.vue:487", "------next button clicked, isTransitioning:", isTransitioning.value);
+      next();
     };
     const handleMouseDown = (e) => {
       handleTouchStart({
@@ -285,7 +265,6 @@ const _sfc_main = {
     const handleMouseLeave = () => {
       handleTouchEnd();
     };
-    common_vendor.index.__f__("log", "at components/shared/EnhancedSwiper.vue:510", props.slides, "--------------------EnhanceSwiper");
     common_vendor.watch(realIndex, (newIndex, oldIndex) => {
       if (newIndex !== oldIndex) {
         emit("change", {
@@ -343,8 +322,7 @@ const _sfc_main = {
               height: "100%",
               ["border-radius"]: __props.slideRadius
             }),
-            e: `slide-${index}`,
-            f: common_vendor.o(($event) => handleSlideClick(slide, index), `slide-${index}`)
+            e: `slide-${index}`
           };
         }),
         j: common_vendor.unref(dynamicTransform),
@@ -362,8 +340,7 @@ const _sfc_main = {
             c: `fade-${index}`,
             d: common_vendor.unref(realIndex) === index ? 1 : "",
             e: common_vendor.unref(realIndex) === index ? 1 : 0,
-            f: common_vendor.unref(realIndex) === index ? 2 : 1,
-            g: common_vendor.o(($event) => handleSlideClick(slide, index), `fade-${index}`)
+            f: common_vendor.unref(realIndex) === index ? 2 : 1
           };
         }),
         n: `opacity ${__props.duration}ms ease`
@@ -377,47 +354,47 @@ const _sfc_main = {
           size: "20"
         }),
         q: common_vendor.s(controlButtonStyle.value),
-        r: common_vendor.o((...args) => common_vendor.unref(prev) && common_vendor.unref(prev)(...args)),
-        s: !canGoPrev.value,
-        t: common_vendor.p({
+        r: common_vendor.o(handlePrevClick),
+        s: common_vendor.p({
           name: "arrow-right",
           color: "#fff",
           size: "20"
         }),
-        v: common_vendor.s(controlButtonStyle.value),
-        w: common_vendor.o((...args) => common_vendor.unref(next) && common_vendor.unref(next)(...args)),
-        x: !canGoNext.value
+        t: common_vendor.s(controlButtonStyle.value),
+        v: common_vendor.o(handleNextClick)
       } : {}, {
-        y: __props.showIndicators
+        w: __props.showIndicators
       }, __props.showIndicators ? {
-        z: common_vendor.f(__props.slides, (slide, index, i0) => {
-          return {
-            a: `indicator-${index}`,
-            b: common_vendor.unref(realIndex) === index ? 1 : "",
-            c: common_vendor.o(($event) => goToSlide(index), `indicator-${index}`)
-          };
+        x: common_vendor.f(__props.slides, (slide, index, i0) => {
+          return common_vendor.e({
+            a: common_vendor.unref(realIndex) === index
+          }, common_vendor.unref(realIndex) === index ? {} : {}, {
+            b: `indicator-${index}`,
+            c: common_vendor.unref(realIndex) === index ? 1 : "",
+            d: common_vendor.o(() => common_vendor.unref(goToRealIndex)(index), `indicator-${index}`)
+          });
         }),
-        A: common_vendor.s(dotStyle.value),
-        B: common_vendor.s(__props.indicatorStyle)
+        y: common_vendor.s(dotStyle.value),
+        z: common_vendor.s(__props.indicatorStyle)
       } : {}, {
-        C: common_vendor.s(swiperStyle.value),
-        D: common_vendor.o((...args) => common_vendor.unref(handleTouchStart) && common_vendor.unref(handleTouchStart)(...args)),
-        E: common_vendor.o((...args) => common_vendor.unref(handleTouchMove) && common_vendor.unref(handleTouchMove)(...args)),
-        F: common_vendor.o((...args) => common_vendor.unref(handleTouchEnd) && common_vendor.unref(handleTouchEnd)(...args)),
-        G: common_vendor.o(handleMouseDown),
-        H: common_vendor.o(handleMouseMove),
-        I: common_vendor.o(handleMouseUp),
-        J: common_vendor.o(handleMouseLeave),
-        K: __props.showFloor
+        A: common_vendor.s(swiperStyle.value),
+        B: common_vendor.o((...args) => common_vendor.unref(handleTouchStart) && common_vendor.unref(handleTouchStart)(...args)),
+        C: common_vendor.o((...args) => common_vendor.unref(handleTouchMove) && common_vendor.unref(handleTouchMove)(...args)),
+        D: common_vendor.o((...args) => common_vendor.unref(handleTouchEnd) && common_vendor.unref(handleTouchEnd)(...args)),
+        E: common_vendor.o(handleMouseDown),
+        F: common_vendor.o(handleMouseMove),
+        G: common_vendor.o(handleMouseUp),
+        H: common_vendor.o(handleMouseLeave),
+        I: __props.showFloor
       }, __props.showFloor ? {
-        L: common_vendor.f(__props.floorDots, (dot, k0, i0) => {
+        J: common_vendor.f(__props.floorDots, (dot, k0, i0) => {
           return {
             a: dot
           };
         })
       } : {}, {
-        M: common_vendor.s(containerStyle.value),
-        N: common_vendor.gei(_ctx, "")
+        K: common_vendor.s(containerStyle.value),
+        L: common_vendor.gei(_ctx, "")
       });
     };
   }

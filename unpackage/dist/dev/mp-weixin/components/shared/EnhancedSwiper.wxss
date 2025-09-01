@@ -36,7 +36,7 @@
   width: 65%;
   height: 40rpx;
   background-color: #cd4438;
-  margin-left: 24rpx;
+  margin-left: -16rpx;
   margin-bottom: -7px;
   border: 6px solid #cd4438;
   border-bottom: 0;
@@ -69,8 +69,9 @@
   right: 0;
   width: 30%;
   height: 180rpx;
-  z-index: 99;
+  z-index: 50;
   overflow: visible;
+  pointer-events: none;
 }
 .decoration-icons .decoration-item.data-v-976540e0 {
   position: absolute;
@@ -80,21 +81,18 @@
   left: 10rpx;
   top: 30rpx;
   z-index: 1;
-  animation: roleAnimation-976540e0 2s linear infinite;
 }
 .decoration-icons .decoration-item:nth-child(2) image.data-v-976540e0 {
   width: 100rpx;
-  left: 40rpx;
+  left: 30rpx;
   top: 25rpx;
   z-index: 3;
-  animation: fly-976540e0 3s linear infinite;
 }
 .decoration-icons .decoration-item:nth-child(3) image.data-v-976540e0 {
   width: 70rpx;
-  left: 130rpx;
+  left: 10rpx;
   top: 20rpx;
   z-index: 2;
-  animation: roleAnimation-976540e0 1.5s linear infinite;
 }
 .swiper-main.data-v-976540e0 {
   position: relative;
@@ -107,12 +105,15 @@
   display: flex;
   width: 100%;
   height: 100%;
+  will-change: transform;
 }
 .swiper-wrapper .swiper-slide.data-v-976540e0 {
   flex-shrink: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
 }
 .swiper-wrapper-fade.data-v-976540e0 {
   position: relative;
@@ -137,13 +138,22 @@
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
-  padding: 0 10rpx;
   pointer-events: none;
+  z-index: 100;
+}
+.swiper-controls .control-btn.control-prev.data-v-976540e0 {
+  right: 120rpx;
+}
+.swiper-controls .control-btn.control-next.data-v-976540e0 {
+  left: 120rpx;
 }
 .swiper-controls .control-btn.data-v-976540e0 {
+  width: 60rpx;
   pointer-events: auto;
+  z-index: 101;
+  position: relative;
 }
 .swiper-controls .control-btn.data-v-976540e0:disabled {
   opacity: 0.3;
@@ -152,6 +162,15 @@
 .swiper-controls .control-btn.data-v-976540e0:hover:not(:disabled) {
   background-color: rgba(0, 0, 0, 0.7);
   transform: scale(1.1);
+}
+.swiper-controls .control-btn.data-v-976540e0::before {
+  content: "";
+  position: absolute;
+  top: -10rpx;
+  left: -10rpx;
+  right: -10rpx;
+  bottom: -10rpx;
+  z-index: -1;
 }
 .swiper-indicators.data-v-976540e0 {
   position: absolute;
@@ -162,16 +181,36 @@
   align-items: center;
   z-index: 10;
 }
+.swiper-indicators .indicator-dot.data-v-976540e0 {
+  width: 40rpx;
+  height: 15rpx;
+  border-radius: 25rpx;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 0 10rpx;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 .swiper-indicators .indicator-dot.active.data-v-976540e0 {
-  background-color: #cd4438;
+  background-color: #cd4438 !important;
   transform: scale(1.2);
+  box-shadow: 0 0 10rpx rgba(205, 68, 56, 0.5);
 }
 .swiper-indicators .indicator-dot.data-v-976540e0:hover {
   background-color: rgba(255, 255, 255, 0.6);
 }
+.swiper-indicators .indicator-dot .debug-text.data-v-976540e0 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: bold;
+  pointer-events: none;
+}
 .swiper-floor.data-v-976540e0 {
   position: absolute;
-  bottom: -20rpx;
+  bottom: 2rpx;
   right: 40rpx;
   display: flex;
   gap: 10rpx;
@@ -191,27 +230,48 @@ to {
     opacity: 1;
 }
 }
-@keyframes fly-976540e0 {
-0% {
-    transform: scale(-1, 1) translateX(0) translateY(0);
-}
-50% {
-    transform: scale(-1, 1) translateX(-20%) translateY(-20rpx);
-}
-100% {
-    transform: scale(-1, 1) translateX(0);
-}
-}
 @keyframes roleAnimation-976540e0 {
 0% {
-    transform: rotate(0);
+    transform: rotate(0deg);
 }
 50% {
-    transform: rotate(-20deg);
+    transform: rotate(10deg);
 }
 100% {
-    transform: rotate(0);
+    transform: rotate(0deg);
 }
+}
+.decoration-item.data-v-976540e0:nth-child(1) {
+  animation: roleAnimation-976540e0 1.2s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.decoration-item.data-v-976540e0:nth-child(2) {
+  animation: roleAnimation-976540e0 1.2s ease-in-out infinite;
+  animation-delay: 0.15s;
+}
+.decoration-item.data-v-976540e0:nth-child(3) {
+  animation: roleAnimation-976540e0 1.2s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+.decoration-item.data-v-976540e0:nth-child(4) {
+  animation: roleAnimation-976540e0 1.2s ease-in-out infinite;
+  animation-delay: 0.45s;
+}
+.decoration-item.data-v-976540e0:nth-child(5) {
+  animation: roleAnimation-976540e0 1.2s ease-in-out infinite;
+  animation-delay: 0.6s;
+}
+.decoration-item.data-v-976540e0:nth-child(6) {
+  animation: roleAnimation-976540e0 1.2s ease-in-out infinite;
+  animation-delay: 0.75s;
+}
+.decoration-item.data-v-976540e0:nth-child(7) {
+  animation: roleAnimation-976540e0 1.2s ease-in-out infinite;
+  animation-delay: 0.9s;
+}
+.decoration-item.data-v-976540e0:nth-child(8) {
+  animation: roleAnimation-976540e0 1.2s ease-in-out infinite;
+  animation-delay: 1.05s;
 }
 @media screen and (max-width: 750rpx) {
 .swiper-header.data-v-976540e0 {
@@ -226,5 +286,6 @@ to {
 .swiper-controls .control-btn.data-v-976540e0 {
     width: 50rpx;
     height: 50rpx;
+    margin: 0 10rpx;
 }
 }

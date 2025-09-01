@@ -1,11 +1,14 @@
 "use strict";
 const common_vendor = require("./common/vendor.js");
-const _sfc_main = {};
-function _sfc_render(_ctx, _cache) {
-  return {
-    a: common_vendor.gei(_ctx, "")
-  };
-}
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
-exports.MiniProgramPage = MiniProgramPage;
+const _sfc_main = {
+  __name: "index",
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return {
+        a: common_vendor.gei(_ctx, "")
+      };
+    };
+  }
+};
+exports._sfc_main = _sfc_main;
 //# sourceMappingURL=../.sourcemap/mp-weixin/index4.js.map

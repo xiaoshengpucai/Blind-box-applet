@@ -1,7 +1,7 @@
 <template>
 	<view class="Chlidren">
 		<view class="bg"></view>
-		<status-bar @statusBarHeight="handleGetBarHeight">
+		<status-bar>
 			<view class="back" @click="back">
 				<up-icon name="arrow-left" size="15" bold></up-icon>
 			</view>
@@ -136,9 +136,6 @@
 	const calssid = ref(0);
 	// 无需导入 onLoad，直接使用
 	const instanceRef = ref(null)
-
-
-
 	const tabClassShow = ref(false)
 	const handleScroll = (data) => {
 		if (!data) return
@@ -149,8 +146,6 @@
 
 	onReady(() => {
 		console.log('页面初次渲染完成时触发');
-
-
 		instanceRef.value = getCurrentInstance()?.proxy;
 		const query = uni.createSelectorQuery().in(instanceRef.value);
 	});
@@ -212,7 +207,7 @@
 
 <style lang="scss" scoped>
 	body {
-		background-color: #fff;
+		background-color: hsl(0, 0%, 100%);
 	}
 
 	.bg {
@@ -228,12 +223,12 @@
 		background-image: url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201712%2F05%2F20171205051539_HUvhM.thumb.400_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1755698284&t=0a49f5933badc42403a845e150616790');
 	}
 
-	.nav-bar-content {
-		position: absolute;
-		top: 50%;
-		left: 0;
-		transform: translateY(-50%);
-	}
+	// .nav-bar-content {
+	// 	position: absolute;
+	// 	top: 50%;
+	// 	left: 0;
+	// 	transform: translateY(-50%);
+	// }
 
 	.back {
 		width: 40rpx;
@@ -246,11 +241,12 @@
 		justify-content: center;
 		position: absolute;
 		top: 50%;
+		left: 0;
 		transform: translateY(-50%);
 	}
 
 	.main {
-		height: 100vh;
+		height: 100%;
 		width: 100vw;
 		box-sizing: border-box;
 	}

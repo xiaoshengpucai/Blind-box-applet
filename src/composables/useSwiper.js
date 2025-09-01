@@ -354,7 +354,7 @@ export function useSwiper(options = {}) {
     }
 
     // 只要dragOffset在[-100, 100]区间内，认为只是点击，不执行任何操作
-    if (Math.abs(dragOffset.value) <= 200) {
+    if (Math.abs(dragOffset.value) <= 150) {
       isDragging.value = false;
       mouseDown.value = false;
       dragOffset.value = 0;

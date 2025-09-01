@@ -3,8 +3,9 @@ const common_vendor = require("../../common/vendor.js");
 function useThrottle(fn, delay = 300) {
   const isThrottled = common_vendor.ref(false);
   return function(...args) {
-    if (isThrottled.value)
+    if (isThrottled.value) {
       return;
+    }
     isThrottled.value = true;
     fn.apply(this, args);
     setTimeout(() => {

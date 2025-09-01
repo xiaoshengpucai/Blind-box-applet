@@ -3,26 +3,79 @@ const common_vendor = require("../common/vendor.js");
 const _sfc_main = {
   __name: "status-bar",
   emits: ["statusBarHeight"],
-  setup(__props, { emit: __emit }) {
-    const systemInfo = common_vendor.index.getWindowInfo();
-    let statusBarHeight = systemInfo.statusBarHeight + 22;
-    let navBarHeight = statusBarHeight + 22;
-    let navBarRight = systemInfo.windowWidth - 330;
-    const menuButtonInfo = common_vendor.index.getMenuButtonBoundingClientRect();
-    statusBarHeight = systemInfo.statusBarHeight;
-    navBarRight = systemInfo.windowWidth - menuButtonInfo.right + menuButtonInfo.width;
-    navBarHeight = menuButtonInfo.bottom - statusBarHeight + 4;
+  setup(__props, { expose: __expose, emit: __emit }) {
+    const statusBarHeight = common_vendor.ref(0);
+    const navBarHeight = common_vendor.ref(0);
+    const totalHeight = common_vendor.ref(0);
+    const navBarRight = common_vendor.ref(0);
+    const initStatusBarHeight = () => {
+      try {
+        const systemInfo = common_vendor.index.getWindowInfo();
+        let statusHeight = systemInfo.statusBarHeight + 22;
+        let navHeight = statusHeight + 22;
+        let total = statusHeight + navHeight;
+        let rightPadding = systemInfo.windowWidth - 330;
+        try {
+          const menuButtonInfo = common_vendor.index.getMenuButtonBoundingClientRect();
+          statusHeight = systemInfo.statusBarHeight;
+          navHeight = menuButtonInfo.bottom - statusHeight + 4;
+          total = statusHeight + navHeight;
+          rightPadding = systemInfo.windowWidth - menuButtonInfo.right + menuButtonInfo.width;
+        } catch (error) {
+          common_vendor.index.__f__("warn", "at components/status-bar.vue:47", "获取胶囊位置失败，使用默认值:", error);
+        }
+        statusHeight = Math.max(statusHeight, 20);
+        navHeight = Math.max(navHeight, 44);
+        total = statusHeight + navHeight;
+        statusBarHeight.value = statusHeight;
+        navBarHeight.value = navHeight;
+        totalHeight.value = total;
+        navBarRight.value = rightPadding;
+        emit("statusBarHeight", total);
+        common_vendor.index.__f__("log", "at components/status-bar.vue:64", "状态栏高度初始化成功:", {
+          statusBarHeight: statusHeight,
+          navBarHeight: navHeight,
+          totalHeight: total,
+          navBarRight: rightPadding
+        });
+      } catch (error) {
+        common_vendor.index.__f__("error", "at components/status-bar.vue:71", "初始化状态栏高度失败:", error);
+        statusBarHeight.value = 44;
+        navBarHeight.value = 44;
+        totalHeight.value = 88;
+        navBarRight.value = 0;
+        emit("statusBarHeight", 88);
+      }
+    };
     const emit = __emit;
-    emit("statusBarHeight", statusBarHeight + navBarHeight);
+    __expose({
+      initStatusBarHeight,
+      getStatusBarHeight: () => totalHeight.value,
+      updateHeight: (height) => {
+        if (height && height > 0) {
+          totalHeight.value = height;
+          emit("statusBarHeight", height);
+        }
+      }
+    });
+    common_vendor.onMounted(() => {
+      setTimeout(() => {
+        initStatusBarHeight();
+      }, 100);
+    });
     return (_ctx, _cache) => {
       return {
-        a: common_vendor.unref(statusBarHeight) + "px",
-        b: common_vendor.unref(navBarRight) + "px",
-        c: common_vendor.unref(navBarHeight) + "px",
-        d: common_vendor.gei(_ctx, "")
+        a: statusBarHeight.value + "px",
+        b: navBarRight.value + "px",
+        c: navBarHeight.value + "px",
+        d: common_vendor.o(() => {
+        }),
+        e: totalHeight.value + "px",
+        f: common_vendor.gei(_ctx, "")
       };
     };
   }
 };
-wx.createComponent(_sfc_main);
+const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-6ad8bb15"]]);
+wx.createComponent(Component);
 //# sourceMappingURL=../../.sourcemap/mp-weixin/components/status-bar.js.map

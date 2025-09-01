@@ -15,9 +15,6 @@ const _sfc_main = {
   __name: "detail",
   setup(__props) {
     const statusBarHeight = common_vendor.ref(0);
-    const handleGetBarHeight = (data) => {
-      statusBarHeight.value = data;
-    };
     common_vendor.ref(0);
     const isAnimating = common_vendor.ref(false);
     const autoPlay = common_vendor.ref(true);
@@ -104,17 +101,17 @@ const _sfc_main = {
       if (!data)
         return;
       tabClassShow.value = data;
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:146", tabClassShow.value, data, "-----data-----");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:143", tabClassShow.value, data, "-----data-----");
     };
     handleScroll();
     common_vendor.onReady(() => {
       var _a;
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:151", "页面初次渲染完成时触发");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:148", "页面初次渲染完成时触发");
       instanceRef.value = (_a = common_vendor.getCurrentInstance()) == null ? void 0 : _a.proxy;
       common_vendor.index.createSelectorQuery().in(instanceRef.value);
     });
     common_vendor.onLoad((option) => {
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:158", option, "option");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:153", option, "option");
       calssid.value = option.id;
     });
     const raffleList = [
@@ -138,13 +135,13 @@ const _sfc_main = {
       }
     ];
     common_vendor.onShow(() => {
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:191", "页面显示时触发");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:186", "页面显示时触发");
     });
     common_vendor.onHide(() => {
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:195", "页面隐藏时触发");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:190", "页面隐藏时触发");
     });
     common_vendor.onUnload(() => {
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:198", "页面销毁");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:193", "页面销毁");
     });
     const back = () => {
       let pages = getCurrentPages();
@@ -164,27 +161,26 @@ const _sfc_main = {
           bold: true
         }),
         b: common_vendor.o(back),
-        c: common_vendor.o(handleGetBarHeight),
-        d: common_vendor.p({
+        c: common_vendor.p({
           datalist,
           isAnimating: isAnimating.value,
           autoPlay: autoPlay.value,
           autoPlayInterval: autoPlayInterval.value
         }),
-        e: common_vendor.p({
+        d: common_vendor.p({
           datalist,
           ["level-list"]: levelList
         }),
-        f: common_vendor.n(tabClassShow.value ? "tab-position" : ""),
-        g: statusBarHeight.value + "px",
-        h: common_vendor.f(raffleList, (item, index, i0) => {
+        e: common_vendor.n(tabClassShow.value ? "tab-position" : ""),
+        f: statusBarHeight.value + "px",
+        g: common_vendor.f(raffleList, (item, index, i0) => {
           return {
             a: common_vendor.t(item.title),
             b: common_vendor.t(item.price),
             c: item.id
           };
         }),
-        i: common_vendor.gei(_ctx, "")
+        h: common_vendor.gei(_ctx, "")
       };
     };
   }
