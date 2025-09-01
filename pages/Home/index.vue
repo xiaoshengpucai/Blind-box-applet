@@ -694,41 +694,46 @@
 		left: 0;
 		width: 100%;
 		height: 400rpx;
-		background: linear-gradient(to right, rgba(242, 95, 74, 1), rgba(252, 132, 116, 0.9));
+		background: linear-gradient(to right, rgba(242, 95, 74, 0.8), rgba(252, 132, 116, 0.6));
 		overflow: hidden;
-		box-sizing: content-box;
+		box-sizing: border-box;
 		z-index: -1; // 确保背景在最底层
 
-		// 底部渐变遮罩效果
+		// 底部渐变遮罩效果 - 修复红色线条问题
 		&::after {
 			content: '';
 			position: absolute;
-			box-sizing: content-box;
+			box-sizing: border-box;
 			bottom: 0;
 			left: 0;
 			width: 100%;
-			height: 40%;
+			height: 50%;
 			background: linear-gradient(to bottom,
 					rgba(255, 255, 255, 0) 0%,
-					rgba(255, 255, 255, 0.4) 30%,
-					rgba(255, 255, 255, 1) 90%);
-			mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
-			-webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
+					rgba(255, 255, 255, 0.2) 20%,
+					rgba(255, 255, 255, 0.6) 50%,
+					rgba(255, 255, 255, 0.9) 80%,
+					rgba(255, 255, 255, 1) 100%);
 			pointer-events: none;
 		}
 	}
 
 	.background-image {
 		position: absolute;
-		box-sizing: content-box;
+		box-sizing: border-box;
 		left: -100rpx;
 		width: 100%;
 		height: 100%;
 		mask-image: linear-gradient(to right,
-				rgba(0, 0, 0, 1),
-				rgba(0, 0, 0, 1),
-				rgba(0, 0, 0, 2),
-				rgba(0, 0, 0, 0));
+				rgba(0, 0, 0, 1) 0%,
+				rgba(0, 0, 0, 1) 60%,
+				rgba(0, 0, 0, 0.8) 80%,
+				rgba(0, 0, 0, 0) 100%);
+		-webkit-mask-image: linear-gradient(to right,
+				rgba(0, 0, 0, 1) 0%,
+				rgba(0, 0, 0, 1) 60%,
+				rgba(0, 0, 0, 0.8) 80%,
+				rgba(0, 0, 0, 0) 100%);
 	}
 	// .main-content {
 	// 	flex: 1 1 auto;
