@@ -603,14 +603,18 @@ watch(() => props.autoplay, (autoplay) => {
   right: 0;
   width: 30%;
   height: 180rpx;
-  z-index: 50; // 降低装饰图标的层级
+  z-index: 50;
   overflow: visible;
-  pointer-events: none; // 确保装饰图标不会阻止点击
+  pointer-events: none;
   
+
+
   .decoration-item {
     position: absolute;
+    
     &:nth-child(1) image {
       width: 60rpx;
+      height: 60rpx;
       left: 10rpx;
       top: 30rpx;
       z-index: 1;
@@ -618,6 +622,7 @@ watch(() => props.autoplay, (autoplay) => {
     
     &:nth-child(2) image {
       width: 100rpx;
+      height: 100rpx;
       left: 30rpx;
       top: 25rpx;
       z-index: 3;
@@ -625,13 +630,68 @@ watch(() => props.autoplay, (autoplay) => {
     
     &:nth-child(3) image {
       width: 70rpx;
+      height: 70rpx;
       left: 10rpx;
       top: 20rpx;
       z-index: 2;
     }
-    
   }
 }
+
+/* 微信小程序特定优化 */
+/* #ifdef MP-WEIXIN */
+.decoration-icons {
+  /* 确保在小程序中的正确定位 */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  
+  .decoration-item {
+    /* 小程序中绝对定位优化 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    
+    image {
+      /* 小程序中图片尺寸优化 */
+      width: 60rpx !important;
+      height: 60rpx !important;
+      display: block;
+      position: relative;
+      top: 20rpx;
+      
+     
+      &:nth-child(1) {
+        width: 60rpx !important;
+        height: 60rpx !important;
+      }
+      
+      &:nth-child(2) {
+        width: 100rpx !important;
+        height: 100rpx !important;
+        left: -40rpx;
+      }
+      
+      &:nth-child(3) {
+        width: 70rpx !important;
+        height: 70rpx !important;
+        left: -30rpx;
+      }
+    }
+  }
+}
+/* #endif */
+
+/* H5端特定优化 */
+/* #ifdef H5 */
+.decoration-icons {
+  /* H5端的特殊处理 */
+  .decoration-item {
+    image {
+      /* H5端图片尺寸优化 */
+      object-fit: contain;
+    }
+  }
+}
+/* #endif */
 
 // 轮播图主体
 .swiper-main {
@@ -797,13 +857,80 @@ watch(() => props.autoplay, (autoplay) => {
   100% { transform: rotate(0deg); }
 }
 
-// 使用Sass循环为每个装饰元素分配不同的动画延迟
-@for $i from 1 through 8 {
-  .decoration-item:nth-child(#{$i}) {
-    animation: roleAnimation 1.2s ease-in-out infinite;
-    animation-delay: #{($i - 1) * 0.15}s;
-  }
+// 为装饰元素分配不同的动画延迟（确保小程序和H5端一致性）
+.decoration-item:nth-child(1) {
+  animation: roleAnimation 1.2s ease-in-out infinite;
+  animation-delay: 0s;
 }
+
+.decoration-item:nth-child(2) {
+  animation: roleAnimation 1.2s ease-in-out infinite;
+  animation-delay: 0.15s;
+}
+
+.decoration-item:nth-child(3) {
+  animation: roleAnimation 1.2s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+// .decoration-item:nth-child(4) {
+//   animation: roleAnimation 1.2s ease-in-out infinite;
+//   animation-delay: 0.45s;
+// }
+
+// .decoration-item:nth-child(5) {
+//   animation: roleAnimation 1.2s ease-in-out infinite;
+//   animation-delay: 0.6s;
+// }
+
+// .decoration-item:nth-child(6) {
+//   animation: roleAnimation 1.2s ease-in-out infinite;
+//   animation-delay: 0.75s;
+// }
+
+// .decoration-item:nth-child(7) {
+//   animation: roleAnimation 1.2s ease-in-out infinite;
+//   animation-delay: 0.9s;
+// }
+
+// .decoration-item:nth-child(8) {
+//   animation: roleAnimation 1.2s ease-in-out infinite;
+//   animation-delay: 1.05s;
+// }
+
+// /* 微信小程序动画优化 */
+// /* #ifdef MP-WEIXIN */
+// .decoration-item {
+//   /* 小程序中动画优化 */
+//   will-change: transform;
+//   -webkit-backface-visibility: hidden;
+//   backface-visibility: hidden;
+  
+//   &:nth-child(1) {
+//     animation: roleAnimation 1.2s ease-in-out infinite;
+//     animation-delay: 0s;
+//   }
+  
+//   &:nth-child(2) {
+//     animation: roleAnimation 1.2s ease-in-out infinite;
+//     animation-delay: 0.15s;
+//   }
+  
+//   &:nth-child(3) {
+//     animation: roleAnimation 1.2s ease-in-out infinite;
+//     animation-delay: 0.3s;
+//   }
+// }
+// /* #endif */
+
+/* H5端动画优化 */
+/* #ifdef H5 */
+.decoration-item {
+  /* H5端动画优化 */
+  will-change: transform;
+  backface-visibility: hidden;
+}
+/* #endif */
 
 // 响应式适配
 @media screen and (max-width: 750rpx) {
@@ -825,4 +952,49 @@ watch(() => props.autoplay, (autoplay) => {
     }
   }
 }
+
+/* 微信小程序响应式优化 */
+/* #ifdef MP-WEIXIN */
+@media screen and (max-width: 750rpx) {
+  .decoration-icons {
+    width: 40%;
+    
+    .decoration-item {
+      image {
+        /* 小程序中小屏幕下的尺寸优化 */
+        &:nth-child(1) {
+          width: 50rpx !important;
+          height: 50rpx !important;
+        }
+        
+        &:nth-child(2) {
+          width: 80rpx !important;
+          height: 80rpx !important;
+        }
+        
+        &:nth-child(3) {
+          width: 60rpx !important;
+          height: 60rpx !important;
+        }
+      }
+    }
+  }
+}
+/* #endif */
+
+/* H5端响应式优化 */
+/* #ifdef H5 */
+@media screen and (max-width: 750rpx) {
+  .decoration-icons {
+    width: 40%;
+    
+    .decoration-item {
+      image {
+        /* H5端小屏幕下的尺寸优化 */
+        object-fit: contain;
+      }
+    }
+  }
+}
+/* #endif */
 </style>
