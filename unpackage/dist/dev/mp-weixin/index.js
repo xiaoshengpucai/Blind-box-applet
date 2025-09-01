@@ -326,12 +326,12 @@ const _sfc_main = {
     };
     const scrollTop = common_vendor.ref(0);
     const scrollMask = common_vendor.computed(() => {
-      return scrollTop.value >= 50;
+      return scrollTop.value >= 150;
     });
     const handleContentScroll = src_hooks_throttle.throttle((event) => {
       scrollTop.value = event.detail.scrollTop;
       isNavigationFixed.value = scrollTop.value > SCROLL_THRESHOLD;
-      isScrollMask.value = scrollTop.value >= 50;
+      isScrollMask.value = scrollTop.value >= 150;
     }, THROTTLE_DELAY.SCROLL);
     const calculateScrollViewHeight = () => {
       const windowInfo = common_vendor.index.getWindowInfo();

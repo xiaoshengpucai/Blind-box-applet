@@ -511,14 +511,14 @@ const calculateNavigationItemTop = (index) => {
 const scrollTop = ref(0);
 
 const scrollMask = computed(() => {
-	return scrollTop.value >= 50;
+	return scrollTop.value >= 150;
 });
 
 // 在handleContentScroll中同步更新scrollTop和isScrollMask
 const handleContentScroll = throttle((event) => {
 	scrollTop.value = event.detail.scrollTop;
 	isNavigationFixed.value = scrollTop.value > SCROLL_THRESHOLD;
-	isScrollMask.value = scrollTop.value >= 50;
+	isScrollMask.value = scrollTop.value >= 150;
 }, THROTTLE_DELAY.SCROLL);
 /**
  * 计算滚动视图高度 - 优化计算逻辑
