@@ -555,6 +555,7 @@ watch(() => props.autoplay, (autoplay) => {
   flex-direction: column;
   align-items: center;
   position: relative;
+  z-index: 1;
 }
 
 // 头部标题区域
@@ -570,7 +571,7 @@ watch(() => props.autoplay, (autoplay) => {
   border: 6px solid #cd4438;
   border-bottom: 0;
   border-radius: 30rpx 30rpx 0 0;
-  z-index: 999;
+  z-index: 1;
   
   .header-icon {
     width: 40rpx;

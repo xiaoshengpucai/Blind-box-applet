@@ -111,7 +111,7 @@
 	// 自定义样式
 	const listCustomStyle = {
 		backgroundColor: '#eee',
-		paddingBottom: '300rpx'
+		paddingBottom: '100rpx'
 	};
 
 	// ==================== 计算属性 ====================

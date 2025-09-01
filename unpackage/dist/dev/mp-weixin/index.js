@@ -179,13 +179,13 @@ const _sfc_main = {
     };
     const handleSortSelection = (event) => {
       const sortType = event.target.dataset.type;
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:325", sortType, "排序类型----------------");
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:326", sortType, "排序类型----------------");
       if (currentSortType.value === sortType)
         return;
       currentSortType.value = sortType;
       if (sortProducts[sortType]) {
         productList.value = sortProducts[sortType](productList.value);
-        common_vendor.index.__f__("log", "at pages/Home/index.vue:335", `商品已按${getSortTypeName(sortType)}排序`);
+        common_vendor.index.__f__("log", "at pages/Home/index.vue:336", `商品已按${getSortTypeName(sortType)}排序`);
       }
       hideFilterDropdown();
     };
@@ -265,7 +265,7 @@ const _sfc_main = {
     ]);
     const carouselSlides = common_vendor.computed(() => {
       const slides = carouselData.value;
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:436", "carouselSlides computed:", {
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:437", "carouselSlides computed:", {
         slides,
         length: slides == null ? void 0 : slides.length,
         isArray: Array.isArray(slides),
@@ -273,7 +273,7 @@ const _sfc_main = {
       });
       return slides;
     });
-    common_vendor.index.__f__("log", "at pages/Home/index.vue:444", "carouselSlides computed:", carouselSlides.value);
+    common_vendor.index.__f__("log", "at pages/Home/index.vue:445", "carouselSlides computed:", carouselSlides.value);
     const carouselConfig = {
       switchMode: "slide",
       // 切换模式: fade | slide
@@ -320,22 +320,28 @@ const _sfc_main = {
     const componentInstance = common_vendor.ref(null);
     const navigationHeight = common_vendor.ref(0);
     const isNavigationFixed = common_vendor.ref(false);
+    const isScrollMask = common_vendor.ref(false);
     const calculateNavigationItemTop = (index) => {
       return isNavigationFixed.value ? 20 : index % 2 === 0 ? 30 : 10;
     };
+    const scrollTop = common_vendor.ref(0);
+    const scrollMask = common_vendor.computed(() => {
+      return scrollTop.value >= 50;
+    });
     const handleContentScroll = src_hooks_throttle.throttle((event) => {
-      const scrollTop = event.detail.scrollTop;
-      isNavigationFixed.value = scrollTop > SCROLL_THRESHOLD;
+      scrollTop.value = event.detail.scrollTop;
+      isNavigationFixed.value = scrollTop.value > SCROLL_THRESHOLD;
+      isScrollMask.value = scrollTop.value >= 50;
     }, THROTTLE_DELAY.SCROLL);
     const calculateScrollViewHeight = () => {
       const windowInfo = common_vendor.index.getWindowInfo();
       return windowInfo.windowHeight - navigationHeight.value - statusBarHeight.value;
     };
     const handleNavigationClick = (navigationPath) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:527", `导航点击: ${navigationPath}`);
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:537", `导航点击: ${navigationPath}`);
     };
     const handleWelfareCardClick = (welfareItem) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:536", `福利卡片点击: ${welfareItem.title}`);
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:546", `福利卡片点击: ${welfareItem.title}`);
     };
     const handleSwiperChange = (event) => {
     };
@@ -351,7 +357,7 @@ const _sfc_main = {
     };
     const calculateNavigationHeight = () => {
       if (!componentInstance.value) {
-        common_vendor.index.__f__("warn", "at pages/Home/index.vue:578", "组件实例未准备就绪");
+        common_vendor.index.__f__("warn", "at pages/Home/index.vue:588", "组件实例未准备就绪");
         return;
       }
       const query = common_vendor.index.createSelectorQuery().in(componentInstance.value);
@@ -362,7 +368,7 @@ const _sfc_main = {
       }).exec();
     };
     return (_ctx, _cache) => {
-      return {
+      return common_vendor.e({
         a: common_vendor.p({
           name: "list-dot",
           color: "#fff",
@@ -403,8 +409,10 @@ const _sfc_main = {
         o: statusBarHeight.value + "px",
         p: common_vendor.o(() => {
         }),
-        q: common_vendor.o(handleSwiperChange),
-        r: common_vendor.p({
+        q: scrollMask.value
+      }, scrollMask.value ? {} : {}, {
+        r: common_vendor.o(handleSwiperChange),
+        s: common_vendor.p({
           slide: carouselData.value,
           switchModeL: carouselConfig.switchMode,
           circular: carouselConfig.circular,
@@ -413,7 +421,7 @@ const _sfc_main = {
           interval: carouselConfig.interval,
           duration: carouselConfig.duration
         }),
-        s: common_vendor.f(welfareCardList, (welfareItem, k0, i0) => {
+        t: common_vendor.f(welfareCardList, (welfareItem, k0, i0) => {
           return {
             a: common_vendor.n(welfareItem.backgroundClass),
             b: common_vendor.t(welfareItem.title),
@@ -431,15 +439,15 @@ const _sfc_main = {
             j: common_vendor.o(($event) => handleWelfareCardClick(welfareItem), welfareItem.id)
           };
         }),
-        t: common_vendor.p({
+        v: common_vendor.p({
           productList: productList.value
         }),
-        v: common_vendor.o((...args) => common_vendor.unref(handleContentScroll) && common_vendor.unref(handleContentScroll)(...args)),
-        w: calculateScrollViewHeight() + "px",
-        x: navigationHeight.value + "px",
-        y: common_vendor.o((...args) => common_vendor.unref(handlePageClick) && common_vendor.unref(handlePageClick)(...args)),
-        z: common_vendor.gei(_ctx, "")
-      };
+        w: common_vendor.o((...args) => common_vendor.unref(handleContentScroll) && common_vendor.unref(handleContentScroll)(...args)),
+        x: calculateScrollViewHeight() + "px",
+        y: navigationHeight.value + "px",
+        z: common_vendor.o((...args) => common_vendor.unref(handlePageClick) && common_vendor.unref(handlePageClick)(...args)),
+        A: common_vendor.gei(_ctx, "")
+      });
     };
   }
 };

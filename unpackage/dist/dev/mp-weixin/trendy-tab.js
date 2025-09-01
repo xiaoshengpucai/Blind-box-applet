@@ -67,7 +67,7 @@ const _sfc_main = {
     const cardActions = [];
     const listCustomStyle = {
       backgroundColor: "#eee",
-      paddingBottom: "300rpx"
+      paddingBottom: "100rpx"
     };
     const productList = common_vendor.computed(() => {
       return props.productList.length > 0 ? props.productList : props.CarListToChild.length > 0 ? props.CarListToChild : localProductList.value;
