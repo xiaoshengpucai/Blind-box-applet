@@ -14,15 +14,16 @@ const _sfc_main = {
         let statusHeight = systemInfo.statusBarHeight + 22;
         let navHeight = statusHeight + 22;
         let total = statusHeight + navHeight;
-        let rightPadding = systemInfo.windowWidth - 330;
+        let rightPadding = systemInfo.windowWidth;
         try {
           const menuButtonInfo = common_vendor.index.getMenuButtonBoundingClientRect();
           statusHeight = systemInfo.statusBarHeight;
           navHeight = menuButtonInfo.bottom - statusHeight + 4;
           total = statusHeight + navHeight;
-          rightPadding = systemInfo.windowWidth - menuButtonInfo.right + menuButtonInfo.width;
+          rightPadding = menuButtonInfo.right - menuButtonInfo.width - 10;
+          common_vendor.index.__f__("log", "at components/status-bar.vue:47", "navBarRight", systemInfo, menuButtonInfo.right, menuButtonInfo.width);
         } catch (error) {
-          common_vendor.index.__f__("warn", "at components/status-bar.vue:47", "获取胶囊位置失败，使用默认值:", error);
+          common_vendor.index.__f__("warn", "at components/status-bar.vue:49", "获取胶囊位置失败，使用默认值:", error);
         }
         statusHeight = Math.max(statusHeight, 20);
         navHeight = Math.max(navHeight, 44);
@@ -32,14 +33,14 @@ const _sfc_main = {
         totalHeight.value = total;
         navBarRight.value = rightPadding;
         emit("statusBarHeight", total);
-        common_vendor.index.__f__("log", "at components/status-bar.vue:64", "状态栏高度初始化成功:", {
+        common_vendor.index.__f__("log", "at components/status-bar.vue:67", "状态栏高度初始化成功:", {
           statusBarHeight: statusHeight,
           navBarHeight: navHeight,
           totalHeight: total,
           navBarRight: rightPadding
         });
       } catch (error) {
-        common_vendor.index.__f__("error", "at components/status-bar.vue:71", "初始化状态栏高度失败:", error);
+        common_vendor.index.__f__("error", "at components/status-bar.vue:74", "初始化状态栏高度失败:", error);
         statusBarHeight.value = 44;
         navBarHeight.value = 44;
         totalHeight.value = 88;
@@ -66,7 +67,7 @@ const _sfc_main = {
     return (_ctx, _cache) => {
       return {
         a: statusBarHeight.value + "px",
-        b: navBarRight.value + "px",
+        b: navBarRight.value + "rpx",
         c: navBarHeight.value + "px",
         d: common_vendor.o(() => {
         }),

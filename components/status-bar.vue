@@ -6,7 +6,7 @@
 			<view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
 			<!-- 导航栏 -->
 			<view class="nav-bar" :style="{ height: navBarHeight + 'px' }">
-				<view class="nav-bar-content" :style="{ paddingRight: navBarRight + 'px' }">
+				<view class="nav-bar-content" :style="{ paddingLeft: navBarRight + 'rpx' }">
 					<slot></slot>
 				</view>
 			</view>
@@ -33,7 +33,7 @@ const initStatusBarHeight = () => {
 		let statusHeight = systemInfo.statusBarHeight + 22
 		let navHeight = statusHeight + 22
 		let total = statusHeight + navHeight
-		let rightPadding = systemInfo.windowWidth - 330
+		let rightPadding = systemInfo.windowWidth
 		
 		// #ifdef MP-WEIXIN
 		try {
@@ -42,7 +42,9 @@ const initStatusBarHeight = () => {
 			statusHeight = systemInfo.statusBarHeight
 			navHeight = menuButtonInfo.bottom - statusHeight + 4
 			total = statusHeight + navHeight
-			rightPadding = systemInfo.windowWidth - menuButtonInfo.right + menuButtonInfo.width
+			rightPadding = menuButtonInfo.right - menuButtonInfo.width - 10
+			
+			console.log('navBarRight', systemInfo , menuButtonInfo.right , menuButtonInfo.width)
 		} catch (error) {
 			console.warn('获取胶囊位置失败，使用默认值:', error)
 		}
@@ -57,6 +59,7 @@ const initStatusBarHeight = () => {
 		navBarHeight.value = navHeight
 		totalHeight.value = total
 		navBarRight.value = rightPadding
+		
 		
 		// 向父组件传递高度信息
 		emit('statusBarHeight', total)
@@ -137,7 +140,7 @@ onMounted(() => {
 	height: 100%;
 	display: flex;
 	align-items: center;
-	justify-content: flex-end;
+	// justify-content: flex-end;
 	/* 导航栏内容布局 */
 }
 

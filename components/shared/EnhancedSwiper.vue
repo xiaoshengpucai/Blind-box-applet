@@ -570,7 +570,7 @@ watch(() => props.autoplay, (autoplay) => {
   border: 6px solid #cd4438;
   border-bottom: 0;
   border-radius: 30rpx 30rpx 0 0;
-  z-index: 10;
+  z-index: 999;
   
   .header-icon {
     width: 40rpx;
