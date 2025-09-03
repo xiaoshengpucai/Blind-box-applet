@@ -320,8 +320,8 @@ const gridStyle = computed(() => {
     return {
       display: 'grid',
       gridTemplateColumns: `repeat(${props.columns}, 1fr)`,
-      gap,
-      padding: gap
+      gap:`${gap} 10rpx`,
+      padding: `0rpx ${gap}`
     };
   }
   

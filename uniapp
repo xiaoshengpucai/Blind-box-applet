@@ -1,0 +1,59 @@
+[33mcommit 16be41b41e82f129006184007554879de2a9937b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: wxuanni <2212295748@qq.com>
+Date:   Tue Sep 2 02:55:06 2025 +0800
+
+    小程序配置
+
+[33mcommit 8444bd476654a2289b47cd67b6a2a16251ef49b3[m
+Author: wxuanni <2212295748@qq.com>
+Date:   Tue Sep 2 02:20:02 2025 +0800
+
+    添加mask蒙版
+
+[33mcommit 1bad9bb0bd3aef722358cf6b7fc1c6d87a9f1aa0[m
+Author: wxuanni <2212295748@qq.com>
+Date:   Tue Sep 2 01:09:13 2025 +0800
+
+    uniapp swiper样式
+
+[33mcommit fc676803f04967329c429a4f265f642eee8b426d[m
+Author: wxuanni <2212295748@qq.com>
+Date:   Tue Sep 2 01:05:03 2025 +0800
+
+    uniapp swiper样式
+
+[33mcommit 1325da5256a8511c9fbcbbbee05ac22ce931b8ef[m
+Author: wxuanni <2212295748@qq.com>
+Date:   Tue Sep 2 00:39:25 2025 +0800
+
+    status样式
+
+[33mcommit d44201349625798365b78b4eb94f2ce2419941d0[m
+Author: wxuanni <2212295748@qq.com>
+Date:   Mon Sep 1 23:54:59 2025 +0800
+
+    修复重构后的nav和swiper的样式
+
+[33mcommit 92ad77b7b9205571698a677e2e5afc89fb87327e[m
+Author: wxuanni <2212295748@qq.com>
+Date:   Sat Aug 30 01:58:57 2025 +0800
+
+    修复轮播图的bug
+
+[33mcommit fabb64f94c0a4ebcbd98f23892abdd376aa770aa[m
+Author: wxuanni <2212295748@qq.com>
+Date:   Fri Aug 29 22:10:20 2025 +0800
+
+    重命名README.md
+
+[33mcommit 3da2fe2517509baf3043def0b811754e669af77b[m
+Author: wxuanni <2212295748@qq.com>
+Date:   Fri Aug 29 22:06:06 2025 +0800
+
+    修改readme
+
+[33mcommit 0c877456d28ff3a021651c01f8868de5087a03e8[m
+Author: wxuanni <2212295748@qq.com>
+Date:   Fri Aug 29 21:52:50 2025 +0800
+
+    实现首页-详情页-轮播图动画

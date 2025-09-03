@@ -17,8 +17,8 @@
 		:header-icon="headerIcon"
 		:show-decorations="true"
 		:decorations="decorationIcons"
-		:show-controls="true"
-		:show-indicators="circular"
+		:show-controls="isshowcontrols"
+		:show-indicators="showIndicators"
 		:show-floor="true"
 		:floor-dots="10"
 		:image-field="imageField"
@@ -26,6 +26,7 @@
 		@change="handleChange"
 		@image-load="handleImageLoad"
 		@image-error="handleImageError"
+		@slide-click="handleSlideClick"
 	/>
 </template>
 
@@ -60,7 +61,11 @@
 			type: Boolean,
 			default: true
 		},
-		indicatorDots: {
+		showIndicators: {
+			type: Boolean,
+			default: true
+		},
+		isshowcontrols: {
 			type: Boolean,
 			default: true
 		}
@@ -151,10 +156,10 @@
 	 * 处理幻灯片点击事件
 	 * @param {Object} data - 点击数据
 	 */
-	// const handleSlideClick = (data) => {
-	// 	console.log(data,'handleSlideClick');
-	// 	emit('click', data);
-	// };
+	const handleSlideClick = (data) => {
+		console.log(data,'handleSlideClick');
+		emit('click', data);
+	};
 
 	/**
 	 * 处理图片加载成功事件
