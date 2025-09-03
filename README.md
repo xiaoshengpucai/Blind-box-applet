@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 uniapp-project/
 ├── pages/                # 页面目录
 │   ├── home/             # 首页模块
@@ -31,3 +32,6 @@ uniapp-project/
  * 修改readme.md 测试git commit
  */
 11111 --->>  22222 --->>  33333 --->>  44444
+=======
+# Blind-box-applet
+>>>>>>> 2d1b6036569c77aafbae95e60923040760a49197
