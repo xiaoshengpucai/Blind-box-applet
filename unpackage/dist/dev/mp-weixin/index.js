@@ -323,9 +323,11 @@ const _sfc_main = {
           containerHeight: 220
         }),
         l: scrollMask.value
-      }, scrollMask.value ? {} : {}, {
-        m: common_vendor.o(handleSwiperChange),
-        n: common_vendor.p({
+      }, scrollMask.value ? {
+        m: statusBarHeight.value + navigationHeight.value - 10 + "px"
+      } : {}, {
+        n: common_vendor.o(handleSwiperChange),
+        o: common_vendor.p({
           slide: carouselData.value,
           switchModeL: carouselConfig.switchMode,
           circular: carouselConfig.circular,
@@ -335,18 +337,18 @@ const _sfc_main = {
           isshowcontrols: carouselConfig.isshowcontrols,
           duration: carouselConfig.duration
         }),
-        o: common_vendor.o(handleWelfareCardClick),
-        p: common_vendor.p({
+        p: common_vendor.o(handleWelfareCardClick),
+        q: common_vendor.p({
           cards: welfareCardList
         }),
-        q: common_vendor.p({
+        r: common_vendor.p({
           productList: productList.value
         }),
-        r: common_vendor.o((...args) => common_vendor.unref(handleContentScroll) && common_vendor.unref(handleContentScroll)(...args)),
-        s: calculateScrollViewHeight() + "px",
-        t: navigationHeight.value + "px",
-        v: common_vendor.o((...args) => common_vendor.unref(handlePageClick) && common_vendor.unref(handlePageClick)(...args)),
-        w: common_vendor.gei(_ctx, "")
+        s: common_vendor.o((...args) => common_vendor.unref(handleContentScroll) && common_vendor.unref(handleContentScroll)(...args)),
+        t: calculateScrollViewHeight() + "px",
+        v: navigationHeight.value + "px",
+        w: common_vendor.o((...args) => common_vendor.unref(handlePageClick) && common_vendor.unref(handlePageClick)(...args)),
+        x: common_vendor.gei(_ctx, "")
       });
     };
   }

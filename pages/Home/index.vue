@@ -30,7 +30,7 @@
 		 </view>
 
 		<!-- 滚动蒙层 -->
-		<view class="frosted-transition" v-if="scrollMask"></view>
+		<view class="frosted-transition" :style="{top: statusBarHeight+navigationHeight-10+'px'}"	 v-if="scrollMask"></view>
 		<!-- 主内容区域 -->
 		<view class="main-content" :style="{ paddingTop: navigationHeight + 'px' }">
 			<scroll-view scroll-y @scroll="handleContentScroll" :style="{ height: calculateScrollViewHeight() + 'px' }">
@@ -616,7 +616,6 @@ const calculateNavigationHeight = () => {
 
 .frosted-transition {
 	position: absolute;
-	top: 320rpx;
 	left: 0;
 	width: 100%;
 	height: 60rpx;
@@ -644,7 +643,6 @@ const calculateNavigationHeight = () => {
 
 /* #ifdef MP-WEIXIN */
 .frosted-transition {
-	top: 380rpx;
 	background: linear-gradient(to bottom,
 			rgba(255, 255, 255, 0.1) 0%,
 			rgba(255, 255, 255, 0.7) 30%,

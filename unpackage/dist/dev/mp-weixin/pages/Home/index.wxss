@@ -134,7 +134,6 @@
 }
 .frosted-transition.data-v-c8f6c59c {
   position: absolute;
-  top: 320rpx;
   left: 0;
   width: 100%;
   height: 60rpx;
@@ -152,7 +151,6 @@
 }
 }
 .frosted-transition.data-v-c8f6c59c {
-  top: 380rpx;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.7) 30%, rgba(255, 255, 255, 0.3) 70%, rgba(255, 255, 255, 0) 100%);
   backdrop-filter: blur(5rpx);
   -webkit-backdrop-filter: blur(5rpx);
