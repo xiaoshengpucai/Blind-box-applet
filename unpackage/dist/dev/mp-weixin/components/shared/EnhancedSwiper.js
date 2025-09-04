@@ -156,6 +156,7 @@ const _sfc_main = {
   emits: [
     "change",
     "click",
+    "slide-click",
     "image-load",
     "image-error",
     "autoplay-start",
@@ -174,6 +175,8 @@ const _sfc_main = {
       dynamicTransition,
       isDragging,
       dragOffset,
+      fadeLeavingIndex,
+      fadeEnteringIndex,
       next,
       prev,
       goToRealIndex,
@@ -184,17 +187,11 @@ const _sfc_main = {
       handleTouchStart,
       handleTouchMove,
       handleTouchEnd
-    } = src_composables_useSwiper.useSwiper({
-      slides: common_vendor.toRefs(props).slides,
-      autoplay: props.autoplay,
-      interval: props.interval,
-      duration: props.duration,
-      circular: props.circular,
-      switchMode: props.mode
-    });
-    src_composables_useThrottle.useThrottle(next, 300);
+    } = src_composables_useSwiper.useSwiper(props);
+    const prevSlideImage = common_vendor.ref("");
+    const throttledNext = src_composables_useThrottle.useThrottle(next, 300);
     src_composables_useThrottle.useThrottle(prev, 300);
-    common_vendor.index.__f__("log", "at components/shared/EnhancedSwiper.vue:348", "realIndex", realIndex.value);
+    common_vendor.index.__f__("log", "at components/shared/EnhancedSwiper.vue:298", "realIndex", realIndex.value);
     const containerStyle = common_vendor.computed(() => {
       const width = typeof props.width === "number" ? `${props.width}rpx` : props.width;
       const height = typeof props.height === "number" ? `${props.height}rpx` : props.height;
@@ -209,13 +206,14 @@ const _sfc_main = {
     const swiperStyle = common_vendor.computed(() => {
       const borderRadius = typeof props.borderRadius === "number" ? `${props.borderRadius}rpx` : props.borderRadius;
       return {
+        "--prev-slide-image": `url(${prevSlideImage.value})`,
         width: "100%",
         height: "100%",
         position: "relative",
         overflow: "hidden",
         borderRadius,
-        border: `${props.border.width} ${props.border.style} ${props.border.color}`,
-        backgroundColor: props.border.color
+        border: `${props.border.width} ${props.border.style} ${props.border.color}`
+        // backgroundColor: props.border.color
       };
     });
     const controlButtonStyle = common_vendor.computed(() => ({
@@ -235,28 +233,49 @@ const _sfc_main = {
         return "";
       return slide[props.imageField] || slide.src || slide.imageUrl || slide.url || slide.image || "";
     };
+    const handleSlideClick = (slide, index) => {
+      common_vendor.index.__f__("log", "at components/shared/EnhancedSwiper.vue:420", "-------handleSlideClick", {
+        slide,
+        index,
+        realIndex: realIndex.value
+      });
+      emit("slide-click", {
+        slide,
+        index: props.mode === "slide" ? realIndex.value : index,
+        // 使用真实索引
+        realIndex: realIndex.value
+      });
+    };
     const handleImageLoad = (slide, index) => {
-      emit("image-load", { slide, index });
+      emit("image-load", {
+        slide,
+        index
+      });
     };
     const handleImageError = (slide, index) => {
-      emit("image-error", { slide, index });
+      emit("image-error", {
+        slide,
+        index
+      });
     };
     const handlePrevClick = () => {
-      common_vendor.index.__f__("log", "at components/shared/EnhancedSwiper.vue:478", "------prev button clicked, isTransitioning:", isTransitioning.value);
-      prev();
+      throttledprev();
     };
     const handleNextClick = () => {
-      common_vendor.index.__f__("log", "at components/shared/EnhancedSwiper.vue:487", "------next button clicked, isTransitioning:", isTransitioning.value);
-      next();
+      throttledNext();
     };
     const handleMouseDown = (e) => {
       handleTouchStart({
-        touches: [{ clientX: e.clientX }]
+        touches: [{
+          clientX: e.clientX
+        }]
       });
     };
     const handleMouseMove = (e) => {
       handleTouchMove({
-        touches: [{ clientX: e.clientX }]
+        touches: [{
+          clientX: e.clientX
+        }]
       });
     };
     const handleMouseUp = () => {
@@ -267,6 +286,7 @@ const _sfc_main = {
     };
     common_vendor.watch(realIndex, (newIndex, oldIndex) => {
       if (newIndex !== oldIndex) {
+        prevSlideImage.value = getSlideImage(props.slides[oldIndex]);
         emit("change", {
           current: newIndex,
           previous: oldIndex,
@@ -322,7 +342,8 @@ const _sfc_main = {
               height: "100%",
               ["border-radius"]: __props.slideRadius
             }),
-            e: `slide-${index}`
+            e: `slide-${index}`,
+            f: common_vendor.o(($event) => handleSlideClick(slide, index), `slide-${index}`)
           };
         }),
         j: common_vendor.unref(dynamicTransform),
@@ -339,33 +360,33 @@ const _sfc_main = {
             }),
             c: `fade-${index}`,
             d: common_vendor.unref(realIndex) === index ? 1 : "",
-            e: common_vendor.unref(realIndex) === index ? 1 : 0,
-            f: common_vendor.unref(realIndex) === index ? 2 : 1
+            e: common_vendor.unref(fadeLeavingIndex) === index ? 1 : "",
+            f: common_vendor.unref(fadeEnteringIndex) === index ? 1 : "",
+            g: common_vendor.o(($event) => handleSlideClick(slide, index), `fade-${index}`)
           };
-        }),
-        n: `opacity ${__props.duration}ms ease`
+        })
       } : {}, {
         l: __props.mode === "fade",
-        o: __props.showControls
+        n: __props.showControls
       }, __props.showControls ? {
-        p: common_vendor.p({
+        o: common_vendor.p({
           name: "arrow-left",
           color: "#fff",
           size: "20"
         }),
-        q: common_vendor.s(controlButtonStyle.value),
-        r: common_vendor.o(handlePrevClick),
-        s: common_vendor.p({
+        p: common_vendor.s(controlButtonStyle.value),
+        q: common_vendor.o(handlePrevClick),
+        r: common_vendor.p({
           name: "arrow-right",
           color: "#fff",
           size: "20"
         }),
-        t: common_vendor.s(controlButtonStyle.value),
-        v: common_vendor.o(handleNextClick)
+        s: common_vendor.s(controlButtonStyle.value),
+        t: common_vendor.o(handleNextClick)
       } : {}, {
-        w: __props.showIndicators
+        v: __props.showIndicators
       }, __props.showIndicators ? {
-        x: common_vendor.f(__props.slides, (slide, index, i0) => {
+        w: common_vendor.f(__props.slides, (slide, index, i0) => {
           return common_vendor.e({
             a: common_vendor.unref(realIndex) === index
           }, common_vendor.unref(realIndex) === index ? {} : {}, {
@@ -374,9 +395,10 @@ const _sfc_main = {
             d: common_vendor.o(() => common_vendor.unref(goToRealIndex)(index), `indicator-${index}`)
           });
         }),
-        y: common_vendor.s(dotStyle.value),
-        z: common_vendor.s(__props.indicatorStyle)
+        x: common_vendor.s(dotStyle.value),
+        y: common_vendor.s(__props.indicatorStyle)
       } : {}, {
+        z: common_vendor.unref(isTransitioning) ? 1 : "",
         A: common_vendor.s(swiperStyle.value),
         B: common_vendor.o((...args) => common_vendor.unref(handleTouchStart) && common_vendor.unref(handleTouchStart)(...args)),
         C: common_vendor.o((...args) => common_vendor.unref(handleTouchMove) && common_vendor.unref(handleTouchMove)(...args)),
@@ -385,16 +407,17 @@ const _sfc_main = {
         F: common_vendor.o(handleMouseMove),
         G: common_vendor.o(handleMouseUp),
         H: common_vendor.o(handleMouseLeave),
-        I: __props.showFloor
+        I: common_vendor.o(handleSlideClick),
+        J: __props.showFloor
       }, __props.showFloor ? {
-        J: common_vendor.f(__props.floorDots, (dot, k0, i0) => {
+        K: common_vendor.f(__props.floorDots, (dot, k0, i0) => {
           return {
             a: dot
           };
         })
       } : {}, {
-        K: common_vendor.s(containerStyle.value),
-        L: common_vendor.gei(_ctx, "")
+        L: common_vendor.s(containerStyle.value),
+        M: common_vendor.gei(_ctx, "")
       });
     };
   }

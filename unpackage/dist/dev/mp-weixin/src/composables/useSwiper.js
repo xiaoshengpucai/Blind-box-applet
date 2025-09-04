@@ -1,19 +1,20 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-function useSwiper(options = {}) {
+function useSwiper(componentProps) {
   const {
-    slides = [],
-    autoplay = true,
-    interval = 3e3,
-    duration = 500,
-    circular = true,
-    switchMode = "slide"
-  } = options;
-  const currentIndex = common_vendor.ref(circular ? 1 : 0);
+    slides,
+    autoplay,
+    interval,
+    duration,
+    circular,
+    mode: switchMode
+  } = common_vendor.toRefs(componentProps);
+  const currentIndex = common_vendor.ref(circular.value && switchMode.value === "slide" ? 1 : 0);
   const isInitialized = common_vendor.ref(false);
   const isTransitioning = common_vendor.ref(false);
-  common_vendor.ref(null);
-  const transitionStyle = common_vendor.ref(`transform ${duration}ms ease`);
+  const transitionStyle = common_vendor.ref(`transform ${duration.value}ms ease`);
+  const fadeLeavingIndex = common_vendor.ref(null);
+  const fadeEnteringIndex = common_vendor.ref(null);
   const touchStartX = common_vendor.ref(0);
   const touchEndX = common_vendor.ref(0);
   const touchCurrentX = common_vendor.ref(0);
@@ -27,9 +28,10 @@ function useSwiper(options = {}) {
     const slideList = slides.value || [];
     if (!slideList.length)
       return [];
-    if (!circular)
+    if (switchMode.value !== "slide" || !circular.value) {
       return slideList;
-    const displayList = [
+    }
+    return [
       slideList[slideList.length - 1],
       // 复制最后一张
       ...slideList,
@@ -37,17 +39,24 @@ function useSwiper(options = {}) {
       slideList[0]
       // 复制第一张
     ];
-    return displayList;
   });
   const realIndex = common_vendor.computed(() => {
-    if (!circular)
+    if (switchMode.value === "fade") {
       return currentIndex.value;
-    if (currentIndex.value === 0)
-      return slides.value.length - 1;
-    if (currentIndex.value === displaySlides.value.length - 1)
+    }
+    if (!circular.value) {
+      return currentIndex.value;
+    }
+    const slideCount = slides.value.length;
+    if (slideCount === 0)
       return 0;
-    const realIdx = currentIndex.value - 1;
-    return realIdx;
+    if (currentIndex.value === 0) {
+      return slideCount - 1;
+    }
+    if (currentIndex.value === displaySlides.value.length - 1) {
+      return 0;
+    }
+    return currentIndex.value - 1;
   });
   const dynamicTransform = common_vendor.computed(() => {
     const baseOffset = currentIndex.value * 100;
@@ -65,21 +74,37 @@ function useSwiper(options = {}) {
     if (isTransitioning.value && withTransition) {
       return;
     }
+    if (switchMode.value === "fade") {
+      if (withTransition) {
+        fadeLeavingIndex.value = realIndex.value;
+        fadeEnteringIndex.value = index;
+      }
+      currentIndex.value = index;
+      if (withTransition) {
+        isTransitioning.value = true;
+        setTimeout(() => {
+          fadeLeavingIndex.value = null;
+          fadeEnteringIndex.value = null;
+          isTransitioning.value = false;
+        }, 1200);
+      }
+      return;
+    }
     const minIndex = 0;
     const maxIndex = displaySlides.value.length - 1;
     const clampedIndex = Math.max(minIndex, Math.min(index, maxIndex));
-    transitionStyle.value = withTransition ? `transform ${duration}ms ease` : "none";
+    transitionStyle.value = withTransition ? `transform ${duration.value}ms ease` : "none";
     currentIndex.value = clampedIndex;
-    if (withTransition && duration > 0) {
+    if (withTransition && duration.value > 0) {
       isTransitioning.value = true;
       setTimeout(() => {
         isTransitioning.value = false;
-      }, duration);
+      }, duration.value);
       setTimeout(() => {
         if (isTransitioning.value) {
           isTransitioning.value = false;
         }
-      }, Math.max(duration + 100, 1e3));
+      }, Math.max(duration.value + 100, 1e3));
     } else {
       isTransitioning.value = false;
     }
@@ -87,6 +112,8 @@ function useSwiper(options = {}) {
   const resetTransitionState = () => {
     isTransitioning.value = false;
     isSeamlessJumping.value = false;
+    fadeLeavingIndex.value = null;
+    fadeEnteringIndex.value = null;
   };
   const next = () => {
     if (isTransitioning.value) {
@@ -95,8 +122,13 @@ function useSwiper(options = {}) {
     if (!slides.value || slides.value.length === 0) {
       return;
     }
+    if (switchMode.value === "fade") {
+      const nextRealIndex = (realIndex.value + 1) % slides.value.length;
+      goToRealIndex(nextRealIndex);
+      return;
+    }
     const nextIndex = currentIndex.value + 1;
-    if (circular && nextIndex === displaySlides.value.length - 1) {
+    if (circular.value && nextIndex === displaySlides.value.length - 1) {
       goToSlide(nextIndex);
       setTimeout(() => {
         isSeamlessJumping.value = true;
@@ -104,7 +136,7 @@ function useSwiper(options = {}) {
         common_vendor.nextTick$1(() => {
           isSeamlessJumping.value = false;
         });
-      }, duration);
+      }, duration.value);
     } else {
       goToSlide(nextIndex);
     }
@@ -117,8 +149,13 @@ function useSwiper(options = {}) {
     if (!slides.value || slides.value.length === 0) {
       return;
     }
+    if (switchMode.value === "fade") {
+      const prevRealIndex = (realIndex.value - 1 + slides.value.length) % slides.value.length;
+      goToRealIndex(prevRealIndex);
+      return;
+    }
     const prevIndex = currentIndex.value - 1;
-    if (circular && prevIndex === 0) {
+    if (circular.value && prevIndex === 0) {
       goToSlide(prevIndex);
       setTimeout(() => {
         isSeamlessJumping.value = true;
@@ -126,7 +163,7 @@ function useSwiper(options = {}) {
         common_vendor.nextTick$1(() => {
           isSeamlessJumping.value = false;
         });
-      }, duration);
+      }, duration.value);
     } else {
       goToSlide(prevIndex);
     }
@@ -139,17 +176,21 @@ function useSwiper(options = {}) {
         return;
       }
     }
-    const targetIndex = circular ? realIndex2 + 1 : realIndex2;
-    goToSlide(targetIndex);
+    if (switchMode.value === "fade") {
+      goToSlide(realIndex2);
+    } else {
+      const targetIndex = circular.value ? realIndex2 + 1 : realIndex2;
+      goToSlide(targetIndex);
+    }
     resetAutoplay();
   };
   const startAutoplay = () => {
-    if (!autoplay || slides.value.length <= 1)
+    if (!autoplay.value || slides.value.length <= 1)
       return;
     stopAutoplay();
     autoplayTimer = setInterval(() => {
       next();
-    }, interval);
+    }, interval.value);
   };
   const stopAutoplay = () => {
     if (autoplayTimer) {
@@ -158,14 +199,14 @@ function useSwiper(options = {}) {
     }
   };
   const resetAutoplay = () => {
-    if (!autoplay)
+    if (!autoplay.value)
       return;
     stopAutoplay();
     startAutoplay();
   };
   const SWIPE_THRESHOLD = 50;
   const handleTouchStart = (e) => {
-    if (isTransitioning.value || isSeamlessJumping.value) {
+    if (!e || isTransitioning.value || isSeamlessJumping.value) {
       return;
     }
     const touch = e.touches ? e.touches[0] : e;
@@ -181,7 +222,7 @@ function useSwiper(options = {}) {
     stopAutoplay();
   };
   const handleTouchMove = (e) => {
-    if (!isDragging.value && !mouseDown.value) {
+    if (!e || !isDragging.value && !mouseDown.value) {
       return;
     }
     if (isSeamlessJumping.value) {
@@ -191,10 +232,12 @@ function useSwiper(options = {}) {
     touchCurrentX.value = touch.clientX;
     touchEndX.value = touch.clientX;
     dragOffset.value = -(touchCurrentX.value - touchStartX.value);
-    e.preventDefault();
+    if (e && typeof e.preventDefault === "function") {
+      e.preventDefault();
+    }
   };
   const handleTouchEnd = () => {
-    if (!isDragging.value || !mouseDown.value) {
+    if (!isDragging.value && !mouseDown.value) {
       return;
     }
     if (Math.abs(dragOffset.value) <= 150) {
@@ -227,7 +270,7 @@ function useSwiper(options = {}) {
       return;
     isTransitioning.value = false;
     isSeamlessJumping.value = false;
-    if (circular && slides.value && slides.value.length > 0) {
+    if (circular.value && slides.value && slides.value.length > 0) {
       currentIndex.value = 1;
     } else {
       currentIndex.value = 0;
@@ -254,6 +297,9 @@ function useSwiper(options = {}) {
     displaySlides,
     isTransitioning,
     transitionStyle,
+    // Fade 模式过渡状态
+    fadeLeavingIndex,
+    fadeEnteringIndex,
     // 动态样式
     dynamicTransform,
     dynamicTransition,

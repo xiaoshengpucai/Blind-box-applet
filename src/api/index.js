@@ -170,9 +170,8 @@ service.interceptors.response.use(
     
     // 统一处理响应数据格式
     const { data } = response;
-    
     // 根据实际API的数据结构调整
-    if (data.code === 200 || data.success) {
+    if (data.status === 200 || data.code === 200 || data.success) {
       return data.data || data.result || data;
     } else {
       throw new Error(data.message || data.msg || '请求失败');

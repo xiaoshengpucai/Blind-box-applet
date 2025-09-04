@@ -12,7 +12,7 @@ const _sfc_main = {
       type: Object,
       required: true,
       validator: (value) => {
-        return value && (value.id || value.title || value.Title);
+        return value && value.id;
       }
     },
     // 卡片布局模式
@@ -143,7 +143,7 @@ const _sfc_main = {
     const imageBorderRadius = common_vendor.computed(() => {
       return props.imageConfig.borderRadius || "10rpx";
     });
-    const displayTags = common_vendor.computed(() => {
+    common_vendor.computed(() => {
       if (!props.product.tags)
         return [];
       return props.product.tags.slice(0, props.maxTags);
@@ -158,14 +158,14 @@ const _sfc_main = {
       lineHeight: "1.4",
       color: "#333"
     }));
-    const tagStyle = common_vendor.computed(() => ({
+    common_vendor.computed(() => ({
       fontSize: "20rpx",
       backgroundColor: "#f7bf6c",
       color: "#333",
       padding: "4rpx 8rpx",
       borderRadius: "4rpx"
     }));
-    const promotionLabelStyle = common_vendor.computed(() => ({
+    common_vendor.computed(() => ({
       backgroundColor: "#d33b2e",
       color: "#fff",
       fontSize: "22rpx",
@@ -199,7 +199,7 @@ const _sfc_main = {
         a: common_vendor.o(handleImageLoad),
         b: common_vendor.o(handleImageError),
         c: common_vendor.p({
-          src: __props.product.imageUrl || __props.product.smallPicurl,
+          src: __props.product.image_url || __props.product.smallPicurl,
           placeholder: defaultImages.placeholder,
           ["error-image"]: defaultImages.error,
           width: imageWidth.value,
@@ -207,55 +207,13 @@ const _sfc_main = {
           ["border-radius"]: imageBorderRadius.value,
           ["enable-lazy-load"]: __props.enableLazyLoad
         }),
-        d: __props.product.tags && __props.product.tags.length
-      }, __props.product.tags && __props.product.tags.length ? {
-        e: common_vendor.f(displayTags.value, (tag, k0, i0) => {
-          return {
-            a: common_vendor.t(tag),
-            b: tag
-          };
-        }),
-        f: common_vendor.s(tagStyle.value)
-      } : {}, {
-        g: __props.product.promotionLabel
-      }, __props.product.promotionLabel ? {
-        h: common_vendor.t(__props.product.promotionLabel),
-        i: common_vendor.s(promotionLabelStyle.value)
-      } : {}, {
-        j: __props.showRating && __props.product.rating
-      }, __props.showRating && __props.product.rating ? {
-        k: common_vendor.f(5, (star, k0, i0) => {
-          return {
-            a: star,
-            b: star <= Math.floor(__props.product.rating) ? 1 : ""
-          };
-        })
-      } : {}, {
-        l: common_vendor.t(formatPrice(__props.product.price)),
-        m: common_vendor.s(priceStyle.value),
-        n: __props.product.originalPrice && __props.product.originalPrice > __props.product.price
-      }, __props.product.originalPrice && __props.product.originalPrice > __props.product.price ? {
-        o: common_vendor.t(formatPrice(__props.product.originalPrice))
-      } : {}, {
-        p: common_vendor.t(__props.product.title || __props.product.Title),
-        q: common_vendor.s(titleStyle.value),
-        r: __props.showDescription && __props.product.description
-      }, __props.showDescription && __props.product.description ? {
-        s: common_vendor.t(__props.product.description)
-      } : {}, {
-        t: __props.showExtraInfo
-      }, __props.showExtraInfo ? common_vendor.e({
-        v: __props.product.soldCount
-      }, __props.product.soldCount ? {
-        w: common_vendor.t(__props.product.soldCount)
-      } : {}, {
-        x: __props.product.shopName
-      }, __props.product.shopName ? {
-        y: common_vendor.t(__props.product.shopName)
-      } : {}) : {}, {
-        z: __props.showActions
+        d: common_vendor.t(formatPrice(__props.product.price)),
+        e: common_vendor.s(priceStyle.value),
+        f: common_vendor.t(__props.product.category || __props.product.Title),
+        g: common_vendor.s(titleStyle.value),
+        h: __props.showActions
       }, __props.showActions ? {
-        A: common_vendor.f(__props.actions, (action, k0, i0) => {
+        i: common_vendor.f(__props.actions, (action, k0, i0) => {
           return {
             a: common_vendor.t(action.text),
             b: action.key,
@@ -265,10 +223,10 @@ const _sfc_main = {
           };
         })
       } : {}, {
-        B: common_vendor.n(cardClasses.value),
-        C: common_vendor.s(cardStyle.value),
-        D: common_vendor.o(handleCardClick),
-        E: common_vendor.gei(_ctx, "")
+        j: common_vendor.n(cardClasses.value),
+        k: common_vendor.s(cardStyle.value),
+        l: common_vendor.o(handleCardClick),
+        m: common_vendor.gei(_ctx, "")
       });
     };
   }

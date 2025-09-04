@@ -189,8 +189,8 @@ const _sfc_main = {
         return {
           display: "grid",
           gridTemplateColumns: `repeat(${props.columns}, 1fr)`,
-          gap,
-          padding: gap
+          gap: `${gap} 10rpx`,
+          padding: `0rpx ${gap}`
         };
       }
       if (props.layout === "list") {

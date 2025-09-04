@@ -1,28 +1,18 @@
 <template>
   <view class="filter-dropdown-container">
     <!-- 筛选按钮 -->
-    <view class="filter-button" @click.stop="handleToggle">
+    <view class="nav-button filter-button" @click.stop="handleToggle">
       <up-icon name="list-dot" color="#fff" size="22"></up-icon>
       <text class="filter-text" :style="filterTextStyle">筛选</text>
     </view>
-    
+
     <!-- 下拉菜单 -->
-    <view 
-      class="filter-dropdown" 
-      :class="{ 'show': isVisible }"
-      :style="dropdownStyle"
-      @click="handleOptionSelect"
-    >
-      <view 
-        v-for="option in sortOptions"
-        :key="option.key"
-        class="filter-option"
-        :class="{ 
-          'active': currentSortType === option.key,
-          [`filter-option-${option.key}`]: true
-        }"
-        :data-type="option.key"
-      >
+    <view class="filter-dropdown" :class="{ 'show': isVisible }" :style="filterDropdownStyle"
+      @click="handleOptionSelect">
+      <view v-for="option in sortOptions" :key="option.key" class="filter-option" :class="{
+        'active': currentSortType === option.key,
+        [`filter-option-${option.key}`]: true
+      }" :data-type="option.key">
         {{ option.label }}
       </view>
     </view>
@@ -40,7 +30,7 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  
+
   // 排序选项
   options: {
     type: Array,
@@ -50,13 +40,13 @@ const props = defineProps({
       { key: 'priceAsc', label: '价格从低到高' }
     ]
   },
-  
+
   // 是否可见
   visible: {
     type: Boolean,
     default: false
   },
-  
+
   // 下拉框样式配置
   dropdownConfig: {
     type: Object,
@@ -67,12 +57,13 @@ const props = defineProps({
       width: '140rpx'
     })
   },
-  
+
   // 节流延迟
   throttleDelay: {
     type: Number,
     default: 300
   }
+
 });
 
 // ==================== Emits定义 ====================
@@ -87,19 +78,26 @@ const currentSortType = ref(props.currentSort);
  * 筛选文字颜色样式
  */
 const filterTextStyle = computed(() => ({
-  color: currentSortType.value === 'new' ? '#fff' : '#BD9731'
+  color: currentSortType.value === '' ? '#fff' : (currentSortType.value === props.options[0].key ? '#fff' :
+    '#bd9731')
 }));
-
+// /**
+//  * 下拉框样式
+//  */
+// const dropdownStyle = computed(() => ({
+//   ...props.dropdownConfig,
+//   transform: isVisible.value ? 'rotateX(0deg)' : 'rotateX(-90deg)',
+//   opacity: isVisible.value ? '1' : '0',
+//   visibility: isVisible.value ? 'visible' : 'hidden'
+// }));
 /**
- * 下拉框样式
+ * 筛选下拉框样式 - 使用computed优化性能
  */
-const dropdownStyle = computed(() => ({
-  ...props.dropdownConfig,
+const filterDropdownStyle = computed(() => ({
   transform: isVisible.value ? 'rotateX(0deg)' : 'rotateX(-90deg)',
   opacity: isVisible.value ? '1' : '0',
   visibility: isVisible.value ? 'visible' : 'hidden'
 }));
-
 /**
  * 排序选项
  */
@@ -125,20 +123,21 @@ const handleToggle = () => {
  * @param {Event} event - 点击事件
  */
 const handleOptionSelect = (event) => {
+  console.log(event.target, 'event----------------')
   const sortType = event.target.dataset.type;
-  
+
   if (!sortType || currentSortType.value === sortType) {
     return;
   }
-  
+
   currentSortType.value = sortType;
   isVisible.value = false;
-  
+
   emit('select', {
     sortType,
     option: sortOptions.value.find(opt => opt.key === sortType)
   });
-  
+
   emit('update:visible', false);
 };
 
@@ -190,24 +189,30 @@ defineExpose({
   display: inline-block;
 }
 
-// 筛选按钮样式
-.filter-button {
-  width: 100rpx;
+// 导航按钮通用样式 - 使用BEM命名规范
+.nav-button {
+  width: 50rpx;
   height: 50rpx;
-  padding: 10rpx 0rpx;
+  padding: 10rpx;
   border-radius: 20rpx;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-right: 20rpx;
   background-color: #1f1f1f;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  
+  transition: all 0.3s ease; // 添加过渡动画
+  position: relative;
+
   &:active {
-    transform: scale(0.95);
+    transform: scale(0.95); // 点击反馈
   }
-  
+}
+
+// 筛选按钮特殊样式
+.filter-button {
+  width: 100rpx;
+  padding: 10rpx 5rpx;
+
   .filter-text {
     color: #fff;
     display: inline-block;
@@ -215,14 +220,14 @@ defineExpose({
     margin: 0;
     padding: 0;
     margin-top: 5rpx;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease; // 文字颜色过渡
   }
 }
 
-// 下拉框样式
+// ==================== 筛选下拉框样式 ====================
 .filter-dropdown {
   position: absolute;
-  right: 180rpx;
+  right: 10rpx;
   top: 70rpx;
   width: 140rpx;
   border-radius: 10rpx;
@@ -235,14 +240,8 @@ defineExpose({
   transform-origin: top;
   transform: rotateX(-90deg);
   transition: all 0.5s ease-in-out;
-  backdrop-filter: blur(10rpx);
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
-  
-  &.show {
-    transform: rotateX(0deg);
-    opacity: 1;
-    visibility: visible;
-  }
+  z-index: 100; // 提升层级，确保下拉框处于最顶层
+  backdrop-filter: blur(10rpx); // 添加背景模糊效果
 }
 
 .filter-option {
@@ -255,33 +254,21 @@ defineExpose({
   width: 100%;
   cursor: pointer;
   transition: all 0.2s ease;
-  position: relative;
-  
+
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
-  
+
   &.active {
     color: #bd9731;
     font-weight: bold;
-    background-color: rgba(189, 151, 49, 0.1);
   }
-  
-  // 特殊分隔线样式
-  &.filter-option-priceDesc {
-    border-bottom: 2rpx solid #927e7c;
-    border-top: 2rpx solid #927e7c;
-  }
-  
-  // 第一个选项
-  &:first-child {
-    border-radius: 10rpx 10rpx 0 0;
-  }
-  
-  // 最后一个选项
-  &:last-child {
-    border-radius: 0 0 10rpx 10rpx;
-  }
+}
+
+// 特殊分隔线样式
+.filter-option-price-desc {
+  border-bottom: 2rpx solid #927e7c;
+  border-top: 2rpx solid #927e7c;
 }
 
 // 响应式设计
@@ -290,7 +277,7 @@ defineExpose({
     right: 120rpx;
     width: 120rpx;
   }
-  
+
   .filter-option {
     font-size: 18rpx;
     height: 45rpx;

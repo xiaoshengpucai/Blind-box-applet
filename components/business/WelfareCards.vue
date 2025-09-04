@@ -4,7 +4,7 @@
       v-for="card in welfareCards"
       :key="card.id"
       class="welfare-card"
-      @click="handleCardClick(card)"
+      @click.stop="handleCardClick(card)"
     >
       <!-- 卡片背景 -->
       <view :class="card.backgroundClass"></view>
@@ -12,7 +12,7 @@
       <!-- 卡片内容 -->
       <view :class="card.contentClass">
         <view :class="card.titleClass">{{ card.title }}</view>
-        <view class="welfare-button" @click.stop="handleButtonClick(card)">
+        <view class="welfare-button">
           <text class="button-text" :style="{ color: card.buttonColor }">
             {{ card.buttonText }}
           </text>
@@ -36,38 +36,7 @@ const props = defineProps({
   // 福利卡片数据
   cards: {
     type: Array,
-    default: () => [
-      {
-        id: 'diy',
-        title: 'DIV赏',
-        buttonText: '查看详情',
-        buttonColor: '#6fa6f5',
-        backgroundClass: 'welfare-bg-diy',
-        contentClass: 'welfare-content welfare-content-diy',
-        titleClass: 'welfare-title welfare-title-diy',
-        action: 'viewDetails'
-      },
-      {
-        id: 'exclusive',
-        title: '专属福利',
-        buttonText: '领取福利',
-        buttonColor: '#e9918a',
-        backgroundClass: 'welfare-bg-exclusive',
-        contentClass: 'welfare-content welfare-content-exclusive',
-        titleClass: 'welfare-title welfare-title-exclusive',
-        action: 'claimBenefit'
-      },
-      {
-        id: 'roll',
-        title: 'ROLL房',
-        buttonText: '参与活动',
-        buttonColor: '#a295d9',
-        backgroundClass: 'welfare-bg-roll',
-        contentClass: 'welfare-content welfare-content-roll',
-        titleClass: 'welfare-title welfare-title-roll',
-        action: 'joinActivity'
-      }
-    ]
+    default: () => [{}]
   },
   
   // 容器样式配置
@@ -76,7 +45,7 @@ const props = defineProps({
     default: () => ({
       width: '100vw',
       height: '28vw',
-      padding: '20rpx 0'
+      padding: '20rpx 0 0 0'
     })
   },
   
@@ -94,14 +63,13 @@ const props = defineProps({
 });
 
 // ==================== Emits定义 ====================
-const emit = defineEmits(['card-click', 'button-click']);
+const emit = defineEmits(['card-click']);
 
 // ==================== 计算属性 ====================
 /**
  * 福利卡片数据
  */
 const welfareCards = computed(() => props.cards);
-
 /**
  * 容器样式
  */
@@ -119,13 +87,6 @@ const handleCardClick = (card) => {
   emit('card-click', card);
 };
 
-/**
- * 处理按钮点击
- * @param {Object} card - 卡片数据
- */
-const handleButtonClick = (card) => {
-  emit('button-click', card);
-};
 </script>
 
 <style lang="scss" scoped>
@@ -136,7 +97,6 @@ const handleButtonClick = (card) => {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  padding: 20rpx 0;
 }
 
 .welfare-card {
@@ -363,7 +323,7 @@ const handleButtonClick = (card) => {
     flex-direction: column;
     height: auto;
     gap: 20rpx;
-    padding: 30rpx 0;
+    // padding: 30rpx 0;
   }
   
   .welfare-card {

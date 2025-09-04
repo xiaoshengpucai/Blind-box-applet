@@ -4,6 +4,9 @@
     "up-icon": "../../node-modules/uview-plus/components/u-icon/u-icon",
     "status-bar": "../../components/status-bar",
     "swiper": "./componets/swiper",
-    "trendy-tab-vue": "./componets/trendy-tab"
+    "trendy-tab-vue": "./componets/trendy-tab",
+    "filter-dropdown": "../../components/business/FilterDropdown",
+    "welfare-cards": "../../components/business/WelfareCards",
+    "navigation-icons": "../../components/business/NavigationIcons"
   }
 }

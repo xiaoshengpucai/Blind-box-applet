@@ -531,11 +531,11 @@ watch(() => props.products, (newProducts) => {
   }
   
   .retry-button {
-    padding: 20rpx 40rpx;
+    // padding: 20rpx 40rpx;
     background-color: #1890ff;
     color: #fff;
     border: none;
-    border-radius: 50rpx;
+    border-radius: 10rpx;
     font-size: 26rpx;
   }
 }

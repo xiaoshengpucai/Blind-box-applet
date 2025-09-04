@@ -120,7 +120,7 @@ service.interceptors.response.use(
     const duration = Date.now() - config.metadata.startTime;
     common_vendor.index.__f__("log", "at src/api/index.js:169", `[API Response] ${config.requestId}: ${response.status} (${duration}ms)`);
     const { data } = response;
-    if (data.code === 200 || data.success) {
+    if (data.status === 200 || data.code === 200 || data.success) {
       return data.data || data.result || data;
     } else {
       throw new Error(data.message || data.msg || "请求失败");
@@ -129,7 +129,7 @@ service.interceptors.response.use(
   (error) => {
     const { config } = error;
     const duration = (config == null ? void 0 : config.metadata) ? Date.now() - config.metadata.startTime : 0;
-    common_vendor.index.__f__("error", "at src/api/index.js:185", `[API Error] ${config == null ? void 0 : config.requestId}: ${error.message} (${duration}ms)`);
+    common_vendor.index.__f__("error", "at src/api/index.js:184", `[API Error] ${config == null ? void 0 : config.requestId}: ${error.message} (${duration}ms)`);
     let errorMessage = "网络请求失败";
     if (error.response) {
       const { status, data } = error.response;
@@ -175,7 +175,7 @@ const request = async (options) => {
   } = options;
   const cacheKey = apiCache.generateKey(url, { ...params, ...data });
   if (method.toUpperCase() === "GET" && cache && apiCache.has(cacheKey)) {
-    common_vendor.index.__f__("log", "at src/api/index.js:249", `[API Cache Hit] ${url}`);
+    common_vendor.index.__f__("log", "at src/api/index.js:248", `[API Cache Hit] ${url}`);
     return apiCache.get(cacheKey);
   }
   const requestFn = () => service({

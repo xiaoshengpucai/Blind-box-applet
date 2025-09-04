@@ -8,7 +8,7 @@
     <!-- 商品图片 -->
     <view class="product-image-container">
       <UniLazyImage
-        :src="product.imageUrl || product.smallPicurl"
+        :src="product.image_url || product.smallPicurl"
         :placeholder="defaultImages.placeholder"
         :error-image="defaultImages.error"
         :width="imageWidth"
@@ -18,38 +18,6 @@
         @load="handleImageLoad"
         @error="handleImageError"
       />
-      
-      <!-- 商品标签 -->
-      <view v-if="product.tags && product.tags.length" class="product-tags">
-        <text 
-          v-for="tag in displayTags" 
-          :key="tag"
-          class="tag-item"
-          :style="tagStyle"
-        >
-          {{ tag }}
-        </text>
-      </view>
-      
-      <!-- 促销标签 -->
-      <view v-if="product.promotionLabel" class="promotion-label" :style="promotionLabelStyle">
-        {{ product.promotionLabel }}
-        <view class="promotion-corner"></view>
-      </view>
-      
-      <!-- 评分星级 -->
-      <view v-if="showRating && product.rating" class="rating-container">
-        <view class="rating-stars">
-          <text 
-            v-for="star in 5" 
-            :key="star"
-            class="star"
-            :class="{ 'star-filled': star <= Math.floor(product.rating) }"
-          >
-            ★
-          </text>
-        </view>
-      </view>
     </view>
     
     <!-- 商品信息 -->
@@ -59,31 +27,13 @@
         <text class="current-price" :style="priceStyle">
           {{ formatPrice(product.price) }}
         </text>
-        <text v-if="product.originalPrice && product.originalPrice > product.price" 
-              class="original-price">
-          {{ formatPrice(product.originalPrice) }}
-        </text>
       </view>
       
       <!-- 商品标题 -->
       <view class="product-title" :style="titleStyle">
-        {{ product.title || product.Title }}
+        {{ product.category || product.Title }}
       </view>
       
-      <!-- 商品描述 -->
-      <view v-if="showDescription && product.description" class="product-description">
-        {{ product.description }}
-      </view>
-      
-      <!-- 额外信息 -->
-      <view v-if="showExtraInfo" class="extra-info">
-        <text v-if="product.soldCount" class="sold-count">
-          已售 {{ product.soldCount }}
-        </text>
-        <text v-if="product.shopName" class="shop-name">
-          {{ product.shopName }}
-        </text>
-      </view>
     </view>
     
     <!-- 操作按钮 -->
@@ -113,7 +63,7 @@ const props = defineProps({
     type: Object,
     required: true,
     validator: (value) => {
-      return value && (value.id || value.title || value.Title);
+      return value && (value.id);
     }
   },
   

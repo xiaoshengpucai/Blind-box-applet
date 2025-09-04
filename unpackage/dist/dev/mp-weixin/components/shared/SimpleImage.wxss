@@ -25,7 +25,6 @@
 /* 文章场景相关 */
 .simple-image-container.data-v-a379dc4a {
   display: inline-block;
-  background-color: #f5f5f5;
 }
 .simple-image.data-v-a379dc4a {
   display: block;

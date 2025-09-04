@@ -40,7 +40,11 @@ const _sfc_main = {
       type: Boolean,
       default: true
     },
-    indicatorDots: {
+    showIndicators: {
+      type: Boolean,
+      default: true
+    },
+    isshowcontrols: {
       type: Boolean,
       default: true
     }
@@ -102,11 +106,15 @@ const _sfc_main = {
     const handleChange = (data) => {
       emit("change", data);
     };
+    const handleSlideClick = (data) => {
+      common_vendor.index.__f__("log", "at pages/Home/componets/swiper.vue:160", data, "handleSlideClick");
+      emit("click", data);
+    };
     const handleImageLoad = (data) => {
       emit("image-load", data);
     };
     const handleImageError = (data) => {
-      common_vendor.index.__f__("warn", "at pages/Home/componets/swiper.vue:172", "轮播图图片加载失败:", data);
+      common_vendor.index.__f__("warn", "at pages/Home/componets/swiper.vue:177", "轮播图图片加载失败:", data);
       emit("image-error", data);
     };
     common_vendor.watch(() => props.slide, (newSlide) => {
@@ -116,7 +124,8 @@ const _sfc_main = {
         a: common_vendor.o(handleChange),
         b: common_vendor.o(handleImageLoad),
         c: common_vendor.o(handleImageError),
-        d: common_vendor.p({
+        d: common_vendor.o(handleSlideClick),
+        e: common_vendor.p({
           slides: __props.slide,
           mode: __props.switchModeL,
           autoplay: __props.autoplay,
@@ -133,14 +142,14 @@ const _sfc_main = {
           ["header-icon"]: headerIcon,
           ["show-decorations"]: true,
           decorations: decorationIcons,
-          ["show-controls"]: true,
-          ["show-indicators"]: __props.circular,
+          ["show-controls"]: __props.isshowcontrols,
+          ["show-indicators"]: __props.showIndicators,
           ["show-floor"]: true,
           ["floor-dots"]: 10,
           ["image-field"]: imageField,
           ["custom-style"]: customSwiperStyle.value
         }),
-        e: common_vendor.gei(_ctx, "")
+        f: common_vendor.gei(_ctx, "")
       };
     };
   }

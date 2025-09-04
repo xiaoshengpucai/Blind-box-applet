@@ -1,22 +1,27 @@
 "use strict";
 const common_vendor = require("./common/vendor.js");
 const src_hooks_throttle = require("./src/hooks/throttle.js");
+const src_composables_useLayoutList = require("./src/composables/useLayoutList.js");
 if (!Array) {
   const _easycom_up_icon2 = common_vendor.resolveComponent("up-icon");
   _easycom_up_icon2();
 }
 const _easycom_up_icon = () => "./node-modules/uview-plus/components/u-icon/u-icon.js";
 if (!Math) {
-  (_easycom_up_icon + common_vendor.unref(StatusBar) + common_vendor.unref(Swiper) + common_vendor.unref(TrendyTabVue))();
+  (FilterDropdown + _easycom_up_icon + common_vendor.unref(StatusBar) + NavigationIcons + common_vendor.unref(Swiper) + WelfareCards + common_vendor.unref(TrendyTabVue))();
 }
 const StatusBar = () => "./components/status-bar.js";
 const Swiper = () => "./pages/Home/componets/swiper.js";
 const TrendyTabVue = () => "./pages/Home/componets/trendy-tab2.js";
+const FilterDropdown = () => "./components/business/FilterDropdown.js";
+const WelfareCards = () => "./components/business/WelfareCards.js";
+const NavigationIcons = () => "./components/business/NavigationIcons.js";
 const BACKGROUND_IMAGE_URL = "https://pica.zhimg.com/100/v2-211f3f93123fafec7b424efa838fe542_r.jpg";
 const SCROLL_THRESHOLD = 500;
 const _sfc_main = {
   __name: "index",
   setup(__props) {
+    const { fetchInfinteClassList } = src_composables_useLayoutList.useLayoutList();
     const THROTTLE_DELAY = {
       PAGE_CLICK: 300,
       // 降低页面点击节流延迟，提升响应性
@@ -28,6 +33,20 @@ const _sfc_main = {
       PRICE_DESC: "priceDesc",
       PRICE_ASC: "priceAsc"
     };
+    const sortOptions = common_vendor.ref([
+      {
+        key: "new",
+        label: "最新发布"
+      },
+      {
+        key: "priceDesc",
+        label: "价格从高到低"
+      },
+      {
+        key: "priceAsc",
+        label: "价格从低到高"
+      }
+    ]);
     const backgroundImage = BACKGROUND_IMAGE_URL;
     const handlePageClick = src_hooks_throttle.throttle(() => {
       if (!isFilterDropdownVisible.value)
@@ -36,15 +55,16 @@ const _sfc_main = {
     }, THROTTLE_DELAY.PAGE_CLICK);
     const statusBarHeight = common_vendor.ref(0);
     const handleStatusBarHeight = (height) => {
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:151", height, "height----------------");
       statusBarHeight.value = height;
     };
     const isFilterDropdownVisible = common_vendor.ref(false);
     const currentSortType = common_vendor.ref("");
-    const filterDropdownStyle = common_vendor.computed(() => ({
+    common_vendor.computed(() => ({
       transform: isFilterDropdownVisible.value ? "rotateX(0deg)" : "rotateX(-90deg)",
       opacity: isFilterDropdownVisible.value ? "1" : "0"
     }));
-    const filterTextStyle = common_vendor.computed(() => ({
+    common_vendor.computed(() => ({
       color: currentSortType.value === "" ? "#fff" : currentSortType.value === SORT_TYPES.NEW ? "#fff" : "#bd9731"
     }));
     const showFilterDropdown = () => {
@@ -60,142 +80,53 @@ const _sfc_main = {
         showFilterDropdown();
       }
     }, THROTTLE_DELAY.FILTER_TOGGLE);
-    const generateUniqueId = () => {
-      return `${Date.now()}_${Math.floor(Math.random() * 1e4)}`;
-    };
-    const initialProductData = [
-      {
-        id: generateUniqueId(),
-        title: "三丽鸥公仔系列",
-        price: 6.1,
-        // 使用数字类型，便于排序
-        imageUrl: "https://img1.baidu.com/it/u=1299369810,3742035215&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=1082",
-        createTime: Date.now()
-      },
-      {
-        id: generateUniqueId(),
-        title: "全景运动相机",
-        price: 2,
-        imageUrl: "https://img2.baidu.com/it/u=1455518479,3144936783&fm=253&fmt=auto&app=120&f=PNG?w=500&h=1065",
-        createTime: Date.now() + 1
-      },
-      {
-        id: generateUniqueId(),
-        title: "富士拍拍",
-        price: 28.9,
-        imageUrl: "https://img2.baidu.com/it/u=3360815703,3321978180&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=1111",
-        createTime: Date.now() + 2
-      },
-      {
-        id: generateUniqueId(),
-        title: "UNiQUE ART雕像",
-        price: 15.1,
-        imageUrl: "https://img0.baidu.com/it/u=3700946987,2207883969&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=1114",
-        createTime: Date.now() + 3
-      },
-      {
-        id: generateUniqueId(),
-        title: "少女乐队的呐喊",
-        price: 12,
-        imageUrl: "https://img1.baidu.com/it/u=894955063,4138614589&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=1083",
-        createTime: Date.now() + 4
-      },
-      {
-        id: generateUniqueId(),
-        title: "阴阳师",
-        price: 18.8,
-        imageUrl: "https://img0.baidu.com/it/u=3318815481,675612407&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=889",
-        createTime: Date.now() + 5
-      },
-      {
-        id: generateUniqueId(),
-        title: "胜利女生",
-        price: 12,
-        imageUrl: "https://img1.baidu.com/it/u=1297405382,3279217087&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=1426",
-        createTime: Date.now() + 6
-      },
-      {
-        id: generateUniqueId(),
-        title: "崩坏：星穹铁道",
-        price: 1.9,
-        imageUrl: "https://img2.baidu.com/it/u=3969315328,3300096298&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=1091",
-        createTime: Date.now() + 7
-      },
-      {
-        id: generateUniqueId(),
-        title: "FuFu大家庭",
-        price: 9.9,
-        imageUrl: "https://img0.baidu.com/it/u=1965100551,3593283040&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=1081",
-        createTime: Date.now() + 8
-      },
-      {
-        id: generateUniqueId(),
-        title: "赛博朋克",
-        price: 8.8,
-        imageUrl: "https://img2.baidu.com/it/u=3570987437,1081851385&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=1083",
-        createTime: Date.now() + 9
-      },
-      {
-        id: generateUniqueId(),
-        title: "流星花园",
-        price: 18.8,
-        imageUrl: "https://img2.baidu.com/it/u=3896495679,3732936033&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=889",
-        createTime: Date.now() + 10
-      },
-      {
-        id: generateUniqueId(),
-        title: "诡秘之主",
-        price: 78.8,
-        imageUrl: "https://img0.baidu.com/it/u=1974539446,523763973&fm=253&fmt=auto?w=800&h=1745",
-        createTime: Date.now() + 11
-      }
-    ];
-    const productList = common_vendor.ref([...initialProductData]);
+    const productList = common_vendor.ref([]);
     const sortProducts = {
       /**
-       * 按创建时间排序（最新）
-       * @param {Array} products - 商品列表
-       * @returns {Array} 排序后的商品列表
-       */
+      
+      	 * 按创建时间排序（最新）
+      
+      	 * @param {Array} products - 商品列表
+      
+      	 * @returns {Array} 排序后的商品列表
+      
+      	 */
       [SORT_TYPES.NEW]: (products) => {
         return [...products].sort((a, b) => b.createTime - a.createTime);
       },
       /**
-       * 按价格降序排序（高到低）
-       * @param {Array} products - 商品列表
-       * @returns {Array} 排序后的商品列表
-       */
+      
+      	 * 按价格降序排序（高到低）
+      
+      	 * @param {Array} products - 商品列表
+      
+      	 * @returns {Array} 排序后的商品列表
+      
+      	 */
       [SORT_TYPES.PRICE_DESC]: (products) => {
         return [...products].sort((a, b) => b.price - a.price);
       },
       /**
-       * 按价格升序排序（低到高）
-       * @param {Array} products - 商品列表
-       * @returns {Array} 排序后的商品列表
-       */
+      
+      	 * 按价格升序排序（低到高）
+      
+      	 * @param {Array} products - 商品列表
+      
+      	 * @returns {Array} 排序后的商品列表
+      
+      	 */
       [SORT_TYPES.PRICE_ASC]: (products) => {
         return [...products].sort((a, b) => a.price - b.price);
       }
     };
-    const handleSortSelection = (event) => {
-      const sortType = event.target.dataset.type;
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:326", sortType, "排序类型----------------");
+    const handleSortSelection = (payload) => {
+      const sortType = payload.sortType;
       if (currentSortType.value === sortType)
         return;
       currentSortType.value = sortType;
       if (sortProducts[sortType]) {
         productList.value = sortProducts[sortType](productList.value);
-        common_vendor.index.__f__("log", "at pages/Home/index.vue:336", `商品已按${getSortTypeName(sortType)}排序`);
       }
-      hideFilterDropdown();
-    };
-    const getSortTypeName = (sortType) => {
-      const sortNames = {
-        [SORT_TYPES.NEW]: "最新发布",
-        [SORT_TYPES.PRICE_DESC]: "价格从高到低",
-        [SORT_TYPES.PRICE_ASC]: "价格从低到高"
-      };
-      return sortNames[sortType] || "未知排序";
     };
     const navigationList = [
       {
@@ -265,7 +196,7 @@ const _sfc_main = {
     ]);
     const carouselSlides = common_vendor.computed(() => {
       const slides = carouselData.value;
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:437", "carouselSlides computed:", {
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:537", "carouselSlides computed:", {
         slides,
         length: slides == null ? void 0 : slides.length,
         isArray: Array.isArray(slides),
@@ -273,11 +204,11 @@ const _sfc_main = {
       });
       return slides;
     });
-    common_vendor.index.__f__("log", "at pages/Home/index.vue:445", "carouselSlides computed:", carouselSlides.value);
+    common_vendor.index.__f__("log", "at pages/Home/index.vue:553", "carouselSlides computed:", carouselSlides.value);
     const carouselConfig = {
       switchMode: "slide",
       // 切换模式: fade | slide
-      indicatorDots: true,
+      showIndicators: false,
       // 是否显示指示点
       autoplay: true,
       // 是否自动播放
@@ -285,8 +216,10 @@ const _sfc_main = {
       // 自动播放间隔时间(ms)
       duration: 600,
       // 切换动画持续时间(ms)
-      circular: true
+      circular: true,
       // 是否启用循环播放
+      isshowcontrols: false
+      // 是否显示控制按钮
     };
     const welfareCardList = [
       {
@@ -321,9 +254,6 @@ const _sfc_main = {
     const navigationHeight = common_vendor.ref(0);
     const isNavigationFixed = common_vendor.ref(false);
     const isScrollMask = common_vendor.ref(false);
-    const calculateNavigationItemTop = (index) => {
-      return isNavigationFixed.value ? 20 : index % 2 === 0 ? 30 : 10;
-    };
     const scrollTop = common_vendor.ref(0);
     const scrollMask = common_vendor.computed(() => {
       return scrollTop.value >= 150;
@@ -338,15 +268,24 @@ const _sfc_main = {
       return windowInfo.windowHeight - navigationHeight.value - statusBarHeight.value;
     };
     const handleNavigationClick = (navigationPath) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:537", `导航点击: ${navigationPath}`);
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:720", `导航点击: ${navigationPath.text}`);
     };
     const handleWelfareCardClick = (welfareItem) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:546", `福利卡片点击: ${welfareItem.title}`);
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:737", `福利卡片点击于: ${(/* @__PURE__ */ new Date()).toLocaleTimeString()}`, welfareItem.title);
     };
     const handleSwiperChange = (event) => {
     };
+    const getInfinteClassList = async () => {
+      try {
+        const result = await fetchInfinteClassList({ page: 1, limit: 10 });
+        productList.value = [...result];
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/Home/index.vue:776", "获取无限列表数据失败:", error);
+      }
+    };
     common_vendor.onMounted(() => {
       initializeComponent();
+      getInfinteClassList();
     });
     const initializeComponent = () => {
       var _a;
@@ -357,7 +296,7 @@ const _sfc_main = {
     };
     const calculateNavigationHeight = () => {
       if (!componentInstance.value) {
-        common_vendor.index.__f__("warn", "at pages/Home/index.vue:588", "组件实例未准备就绪");
+        common_vendor.index.__f__("warn", "at pages/Home/index.vue:832", "组件实例未准备就绪");
         return;
       }
       const query = common_vendor.index.createSelectorQuery().in(componentInstance.value);
@@ -369,84 +308,61 @@ const _sfc_main = {
     };
     return (_ctx, _cache) => {
       return common_vendor.e({
-        a: common_vendor.p({
-          name: "list-dot",
-          color: "#fff",
-          size: "22"
-        }),
-        b: common_vendor.s(filterTextStyle.value),
-        c: common_vendor.o((...args) => common_vendor.unref(handleFilterToggle) && common_vendor.unref(handleFilterToggle)(...args)),
+        a: common_vendor.o(common_vendor.unref(handleFilterToggle)),
+        b: common_vendor.o(handleSortSelection),
+        c: common_vendor.o(($event) => isFilterDropdownVisible.value = $event),
         d: common_vendor.p({
+          currentSort: currentSortType.value,
+          options: sortOptions.value,
+          visible: isFilterDropdownVisible.value
+        }),
+        e: common_vendor.p({
           name: "search",
           color: "#fff",
           size: "22"
         }),
-        e: common_vendor.p({
+        f: common_vendor.p({
           name: "bell",
           color: "#fff",
           size: "22"
         }),
-        f: currentSortType.value === "new" ? 1 : "",
-        g: currentSortType.value === "priceDesc" ? 1 : "",
-        h: currentSortType.value === "priceAsc" ? 1 : "",
-        i: common_vendor.o(handleSortSelection),
-        j: common_vendor.s(filterDropdownStyle.value),
-        k: common_vendor.o(handleStatusBarHeight),
-        l: common_vendor.o(() => {
+        g: common_vendor.o(handleStatusBarHeight),
+        h: common_vendor.o(() => {
         }),
-        m: common_vendor.unref(backgroundImage),
-        n: common_vendor.f(navigationList, (navItem, index, i0) => {
-          return {
-            a: calculateNavigationItemTop(index) + "px",
-            b: common_vendor.o(($event) => handleNavigationClick(navItem.text), navItem.id),
-            c: navItem.src,
-            d: navItem.id,
-            e: common_vendor.n(`nav-item-${index}`),
-            f: calculateNavigationItemTop(index) + "px",
-            g: index * 0.2 + "s"
-          };
+        i: common_vendor.unref(backgroundImage),
+        j: common_vendor.o(handleNavigationClick),
+        k: common_vendor.p({
+          statusBarHeight: statusBarHeight.value,
+          navigationList,
+          isFixed: isNavigationFixed.value,
+          scrollThreshold: 500,
+          containerHeight: 220
         }),
-        o: statusBarHeight.value + "px",
-        p: common_vendor.o(() => {
-        }),
-        q: scrollMask.value
+        l: scrollMask.value
       }, scrollMask.value ? {} : {}, {
-        r: common_vendor.o(handleSwiperChange),
-        s: common_vendor.p({
+        m: common_vendor.o(handleSwiperChange),
+        n: common_vendor.p({
           slide: carouselData.value,
           switchModeL: carouselConfig.switchMode,
           circular: carouselConfig.circular,
-          indicatorDots: carouselConfig.indicatorDots,
+          showIndicators: carouselConfig.showIndicators,
           autoplay: carouselConfig.autoplay,
           interval: carouselConfig.interval,
+          isshowcontrols: carouselConfig.isshowcontrols,
           duration: carouselConfig.duration
         }),
-        t: common_vendor.f(welfareCardList, (welfareItem, k0, i0) => {
-          return {
-            a: common_vendor.n(welfareItem.backgroundClass),
-            b: common_vendor.t(welfareItem.title),
-            c: common_vendor.n(welfareItem.titleClass),
-            d: common_vendor.t(welfareItem.buttonText),
-            e: welfareItem.buttonColor,
-            f: "c8f6c59c-5-" + i0,
-            g: common_vendor.p({
-              name: "play-right-fill",
-              size: "10",
-              color: welfareItem.buttonColor
-            }),
-            h: common_vendor.n(welfareItem.contentClass),
-            i: welfareItem.id,
-            j: common_vendor.o(($event) => handleWelfareCardClick(welfareItem), welfareItem.id)
-          };
+        o: common_vendor.o(handleWelfareCardClick),
+        p: common_vendor.p({
+          cards: welfareCardList
         }),
-        v: common_vendor.p({
+        q: common_vendor.p({
           productList: productList.value
         }),
-        w: common_vendor.o((...args) => common_vendor.unref(handleContentScroll) && common_vendor.unref(handleContentScroll)(...args)),
-        x: calculateScrollViewHeight() + "px",
-        y: navigationHeight.value + "px",
-        z: common_vendor.o((...args) => common_vendor.unref(handlePageClick) && common_vendor.unref(handlePageClick)(...args)),
-        A: common_vendor.gei(_ctx, "")
+        r: common_vendor.o((...args) => common_vendor.unref(handleContentScroll) && common_vendor.unref(handleContentScroll)(...args)),
+        s: calculateScrollViewHeight() + "px",
+        t: navigationHeight.value + "px",
+        v: common_vendor.o((...args) => common_vendor.unref(handlePageClick) && common_vendor.unref(handlePageClick)(...args)),
+        w: common_vendor.gei(_ctx, "")
       });
     };
   }

@@ -93,11 +93,10 @@
   margin-bottom: 30rpx;
 }
 .empty-container .retry-button.data-v-1a048fba {
-  padding: 20rpx 40rpx;
   background-color: #1890ff;
   color: #fff;
   border: none;
-  border-radius: 50rpx;
+  border-radius: 10rpx;
   font-size: 26rpx;
 }
 .load-more-container.data-v-1a048fba {
