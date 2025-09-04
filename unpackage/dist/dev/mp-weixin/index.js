@@ -55,18 +55,11 @@ const _sfc_main = {
     }, THROTTLE_DELAY.PAGE_CLICK);
     const statusBarHeight = common_vendor.ref(0);
     const handleStatusBarHeight = (height) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:151", height, "height----------------");
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:129", height, "height----------------");
       statusBarHeight.value = height;
     };
     const isFilterDropdownVisible = common_vendor.ref(false);
     const currentSortType = common_vendor.ref("");
-    common_vendor.computed(() => ({
-      transform: isFilterDropdownVisible.value ? "rotateX(0deg)" : "rotateX(-90deg)",
-      opacity: isFilterDropdownVisible.value ? "1" : "0"
-    }));
-    common_vendor.computed(() => ({
-      color: currentSortType.value === "" ? "#fff" : currentSortType.value === SORT_TYPES.NEW ? "#fff" : "#bd9731"
-    }));
     const showFilterDropdown = () => {
       isFilterDropdownVisible.value = true;
     };
@@ -83,38 +76,26 @@ const _sfc_main = {
     const productList = common_vendor.ref([]);
     const sortProducts = {
       /**
-      
-      	 * 按创建时间排序（最新）
-      
-      	 * @param {Array} products - 商品列表
-      
-      	 * @returns {Array} 排序后的商品列表
-      
-      	 */
+       * 按创建时间排序（最新）
+       * @param {Array} products - 商品列表
+       * @returns {Array} 排序后的商品列表
+       */
       [SORT_TYPES.NEW]: (products) => {
         return [...products].sort((a, b) => b.createTime - a.createTime);
       },
       /**
-      
-      	 * 按价格降序排序（高到低）
-      
-      	 * @param {Array} products - 商品列表
-      
-      	 * @returns {Array} 排序后的商品列表
-      
-      	 */
+       * 按价格降序排序（高到低）
+       * @param {Array} products - 商品列表
+       * @returns {Array} 排序后的商品列表
+       */
       [SORT_TYPES.PRICE_DESC]: (products) => {
         return [...products].sort((a, b) => b.price - a.price);
       },
       /**
-      
-      	 * 按价格升序排序（低到高）
-      
-      	 * @param {Array} products - 商品列表
-      
-      	 * @returns {Array} 排序后的商品列表
-      
-      	 */
+       * 按价格升序排序（低到高）
+       * @param {Array} products - 商品列表
+       * @returns {Array} 排序后的商品列表
+       */
       [SORT_TYPES.PRICE_ASC]: (products) => {
         return [...products].sort((a, b) => a.price - b.price);
       }
@@ -196,7 +177,7 @@ const _sfc_main = {
     ]);
     const carouselSlides = common_vendor.computed(() => {
       const slides = carouselData.value;
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:537", "carouselSlides computed:", {
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:298", "carouselSlides computed:", {
         slides,
         length: slides == null ? void 0 : slides.length,
         isArray: Array.isArray(slides),
@@ -204,7 +185,7 @@ const _sfc_main = {
       });
       return slides;
     });
-    common_vendor.index.__f__("log", "at pages/Home/index.vue:553", "carouselSlides computed:", carouselSlides.value);
+    common_vendor.index.__f__("log", "at pages/Home/index.vue:306", "carouselSlides computed:", carouselSlides.value);
     const carouselConfig = {
       switchMode: "slide",
       // 切换模式: fade | slide
@@ -253,7 +234,6 @@ const _sfc_main = {
     const componentInstance = common_vendor.ref(null);
     const navigationHeight = common_vendor.ref(0);
     const isNavigationFixed = common_vendor.ref(false);
-    const isScrollMask = common_vendor.ref(false);
     const scrollTop = common_vendor.ref(0);
     const scrollMask = common_vendor.computed(() => {
       return scrollTop.value >= 150;
@@ -261,17 +241,16 @@ const _sfc_main = {
     const handleContentScroll = src_hooks_throttle.throttle((event) => {
       scrollTop.value = event.detail.scrollTop;
       isNavigationFixed.value = scrollTop.value > SCROLL_THRESHOLD;
-      isScrollMask.value = scrollTop.value >= 150;
     }, THROTTLE_DELAY.SCROLL);
     const calculateScrollViewHeight = () => {
       const windowInfo = common_vendor.index.getWindowInfo();
       return windowInfo.windowHeight - navigationHeight.value - statusBarHeight.value;
     };
     const handleNavigationClick = (navigationPath) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:720", `导航点击: ${navigationPath.text}`);
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:389", `导航点击: ${navigationPath.text}`);
     };
     const handleWelfareCardClick = (welfareItem) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:737", `福利卡片点击于: ${(/* @__PURE__ */ new Date()).toLocaleTimeString()}`, welfareItem.title);
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:398", `福利卡片点击于: ${(/* @__PURE__ */ new Date()).toLocaleTimeString()}`, welfareItem.title);
     };
     const handleSwiperChange = (event) => {
     };
@@ -280,7 +259,7 @@ const _sfc_main = {
         const result = await fetchInfinteClassList({ page: 1, limit: 10 });
         productList.value = [...result];
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/Home/index.vue:776", "获取无限列表数据失败:", error);
+        common_vendor.index.__f__("error", "at pages/Home/index.vue:423", "获取无限列表数据失败:", error);
       }
     };
     common_vendor.onMounted(() => {
@@ -296,13 +275,18 @@ const _sfc_main = {
     };
     const calculateNavigationHeight = () => {
       if (!componentInstance.value) {
-        common_vendor.index.__f__("warn", "at pages/Home/index.vue:832", "组件实例未准备就绪");
+        common_vendor.index.__f__("warn", "at pages/Home/index.vue:456", "组件实例未准备就绪");
         return;
       }
       const query = common_vendor.index.createSelectorQuery().in(componentInstance.value);
-      query.selectAll(".navigation-item").boundingClientRect((data) => {
+      query.selectAll(".navigation").boundingClientRect((data) => {
         if (data && data.length > 0) {
-          navigationHeight.value = data[0].height;
+          common_vendor.index.__f__("log", "at pages/Home/index.vue:465", data[0], "data[0]");
+          const result = data[0];
+          navigationHeight.value = result.height;
+          common_vendor.index.__f__("log", "at pages/Home/index.vue:468", "导航栏高度:", navigationHeight.value);
+        } else {
+          common_vendor.index.__f__("warn", "at pages/Home/index.vue:470", "未找到导航栏元素");
         }
       }).exec();
     };

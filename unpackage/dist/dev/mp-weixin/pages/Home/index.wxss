@@ -123,13 +123,14 @@
   mask-image: linear-gradient(to right, black 0%, black 60%, rgba(0, 0, 0, 0.8) 80%, rgba(0, 0, 0, 0) 100%);
   -webkit-mask-image: linear-gradient(to right, black 0%, black 60%, rgba(0, 0, 0, 0.8) 80%, rgba(0, 0, 0, 0) 100%);
 }
-.navigation-section.data-v-c8f6c59c {
+.navigation.data-v-c8f6c59c {
   width: 100%;
   height: 220rpx;
   display: flex;
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 10;
 }
 .frosted-transition.data-v-c8f6c59c {
   position: absolute;
@@ -151,7 +152,7 @@
 }
 }
 .frosted-transition.data-v-c8f6c59c {
-  top: 320rpx;
+  top: 380rpx;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.7) 30%, rgba(255, 255, 255, 0.3) 70%, rgba(255, 255, 255, 0) 100%);
   backdrop-filter: blur(5rpx);
   -webkit-backdrop-filter: blur(5rpx);
@@ -164,9 +165,7 @@
 }
 
 /**
-
 	 * 浮动动画 - 为导航图标添加生动效果
-
 	 */
 @keyframes float-c8f6c59c {
 0%, 100% {
@@ -182,9 +181,7 @@
 }
 
 /**
-
 	 * 小屏幕适配
-
 	 */
 @media screen and (max-width: 750rpx) {
 .welfare-section.data-v-c8f6c59c {
@@ -194,9 +191,7 @@
 }
 }
 /**
-
 	 * 超大屏幕适配
-
 	 */
 @media screen and (min-width: 1200rpx) {
 .home-container.data-v-c8f6c59c {
