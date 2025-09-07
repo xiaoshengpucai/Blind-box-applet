@@ -18,6 +18,10 @@
         @load="handleImageLoad"
         @error="handleImageError"
       />
+      <view class="label-Card">惊喜连连</view>
+      <view class="tag-Card">
+					<view class="tag" v-for="(item, index) in 7" :key="index"></view>
+				</view>
     </view>
     
     <!-- 商品信息 -->
@@ -175,7 +179,7 @@ const sizeConfigs = {
     cardHeight: 'auto',
     imageHeight: '360rpx',
     fontSize: '26rpx',
-    priceSize: '32rpx'
+    priceSize: '42rpx'
   },
   large: {
     cardWidth: '400rpx',
@@ -373,6 +377,56 @@ const handleActionClick = (action) => {
   width: 100%;
   overflow: hidden;
 }
+.label-Card {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 170rpx;
+			height: 55rpx;
+			background-color: #d33b2e;
+			color: #fff;
+			font-size: 32rpx;
+			font-weight: 800;
+			text-align: center;
+			line-height: 50rpx;
+			border-radius: 10rpx;
+			z-index: 2;
+
+			&::before {
+				content: '';
+				position: absolute;
+				width: 40rpx;
+				height: 40rpx;
+				right: -40rpx;
+				bottom: 0;
+				border: 0;
+				background-color: transparent;
+				border-bottom-left-radius: 30rpx;
+				box-shadow: -8px 8px 0 5px #d33b2e;
+			}
+		}
+    .tag-Card {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			width: 200rpx;
+			height: 40rpx;
+			border-radius: 10rpx;
+			background-color: #f7bf6c;
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			z-index: 1;
+
+			.tag {
+				width: 10rpx;
+				height: 10rpx;
+				margin-right: 13rpx;
+				background-color: #fff;
+				border-radius: 0;
+				transform: rotate(45deg);
+			}
+		}
 
 .product-tags {
   position: absolute;
@@ -435,7 +489,7 @@ const handleActionClick = (action) => {
 .price-container {
   display: flex;
   align-items: center;
-  margin-bottom: 10rpx;
+  // margin-bottom: 10rpx;
   
   .current-price {
     color: #e7717b;
@@ -445,7 +499,7 @@ const handleActionClick = (action) => {
   
   .original-price {
     color: #999;
-    font-size: 24rpx;
+    font-size: 30rpx;
     text-decoration: line-through;
   }
 }
@@ -453,7 +507,7 @@ const handleActionClick = (action) => {
 .product-title {
   font-weight: 500;
   line-height: 1.4;
-  margin-bottom: 10rpx;
+  // margin-bottom: 10rpx;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;

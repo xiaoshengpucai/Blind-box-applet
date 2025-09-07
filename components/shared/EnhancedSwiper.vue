@@ -370,26 +370,6 @@ const getSlideImage = (slide) => {
 		slide.image || '';
 };
 
-/**
- * 获取幻灯片样式
- * @param {number} index - 幻灯片索引
- * @returns {Object} 样式对象
- */
-// const getSlideStyle = (index) => {
-// 	const slide = props.slides[index];
-// 	const slideRadius = typeof props.slideRadius === 'number' ?
-// 		`${props.slideRadius}rpx` :
-// 		props.slideRadius;
-
-// 	return {
-// 		width: '100%',
-// 		height: '100%',
-// 		overflow: 'hidden',
-// 		borderRadius: slideRadius,
-// 		backfaceVisibility: 'hidden',
-// 		...(slide.style || {}) // 允许自定义样式
-// 	};
-// };
 
 /**
  * 跳转到指定幻灯片
@@ -558,7 +538,7 @@ watch(() => props.autoplay, (autoplay) => {
 	width: 65%;
 	height: 40rpx;
 	background-color: #cd4438;
-	margin-left: -16rpx;
+	margin-left: -13rpx;
 	margin-bottom: -7px;
 	border: 6px solid #cd4438;
 	border-bottom: 0;

@@ -349,7 +349,7 @@ const gridStyle = computed(() => {
 const displayProducts = computed(() => {
   return productList.value;
 });
-
+console.log('displayProducts', displayProducts.value);
 /**
  * 骨架屏样式
  */

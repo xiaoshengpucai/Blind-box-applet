@@ -9,12 +9,12 @@ export function useLayoutList() {
 	const isLoading = ref(false);
 	const error = ref(null);
 
-	const fetchInfinteClassList = async (params) => {
+	const fetchInfinteClassList = async (name, params) => {
 		isLoading.value = true;
 		error.value = null;
 		try {
 			// 这里调用的是从 api/layout-list.js 导入的 getInfinteClassList
-			const data = await getInfinteClassList(params);
+			const data = await getInfinteClassList(name,params);
 			infinteClassList.value = data;
 			console.log('Infinte Class List fetched via composable:', infinteClassList.value);
 			return infinteClassList.value;

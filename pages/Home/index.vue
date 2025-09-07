@@ -223,13 +223,13 @@ const handleSortSelection = (payload) => {
  */
 const navigationList = [{
 	id: 1,
-	text: '无限',
+	text: '无限赏',
 	path: 'infinite',
 	src: '../../static/nav-img/图层 4.png'
 },
 {
 	id: 2,
-	text: '热门',
+	text: '热门推荐',
 	path: 'hot',
 	src: '../../static/nav-img/图层 5.png'
 },
@@ -385,9 +385,19 @@ const calculateScrollViewHeight = () => {
  * 处理导航点击事件 - 重构为更清晰的函数名
  * @param {string} navigationPath - 导航路径
  */
+const currentNavigationPath = ref('');
+
 const handleNavigationClick = (navigationPath) => {
-	console.log(`导航点击: ${navigationPath.text}`);
+	// 避免频繁重复点击，如果传入的不变则不执行
+	if (currentNavigationPath.value === navigationPath.text) {
+		return;
+	}
+	
+	currentNavigationPath.value = navigationPath.text;
+	console.log(`导航点击:${currentNavigationPath.value}- ${navigationPath.text}`);
+
 	// TODO: 实现具体的导航跳转逻辑
+	getInfinteClassList(navigationPath.text)
 };
 
 /**
@@ -413,9 +423,13 @@ const handleSwiperChange = (event) => {
 /**
  * 获取无限列表类别
  */
-const getInfinteClassList = async () => {
+const getInfinteClassList = async (name) => {
+	const params = { page: 1, limit: 10 }
+	if(!name) {
+		name = '无限赏'
+	}
 	try {
-		const result = await fetchInfinteClassList({ page: 1, limit: 10 });
+		const result = await fetchInfinteClassList(name,params);
 		// 获取返回的数据
 		// 这里可以将数据赋值给响应式变量或进行其他处理
 		productList.value = [...result]; // 同时更新 productList

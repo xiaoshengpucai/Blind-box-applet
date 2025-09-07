@@ -1,4 +1,4 @@
-// import Mock from "better-mock";
+import Mock from "better-mock";
 // 判断当前环境是否为小程序
 // const isMiniProgram = typeof wx !== 'undefined' && typeof wx.request === 'function';
 
@@ -75,3 +75,65 @@ const DATA_LIST = {
 		}]
 	}
 }
+
+const DETAIL_DATA_LIST = {
+	"code": 200,
+	"msg": "success",
+	"data": [{
+			listId: 1,
+			title: '少女乐队的呐喊',
+			price: '1100',
+			level: '传说',
+			chance: 0.5,
+			src: 'https://q0.itc.cn/q_70/images03/20240819/15e51341a9364d7b8c9f631b458fb8b5.jpeg'
+		},
+		{
+			listId: 2,
+			title: '炽焰x笙歌 原神 女仆浴室共鸣系列 雷电将军',
+			price: '2599',
+			level: '超神',
+			chance: 0.5,
+			src: 'https://img1.baidu.com/it/u=3937103606,3676897764&fm=253&fmt=auto&app=120&f=JPEG?w=502&h=500'
+		},
+		{
+			listId: 3,
+			title: '原神 可莉·火花骑士Ver.1/7静态手办',
+			price: '2599',
+			level: '传说',
+			chance: 1,
+			src: 'https://img1.baidu.com/it/u=1636141268,890026111&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
+		},
+		{
+			listId: 4,
+			title: '集美殿堂 进击的巨人 艾伦耶格尔vs女巨人',
+			price: '7158',
+			level: '传说',
+			chance: 1,
+			src: 'https://img2.baidu.com/it/u=1357007271,1071071103&fm=253&fmt=auto&app=120&f=JPEG?w=503&h=500'
+		},
+		{
+			listId: 5,
+			title: 'coolbear studio三周年 尼尔机械纪元2B 豪华版',
+			price: '4680',
+			level: '传说',
+			chance: 2,
+			src: 'https://img0.baidu.com/it/u=478380046,1227329794&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500'
+		}, {
+			listId: 6,
+			title: '魔法少女贴纸',
+			price: '10',
+			level: '普通',
+			chance: 25,
+			src: 'https://img2.baidu.com/it/u=188958811,1450173967&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
+		}, {
+			listId: 7,
+			title: '原神贴纸',
+			price: '5',
+			level: '普通',
+			chance: 70,
+			src: 'https://img0.baidu.com/it/u=2809378840,1099363868&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
+		}
+	]
+};
+
+Mock.mock('http://localhost:3000/api/class/sublist', 'get', DETAIL_DATA_LIST)

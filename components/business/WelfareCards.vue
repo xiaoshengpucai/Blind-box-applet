@@ -165,7 +165,7 @@ const handleCardClick = (card) => {
   transform: skewX(-15deg);
   border-radius: 15px;
   position: relative;
-  left: -15rpx;
+  left: -20rpx;
 
   // ROLL卡片右侧阴影效果
   &::before {
@@ -174,7 +174,7 @@ const handleCardClick = (card) => {
     width: 160rpx;
     height: 100%;
     right: -32rpx;
-    top: -8rpx;
+    top: -7rpx;
     border-right: 8rpx solid #9d8bee;
     border-top: 8rpx solid #9d8bee;
     border-bottom: 8rpx solid #9d8bee;

@@ -4,9 +4,18 @@
  */
 import api from './index'
 
-export function getInfinteClassList(params = {}) {
-	return api.get('/class/class-list', params, {
-		cahche: false,
+export function getInfinteClassList(name, params = {}) {
+	console.log(name, params, '请求list列表')
+	return api.get(`/class/${name}`, params, {
+		cache: false,
+		cacheTime: 3 * 60 * 1000
+	})
+}
+
+export function getInfinteLListDetail(params) {
+	console.log(params, '请求list列表')
+	return api.get(`/class/sublist`,params,{
+		cache: true,
 		cacheTime: 3 * 60 * 1000
 	})
 }

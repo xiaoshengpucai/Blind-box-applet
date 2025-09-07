@@ -36,6 +36,7 @@
 	import { ref, computed, watch, onMounted } from 'vue';
 	import ProductList from '@/components/shared/ProductList.vue';
 	import api from '@/src/api/product.js';
+	import { getInfinteLListDetail } from '@/src/api/layout-list.js';
 
 	// ==================== Props定义 ====================
 	const props = defineProps({
@@ -132,14 +133,15 @@
 	 * 处理商品点击
 	 * @param {Object} product - 商品数据
 	 */
-	const handleProductClick = (product) => {
+	const handleProductClick = async (product) => {
 		console.log('商品点击:', product);
-		
-		// 兼容原有的导航逻辑
+		// getInfinteLListDetail(product.id)
 		const productId = product.id || product.uid;
+		const category = product.category;
+		// 兼容原有的导航逻辑
 		if (productId) {
 			uni.navigateTo({
-				url: `/pages/Home/detail?id=${productId}`
+				url: `/pages/Home/detail?id=${product.id}&&category=${category}`
 			});
 		}
 		

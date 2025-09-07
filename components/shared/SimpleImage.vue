@@ -59,6 +59,7 @@ const containerStyle = computed(() => {
   const width = typeof props.width === 'number' ? `${props.width}rpx` : props.width;
   const height = typeof props.height === 'number' ? `${props.height}rpx` : props.height;
   const borderRadius = typeof props.borderRadius === 'number' ? `${props.borderRadius}rpx` : props.borderRadius;
+  console.log('borderRadius', borderRadius);
   
   return {
     width,
@@ -98,7 +99,6 @@ const handleError = (e) => {
 <style lang="scss" scoped>
 .simple-image-container {
   display: inline-block;
-  // background-color: #f5f5f5;
 }
 
 .simple-image {
@@ -106,29 +106,4 @@ const handleError = (e) => {
 	width: 100%;
 	height: 100%;
 }
-// .simple-image {
-// 	display: block;
-// 	width: 100%;
-// 	height: 100%;
-// 	position: absolute;
-// 	opacity: 0.3;
-// 	transition: opacity 0.5s ease-in-out;
-// 	&.leaving {
-// 		opacity: 0.3;
-// 	}
-
-// 	&.entering {
-// 		opacity: 1;
-// 		animation: fadecirle 1s ease-in-out;
-// 	}
-// }
-
-// @keyframes fadecirle {
-//     0% {
-//         clip-path: circle(0% at 50% 50%);
-//     }
-//     100% {
-//         clip-path: circle(100% at 50% 50%);
-//     }
-// }
 </style>

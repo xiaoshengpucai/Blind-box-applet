@@ -78,7 +78,7 @@
 	const swiperWidth = '90%';
 	const swiperHeight = '350rpx';
 	const borderRadius = '0 20rpx 20rpx 20rpx';
-	const slideRadius = '20rpx';
+	const slideRadius = '5rpx';
 	const title = 'RECOMMENDED';
 	const headerIcon = 'gift-fill';
 	const imageField = 'imageUrl'; // 图片字段名，匹配轮播图数据结构
@@ -177,25 +177,6 @@
 		console.warn('轮播图图片加载失败:', data);
 		emit('image-error', data);
 	};
-
-	// ==================== 调试信息 ====================
-	/**
-	 * 输出调试信息
-	 */
-	// console.log('轮播图组件初始化:', {
-	// 	slideData: props.slide,
-	// 	slideCount: props.slide?.length,
-	// 	imageField: imageField,
-	// 	firstImageUrl: props.slide?.[0]?.[imageField] || props.slide?.[0]?.imageUrl,
-	// 	rawSlideData: JSON.stringify(props.slide),
-	// 	propsType: typeof props.slide,
-	// 	isArray: Array.isArray(props.slide),
-	// 	config: {
-	// 		switchModeL: props.switchModeL,
-	// 		circular: props.circular,
-	// 		autoplay: props.autoplay
-	// 	}
-	// });
 
 	// 监听props变化
 	watch(() => props.slide, (newSlide) => {

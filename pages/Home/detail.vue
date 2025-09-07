@@ -18,7 +18,7 @@
 			<view class="raffle-type" v-for="item,index in raffleList" :key="item.id"> 
 				<view class="raffle-title">
 					<view class="raffle-text">
-						{{item.title}}
+						{{item.price}}
 					</view>
 				</view>
 				<view class="raffle-price">
@@ -35,7 +35,8 @@
 		ref,
 		computed,
 		reactive,
-		getCurrentInstance
+		getCurrentInstance,
+		onMounted
 	} from 'vue';
 	import StatusBar from '@/components/status-bar';
 	import {
@@ -47,6 +48,7 @@
 	} from '@dcloudio/uni-app';
 	import chlidSwiperVue from './componets/chlid-swiper.vue';
 	import previewVue from './componets/preview.vue';
+	import { getInfinteLListDetail } from '@/src/api/layout-list.js';
 	// 状态栏高度，采用更符合规范的命名
 	const statusBarHeight = ref(0);
 	const handleGetBarHeight = (data) => {
@@ -58,75 +60,78 @@
 	const autoPlay = ref(true); // 是否自动播放
 	const autoPlayInterval = ref(3000); // 自动播放间隔(毫秒)
 
-	const datalist = [{
-			listId: 1,
-			title: '少女乐队的呐喊',
-			price: '1100',
-			level: '传说',
-			chance: 0.5,
-			src: 'https://q0.itc.cn/q_70/images03/20240819/15e51341a9364d7b8c9f631b458fb8b5.jpeg'
-		},
-		{
-			listId: 2,
-			title: '炽焰x笙歌 原神 女仆浴室共鸣系列 雷电将军',
-			price: '2599',
-			level: '超神',
-			chance: 0.5,
-			src: 'https://img1.baidu.com/it/u=3937103606,3676897764&fm=253&fmt=auto&app=120&f=JPEG?w=502&h=500'
-		},
-		{
-			listId: 3,
-			title: '原神 可莉·火花骑士Ver.1/7静态手办',
-			price: '2599',
-			level: '传说',
-			chance: 1,
-			src: 'https://img1.baidu.com/it/u=1636141268,890026111&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
-		},
-		{
-			listId: 4,
-			title: '集美殿堂 进击的巨人 艾伦耶格尔vs女巨人',
-			price: '7158',
-			level: '传说',
-			chance: 1,
-			src: 'https://img2.baidu.com/it/u=1357007271,1071071103&fm=253&fmt=auto&app=120&f=JPEG?w=503&h=500'
-		},
-		{
-			listId: 5,
-			title: 'coolbear studio三周年 尼尔机械纪元2B 豪华版',
-			price: '4680',
-			level: '传说',
-			chance: 2,
-			src: 'https://img0.baidu.com/it/u=478380046,1227329794&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500'
-		}, {
-			listId: 6,
-			title: '魔法少女贴纸',
-			price: '10',
-			level: '普通',
-			chance: 25,
-			src: 'https://img2.baidu.com/it/u=188958811,1450173967&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
-		}, {
-			listId: 7,
-			title: '原神贴纸',
-			price: '5',
-			level: '普通',
-			chance: 70,
-			src: 'https://img0.baidu.com/it/u=2809378840,1099363868&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
-		}
-	];
+	// const datalist = [{
+	// 		listId: 1,
+	// 		title: '少女乐队的呐喊',
+	// 		price: '1100',
+	// 		level: '传说',
+	// 		chance: 0.5,
+	// 		src: 'https://q0.itc.cn/q_70/images03/20240819/15e51341a9364d7b8c9f631b458fb8b5.jpeg'
+	// 	},
+	// 	{
+	// 		listId: 2,
+	// 		title: '炽焰x笙歌 原神 女仆浴室共鸣系列 雷电将军',
+	// 		price: '2599',
+	// 		level: '超神',
+	// 		chance: 0.5,
+	// 		src: 'https://img1.baidu.com/it/u=3937103606,3676897764&fm=253&fmt=auto&app=120&f=JPEG?w=502&h=500'
+	// 	},
+	// 	{
+	// 		listId: 3,
+	// 		title: '原神 可莉·火花骑士Ver.1/7静态手办',
+	// 		price: '2599',
+	// 		level: '传说',
+	// 		chance: 1,
+	// 		src: 'https://img1.baidu.com/it/u=1636141268,890026111&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
+	// 	},
+	// 	{
+	// 		listId: 4,
+	// 		title: '集美殿堂 进击的巨人 艾伦耶格尔vs女巨人',
+	// 		price: '7158',
+	// 		level: '传说',
+	// 		chance: 1,
+	// 		src: 'https://img2.baidu.com/it/u=1357007271,1071071103&fm=253&fmt=auto&app=120&f=JPEG?w=503&h=500'
+	// 	},
+	// 	{
+	// 		listId: 5,
+	// 		title: 'coolbear studio三周年 尼尔机械纪元2B 豪华版',
+	// 		price: '4680',
+	// 		level: '传说',
+	// 		chance: 2,
+	// 		src: 'https://img0.baidu.com/it/u=478380046,1227329794&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500'
+	// 	}, {
+	// 		listId: 6,
+	// 		title: '魔法少女贴纸',
+	// 		price: '10',
+	// 		level: '普通',
+	// 		chance: 25,
+	// 		src: 'https://img2.baidu.com/it/u=188958811,1450173967&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
+	// 	}, {
+	// 		listId: 7,
+	// 		title: '原神贴纸',
+	// 		price: '5',
+	// 		level: '普通',
+	// 		chance: 70,
+	// 		src: 'https://img0.baidu.com/it/u=2809378840,1099363868&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
+	// 	}
+	// ];
+
+
+	const datalist = ref([]);
 
 	const levelList = [{
-			level: "超神",
-			chance: 1,
+			grade: "超神",
+			probability: 1,
 			sort: 1
 		},
 		{
-			level: "传说",
-			chance: 4,
+			grade: "传说",
+			probability: 4,
 			sort: 2
 		},
 		{
-			level: "普通",
-			chance: 95,
+			grade: "普通",
+			probability: 95,
 			sort: 3
 		}
 	]
@@ -134,6 +139,7 @@
 	// // 计算属性 - 显示的轮播图列表（包含复制项）
 
 	const calssid = ref(0);
+	const category = ref('');
 	// 无需导入 onLoad，直接使用
 	const instanceRef = ref(null)
 	const tabClassShow = ref(false)
@@ -144,22 +150,26 @@
 	};
 	handleScroll()
 
-	onReady(() => {
+	onReady(async () => {
 		console.log('页面初次渲染完成时触发');
 		instanceRef.value = getCurrentInstance()?.proxy;
 		const query = uni.createSelectorQuery().in(instanceRef.value);
 	});
-	onLoad((option) => {
+	onLoad(async (option) => {
 		console.log(option, 'option');
 		calssid.value = option.id;
-
+		category.value = option.category;
+		const result = await getInfinteLListDetail({category:category.value})
+		datalist.value = result;
+		console.log('datalist', datalist.value);
 		//接收子组件传值
 		const handleData = (data) => {
 			console.log(data, 'data');
 		};
 	});
-	
-	
+	onMounted(async () => {
+		
+	})
 	const raffleList = [
 		{
 			id: 1,

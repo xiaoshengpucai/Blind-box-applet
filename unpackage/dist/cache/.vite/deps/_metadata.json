@@ -2,24 +2,30 @@
   "hash": "d3e42633",
   "configHash": "9916baaf",
   "lockfileHash": "95706590",
-  "browserHash": "90baf291",
+  "browserHash": "f7bc7f16",
   "optimized": {
     "uview-plus": {
       "src": "../../../../../node_modules/uview-plus/index.js",
       "file": "uview-plus.js",
-      "fileHash": "9de50a73",
+      "fileHash": "de26ae6e",
       "needsInterop": false
     },
     "axios": {
       "src": "../../../../../node_modules/axios/index.js",
       "file": "axios.js",
-      "fileHash": "c38edfcd",
+      "fileHash": "b8ccce47",
       "needsInterop": false
     },
     "axios-miniprogram-adapter": {
       "src": "../../../../../node_modules/axios-miniprogram-adapter/dist/index.esm.js",
       "file": "axios-miniprogram-adapter.js",
-      "fileHash": "65ab7979",
+      "fileHash": "04c42e16",
+      "needsInterop": false
+    },
+    "better-mock": {
+      "src": "../../../../../node_modules/better-mock/dist/mock.browser.esm.js",
+      "file": "better-mock.js",
+      "fileHash": "9529883d",
       "needsInterop": false
     }
   },
