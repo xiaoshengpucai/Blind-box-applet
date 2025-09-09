@@ -56,12 +56,10 @@ const _sfc_main = {
       common_vendor.index.createSelectorQuery().in(instanceRef.value);
     });
     common_vendor.onLoad(async (option) => {
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:102", option, "option");
       calssid.value = option.id;
       category.value = option.category;
       const result = await src_api_layoutList.getInfinteLListDetail({ category: category.value });
       datalist.value = result;
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:107", "datalist", datalist.value);
     });
     common_vendor.onMounted(async () => {
     });
@@ -86,13 +84,13 @@ const _sfc_main = {
       }
     ];
     common_vendor.onShow(() => {
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:139", "页面显示时触发");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:137", "页面显示时触发");
     });
     common_vendor.onHide(() => {
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:143", "页面隐藏时触发");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:141", "页面隐藏时触发");
     });
     common_vendor.onUnload(() => {
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:146", "页面销毁");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:144", "页面销毁");
     });
     const back = () => {
       let pages = getCurrentPages();

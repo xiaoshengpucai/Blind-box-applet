@@ -10,18 +10,15 @@ const getBaseUrl = () => {
     // 将端口号 :3000 加回来
   };
   const platform = common_vendor.index.getSystemInfoSync().platform;
-  common_vendor.index.__f__("log", "at src/api/index.js:32", `[API Setup] Running in development mode on platform: ${platform}`);
   if (platform === "devtools") {
     const apiUrl = define_import_meta_env_default.VITE_API_BASE_URL_DEVTOOLS || fallbacks.devtools;
-    common_vendor.index.__f__("log", "at src/api/index.js:37", `[API Setup] Devtools API_URL: ${apiUrl}`);
     return apiUrl;
   } else {
     const apiUrl = define_import_meta_env_default.VITE_API_BASE_URL_DEVICE || fallbacks.device;
-    common_vendor.index.__f__("log", "at src/api/index.js:42", `[API Setup] Device API_URL: ${apiUrl}`);
     return apiUrl;
   }
 };
-common_vendor.index.__f__("log", "at src/api/index.js:46", getBaseUrl(), "----------------------------------------getBaseUrl");
+common_vendor.index.__f__("log", "at src/api/index.js:42", getBaseUrl(), "----------------------------------------getBaseUrl");
 const API_CONFIG = {
   BASE_URL: `${getBaseUrl()}`,
   TIMEOUT: 1e4,
@@ -113,7 +110,7 @@ const retryRequest = async (requestFn, retries = API_CONFIG.RETRY_TIMES, delay =
     return await requestFn();
   } catch (error) {
     if (retries > 0 && isRetryableError(error)) {
-      common_vendor.index.__f__("log", "at src/api/index.js:163", `请求失败，${delay}ms后进行第${API_CONFIG.RETRY_TIMES - retries + 1}次重试`);
+      common_vendor.index.__f__("log", "at src/api/index.js:159", `请求失败，${delay}ms后进行第${API_CONFIG.RETRY_TIMES - retries + 1}次重试`);
       await new Promise((resolve) => setTimeout(resolve, delay));
       return retryRequest(requestFn, retries - 1, delay * 1.5);
     }
@@ -128,11 +125,11 @@ service.interceptors.request.use(
     var _a;
     config.metadata = { startTime: Date.now() };
     config.requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    common_vendor.index.__f__("log", "at src/api/index.js:192", `[API Request] ${API_CONFIG.BASE_URL} ${config.requestId}: ${(_a = config.method) == null ? void 0 : _a.toUpperCase()} ${config.url}`);
+    common_vendor.index.__f__("log", "at src/api/index.js:188", `[API Request] ${API_CONFIG.BASE_URL} ${config.requestId}: ${(_a = config.method) == null ? void 0 : _a.toUpperCase()} ${config.url}`);
     return config;
   },
   (error) => {
-    common_vendor.index.__f__("error", "at src/api/index.js:197", "[API Request Error]:", error);
+    common_vendor.index.__f__("error", "at src/api/index.js:193", "[API Request Error]:", error);
     return Promise.reject(error);
   }
 );
@@ -140,7 +137,7 @@ service.interceptors.response.use(
   (response) => {
     const { config } = response;
     const duration = Date.now() - config.metadata.startTime;
-    common_vendor.index.__f__("log", "at src/api/index.js:208", `[API Response] ${config.requestId}: ${response.status} (${duration}ms)`);
+    common_vendor.index.__f__("log", "at src/api/index.js:204", `[API Response] ${config.requestId}: ${response.status} (${duration}ms)`);
     const { data } = response;
     if (data.status === 200 || data.code === 200 || data.success) {
       return data.data || data.result || data;
@@ -151,7 +148,7 @@ service.interceptors.response.use(
   (error) => {
     const { config } = error;
     const duration = (config == null ? void 0 : config.metadata) ? Date.now() - config.metadata.startTime : 0;
-    common_vendor.index.__f__("error", "at src/api/index.js:225", `[API Error] ${config == null ? void 0 : config.requestId}: ${error.message} (${duration}ms)`);
+    common_vendor.index.__f__("error", "at src/api/index.js:221", `[API Error] ${config == null ? void 0 : config.requestId}: ${error.message} (${duration}ms)`);
     let errorMessage = "网络请求失败";
     if (error.response) {
       const { status, data } = error.response;
@@ -197,7 +194,7 @@ const request = async (options) => {
   } = options;
   const cacheKey = apiCache.generateKey(url, { ...params, ...data });
   if (method.toUpperCase() === "GET" && cache && apiCache.has(cacheKey)) {
-    common_vendor.index.__f__("log", "at src/api/index.js:289", `[API Cache Hit] ${url}`);
+    common_vendor.index.__f__("log", "at src/api/index.js:285", `[API Cache Hit] ${url}`);
     return apiCache.get(cacheKey);
   }
   const requestFn = () => service({

@@ -180,9 +180,16 @@ const _sfc_main = {
       `product-list-${props.layout}`,
       props.customClass
     ]);
-    const listStyle = common_vendor.computed(() => ({
-      ...props.customStyle
-    }));
+    const listStyle = common_vendor.computed(() => {
+      const style = { ...props.customStyle };
+      const systemInfo = common_vendor.index.getSystemInfoSync();
+      if (systemInfo.safeAreaInsets && systemInfo.safeAreaInsets.bottom > 0) {
+        const safeAreaBottomRpx = systemInfo.safeAreaInsets.bottom * 2 + 60;
+        const currentPaddingBottom = style.paddingBottom ? parseInt(style.paddingBottom) : 0;
+        style.paddingBottom = `${currentPaddingBottom + safeAreaBottomRpx}rpx`;
+      }
+      return style;
+    });
     const gridStyle = common_vendor.computed(() => {
       const gap = typeof props.gap === "number" ? `${props.gap}rpx` : props.gap;
       if (props.layout === "grid") {
@@ -190,7 +197,8 @@ const _sfc_main = {
           display: "grid",
           gridTemplateColumns: `repeat(${props.columns}, 1fr)`,
           gap: `${gap} 10rpx`,
-          padding: `0rpx ${gap}`
+          padding: `0rpx ${gap}`,
+          background: "#F5F5F5"
         };
       }
       if (props.layout === "list") {
@@ -211,7 +219,7 @@ const _sfc_main = {
     const displayProducts = common_vendor.computed(() => {
       return productList.value;
     });
-    common_vendor.index.__f__("log", "at components/shared/ProductList.vue:352", "displayProducts", displayProducts.value);
+    common_vendor.index.__f__("log", "at components/shared/ProductList.vue:367", "displayProducts", displayProducts.value);
     const skeletonStyle = common_vendor.computed(() => {
       if (props.layout === "grid") {
         return {

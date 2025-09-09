@@ -17,13 +17,10 @@
 		},
 		{
 			"path": "pages/Home/index",
-			"pullDownRefresh": {
-				"color": "#007aff",
-				"style": "default"
-			},
 			"style": {
 				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": false
 			}
 		},
 		{

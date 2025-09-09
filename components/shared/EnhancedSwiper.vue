@@ -538,7 +538,7 @@ watch(() => props.autoplay, (autoplay) => {
 	width: 65%;
 	height: 40rpx;
 	background-color: #cd4438;
-	margin-left: -13rpx;
+	margin-left: -15rpx;
 	margin-bottom: -7px;
 	border: 6px solid #cd4438;
 	border-bottom: 0;

@@ -14,7 +14,7 @@
 				<preview-vue :datalist="datalist" :level-list="levelList"></preview-vue>
 			</view>
 		</view>
-		<view class="raffle">
+		<view class="raffle" >
 			<view class="raffle-type" v-for="item,index in raffleList" :key="item.id"> 
 				<view class="raffle-title">
 					<view class="raffle-text">
@@ -99,12 +99,10 @@
 		const query = uni.createSelectorQuery().in(instanceRef.value);
 	});
 	onLoad(async (option) => {
-		console.log(option, 'option');
 		calssid.value = option.id;
 		category.value = option.category;
 		const result = await getInfinteLListDetail({category:category.value})
 		datalist.value = result;
-		console.log('datalist', datalist.value);
 		//接收子组件传值
 		const handleData = (data) => {
 			console.log(data, 'data');

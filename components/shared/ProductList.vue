@@ -306,9 +306,23 @@ const listClasses = computed(() => [
 /**
  * 列表样式
  */
-const listStyle = computed(() => ({
-  ...props.customStyle
-}));
+const listStyle = computed(() => {
+  const style = { ...props.customStyle };
+  
+  // 适配iPhone等设备底部安全区域
+  // #ifdef APP-PLUS || MP-WEIXIN
+  const systemInfo = uni.getSystemInfoSync();
+  if (systemInfo.safeAreaInsets && systemInfo.safeAreaInsets.bottom > 0) {
+    // 将安全区域高度转换为rpx（大约 * 2）
+    const safeAreaBottomRpx = systemInfo.safeAreaInsets.bottom * 2+60;
+    // 在现有的padding-bottom基础上增加安全区域高度
+    const currentPaddingBottom = style.paddingBottom ? parseInt(style.paddingBottom) : 0;
+    style.paddingBottom = `${currentPaddingBottom + safeAreaBottomRpx}rpx`;
+  }
+  // #endif
+
+  return style;
+});
 
 /**
  * 网格样式
@@ -321,7 +335,8 @@ const gridStyle = computed(() => {
       display: 'grid',
       gridTemplateColumns: `repeat(${props.columns}, 1fr)`,
       gap:`${gap} 10rpx`,
-      padding: `0rpx ${gap}`
+      padding: `0rpx ${gap}`,
+      background:'#F5F5F5'
     };
   }
   
@@ -439,8 +454,8 @@ watch(() => props.products, (newProducts) => {
 <style lang="scss" scoped>
 .product-list {
   width: 100%;
-  background-color: #f5f5f5;
-  
+  background-color: #fff;
+  padding-bottom: 100rpx;
   &-grid {
     // Grid布局已在计算属性中定义
   }

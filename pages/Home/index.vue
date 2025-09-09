@@ -34,7 +34,15 @@
 		</view>
 		<!-- 主内容区域 -->
 		<view class="main-content" :style="{ paddingTop: navigationHeight + 'px' }">
-			<scroll-view scroll-y @scroll="handleContentScroll" :style="{ height: calculateScrollViewHeight() + 'px' }">
+			<scroll-view 
+				scroll-y 
+				@scroll="handleContentScroll" 
+				:style="{ height: calculateScrollViewHeight() + 'px' }"
+				refresher-enabled="true"
+				:refresher-triggered="isRefreshing"
+				@refresherrefresh="handleRefresherRefresh"
+				@scrolltolower="handleScrollToLower"
+			>
 				
 				<!-- 轮播图区域 -->
 				<view class="carousel-section">
@@ -51,6 +59,12 @@
 				</view>
 				<!-- 商品列表组件 -->
 				<TrendyTabVue :productList="productList"></TrendyTabVue>
+				
+				<!-- 加载更多提示 -->
+				<view class="load-more-indicator">
+					<view v-if="isLoadingMore">正在加载更多...</view>
+					<view v-else-if="!hasMore && productList.length > 0">--- 没有更多数据了 ---</view>
+				</view>
 			</scroll-view>
 		</view>
 	</view>
@@ -111,6 +125,12 @@ const sortOptions = ref([{
 
 const backgroundImage = BACKGROUND_IMAGE_URL;
 const isRefreshing = ref(false);
+
+// --- 新增分页状态 ---
+const currentPage = ref(1); // 当前页码
+const hasMore = ref(true); // 是否还有更多数据
+const isLoadingMore = ref(false); // 是否正在加载更多
+
 // 页面全局点击事件处理 - 优化节流延迟并增加注释
 const handlePageClick = throttle(() => {
 	// 如果筛选下拉框未显示，直接返回，避免不必要的操作
@@ -312,7 +332,7 @@ console.log('carouselSlides computed:', carouselSlides.value);
  * 轮播图配置参数 - 集中管理配置项
  */
 const carouselConfig = {
-	switchMode: 'slide', // 切换模式: fade | slide
+	switchMode: 'fade', // 切换模式: fade | slide
 	showIndicators: false, // 是否显示指示点
 	autoplay: true, // 是否自动播放
 	interval: 4000, // 自动播放间隔时间(ms)
@@ -399,8 +419,10 @@ const handleNavigationClick = (navigationPath) => {
 	currentNavigationPath.value = navigationPath.text;
 	console.log(`导航点击:${currentNavigationPath.value}- ${navigationPath.text}`);
 
-	// TODO: 实现具体的导航跳转逻辑
-	getInfinteClassList(navigationPath.text)
+	// 重置分页状态并重新加载数据
+	currentPage.value = 1;
+	hasMore.value = true;
+	getInfinteClassList(navigationPath.text, false);
 };
 
 /**
@@ -426,18 +448,46 @@ const handleSwiperChange = (event) => {
 /**
  * 获取无限列表类别
  */
-const getInfinteClassList = async (name) => {
-	const params = { page: 1, limit: 10 }
+const getInfinteClassList = async (name, isLoadMore = false) => {
 	if (!name) {
-		name = '无限赏'
+		name = currentNavigationPath.value || '无限赏'
 	}
+	
+	// 如果没有更多数据了，或者正在加载中，则直接返回
+	if (!hasMore.value && isLoadMore) return;
+	if (isLoadingMore.value && isLoadMore) return;
+
+	if (isLoadMore) {
+		isLoadingMore.value = true;
+	}
+
+	const params = { page: currentPage.value, limit: 10 }
 	try {
 		const result = await fetchInfinteClassList(name, params);
-		// 获取返回的数据
-		// 这里可以将数据赋值给响应式变量或进行其他处理
-		productList.value = [...result]; // 同时更新 productList
+		
+		if (result && result.length > 0) {
+			if (isLoadMore) {
+				// 加载更多，追加数据
+				productList.value = [...productList.value, ...result];
+			} else {
+				// 首次加载或刷新，替换数据
+				productList.value = [...result];
+			}
+			// 如果返回的数据量小于请求的 limit，说明没有更多了
+			if (result.length < params.limit) {
+				hasMore.value = false;
+			}
+		} else {
+			// 如果返回空数组，说明没有更多了
+			hasMore.value = false;
+		}
 	} catch (error) {
 		console.error('获取无限列表数据失败:', error);
+		hasMore.value = false; // 出错时也标记为没有更多，防止无限触发
+	} finally {
+		if (isLoadMore) {
+			isLoadingMore.value = false;
+		}
 	}
 }
 
@@ -470,7 +520,6 @@ const initializeComponent = () => {
  */
 const calculateNavigationHeight = () => {
 	if (!componentInstance.value) {
-		console.warn('组件实例未准备就绪');
 		return;
 	}
 
@@ -482,7 +531,6 @@ const calculateNavigationHeight = () => {
 				console.log(data[0], "data[0]");
 				const result = data[0]
 				navigationHeight.value = result.height
-				console.log('导航栏高度:', navigationHeight.value);
 			} else {
 				console.warn('未找到导航栏元素');
 			}
@@ -490,31 +538,23 @@ const calculateNavigationHeight = () => {
 		.exec();
 };
 
-onPullDownRefresh(async () => {
-	console.log('下拉刷新开始');
+/**
+ * scroll-view 自定义下拉刷新触发函数
+ */
+const handleRefresherRefresh = async () => {
+	console.log('自定义下拉刷新开始');
+	if (isRefreshing.value) return; // 防止重复触发
 	isRefreshing.value = true;
 	
 	try {
-		// 显示刷新提示
-		uni.showLoading({
-			title: '正在刷新...',
-			mask: true
-		});
+		// 重置分页状态
+		currentPage.value = 1;
+		hasMore.value = true;
 		
 		// 重新获取数据
-		await getInfinteClassList();
+		await getInfinteClassList(currentNavigationPath.value, false);
 		
-		// 模拟网络延迟，提供更好的用户体验
-		await new Promise(resolve => setTimeout(resolve, 800));
-		
-		console.log('下拉刷新完成');
-		
-		// 显示成功提示
-		uni.showToast({
-			title: '刷新成功',
-			icon: 'success',
-			duration: 1500
-		});
+		console.log('自定义下拉刷新完成');
 		
 	} catch (error) {
 		console.error('下拉刷新失败:', error);
@@ -524,13 +564,25 @@ onPullDownRefresh(async () => {
 			duration: 2000
 		});
 	} finally {
+		// 结束下拉刷新动画
 		isRefreshing.value = false;
-		uni.hideLoading();
-		// 停止下拉刷新动画
-		uni.stopPullDownRefresh();
 	}
+};
+
+onPullDownRefresh(async () => {
+	console.log('页面下拉刷新 (此功能已由scroll-view替代)');
+	// 建议保留一个空实现或直接移除，以scroll-view的刷新为主
+	uni.stopPullDownRefresh();
 });
 
+/**
+ * 处理滚动到底部事件
+ */
+const handleScrollToLower = async () => {
+	console.log('滑到底部，加载更多...');
+	currentPage.value++;
+	await getInfinteClassList(currentNavigationPath.value, true);
+};
 
 
 </script>

@@ -23,23 +23,19 @@ const getBaseUrl = () => {
   // 1. 首先判断是否为生产环境
   if (isProduction) {
     const apiUrl = import.meta.env.VITE_API_BASE_URL || fallbacks.production;
-    console.log(`[API Setup] Running in production mode. API_URL: ${apiUrl}`);
     return apiUrl;
   }
 
   // 2. 如果是开发环境，再判断运行平台
   const platform = uni.getSystemInfoSync().platform;
-  console.log(`[API Setup] Running in development mode on platform: ${platform}`);
   
   if (platform === 'devtools') {
     // 本地开发环境 (微信开发者工具模拟器)
     const apiUrl = import.meta.env.VITE_API_BASE_URL_DEVTOOLS || fallbacks.devtools;
-    console.log(`[API Setup] Devtools API_URL: ${apiUrl}`);
     return apiUrl;
   } else {
     // 真机调试 ('ios' or 'android')
     const apiUrl = import.meta.env.VITE_API_BASE_URL_DEVICE || fallbacks.device;
-    console.log(`[API Setup] Device API_URL: ${apiUrl}`);
     return apiUrl;
   }
 };
