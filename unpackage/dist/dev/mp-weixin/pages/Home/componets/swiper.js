@@ -7,7 +7,7 @@ const EnhancedSwiper = () => "../../../components/shared/EnhancedSwiper.js";
 const swiperWidth = "90%";
 const swiperHeight = "350rpx";
 const borderRadius = "0 20rpx 20rpx 20rpx";
-const slideRadius = "20rpx";
+const slideRadius = "5rpx";
 const title = "RECOMMENDED";
 const headerIcon = "gift-fill";
 const imageField = "imageUrl";

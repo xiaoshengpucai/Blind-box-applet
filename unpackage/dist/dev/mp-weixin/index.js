@@ -48,6 +48,7 @@ const _sfc_main = {
       }
     ]);
     const backgroundImage = BACKGROUND_IMAGE_URL;
+    const isRefreshing = common_vendor.ref(false);
     const handlePageClick = src_hooks_throttle.throttle(() => {
       if (!isFilterDropdownVisible.value)
         return;
@@ -55,7 +56,7 @@ const _sfc_main = {
     }, THROTTLE_DELAY.PAGE_CLICK);
     const statusBarHeight = common_vendor.ref(0);
     const handleStatusBarHeight = (height) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:129", height, "height----------------");
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:132", height, "height----------------");
       statusBarHeight.value = height;
     };
     const isFilterDropdownVisible = common_vendor.ref(false);
@@ -112,13 +113,13 @@ const _sfc_main = {
     const navigationList = [
       {
         id: 1,
-        text: "无限",
+        text: "无限赏",
         path: "infinite",
         src: "../../static/nav-img/图层 4.png"
       },
       {
         id: 2,
-        text: "热门",
+        text: "热门推荐",
         path: "hot",
         src: "../../static/nav-img/图层 5.png"
       },
@@ -177,7 +178,7 @@ const _sfc_main = {
     ]);
     const carouselSlides = common_vendor.computed(() => {
       const slides = carouselData.value;
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:298", "carouselSlides computed:", {
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:301", "carouselSlides computed:", {
         slides,
         length: slides == null ? void 0 : slides.length,
         isArray: Array.isArray(slides),
@@ -185,7 +186,7 @@ const _sfc_main = {
       });
       return slides;
     });
-    common_vendor.index.__f__("log", "at pages/Home/index.vue:306", "carouselSlides computed:", carouselSlides.value);
+    common_vendor.index.__f__("log", "at pages/Home/index.vue:309", "carouselSlides computed:", carouselSlides.value);
     const carouselConfig = {
       switchMode: "slide",
       // 切换模式: fade | slide
@@ -246,20 +247,30 @@ const _sfc_main = {
       const windowInfo = common_vendor.index.getWindowInfo();
       return windowInfo.windowHeight - navigationHeight.value - statusBarHeight.value;
     };
+    const currentNavigationPath = common_vendor.ref("");
     const handleNavigationClick = (navigationPath) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:389", `导航点击: ${navigationPath.text}`);
+      if (currentNavigationPath.value === navigationPath.text) {
+        return;
+      }
+      currentNavigationPath.value = navigationPath.text;
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:400", `导航点击:${currentNavigationPath.value}- ${navigationPath.text}`);
+      getInfinteClassList(navigationPath.text);
     };
     const handleWelfareCardClick = (welfareItem) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:398", `福利卡片点击于: ${(/* @__PURE__ */ new Date()).toLocaleTimeString()}`, welfareItem.title);
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:411", `福利卡片点击于: ${(/* @__PURE__ */ new Date()).toLocaleTimeString()}`, welfareItem.title);
     };
     const handleSwiperChange = (event) => {
     };
-    const getInfinteClassList = async () => {
+    const getInfinteClassList = async (name) => {
+      const params = { page: 1, limit: 10 };
+      if (!name) {
+        name = "无限赏";
+      }
       try {
-        const result = await fetchInfinteClassList({ page: 1, limit: 10 });
+        const result = await fetchInfinteClassList(name, params);
         productList.value = [...result];
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/Home/index.vue:423", "获取无限列表数据失败:", error);
+        common_vendor.index.__f__("error", "at pages/Home/index.vue:440", "获取无限列表数据失败:", error);
       }
     };
     common_vendor.onMounted(() => {
@@ -275,21 +286,50 @@ const _sfc_main = {
     };
     const calculateNavigationHeight = () => {
       if (!componentInstance.value) {
-        common_vendor.index.__f__("warn", "at pages/Home/index.vue:456", "组件实例未准备就绪");
+        common_vendor.index.__f__("warn", "at pages/Home/index.vue:473", "组件实例未准备就绪");
         return;
       }
       const query = common_vendor.index.createSelectorQuery().in(componentInstance.value);
       query.selectAll(".navigation").boundingClientRect((data) => {
         if (data && data.length > 0) {
-          common_vendor.index.__f__("log", "at pages/Home/index.vue:465", data[0], "data[0]");
+          common_vendor.index.__f__("log", "at pages/Home/index.vue:482", data[0], "data[0]");
           const result = data[0];
           navigationHeight.value = result.height;
-          common_vendor.index.__f__("log", "at pages/Home/index.vue:468", "导航栏高度:", navigationHeight.value);
+          common_vendor.index.__f__("log", "at pages/Home/index.vue:485", "导航栏高度:", navigationHeight.value);
         } else {
-          common_vendor.index.__f__("warn", "at pages/Home/index.vue:470", "未找到导航栏元素");
+          common_vendor.index.__f__("warn", "at pages/Home/index.vue:487", "未找到导航栏元素");
         }
       }).exec();
     };
+    common_vendor.onPullDownRefresh(async () => {
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:494", "下拉刷新开始");
+      isRefreshing.value = true;
+      try {
+        common_vendor.index.showLoading({
+          title: "正在刷新...",
+          mask: true
+        });
+        await getInfinteClassList();
+        await new Promise((resolve) => setTimeout(resolve, 800));
+        common_vendor.index.__f__("log", "at pages/Home/index.vue:510", "下拉刷新完成");
+        common_vendor.index.showToast({
+          title: "刷新成功",
+          icon: "success",
+          duration: 1500
+        });
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/Home/index.vue:520", "下拉刷新失败:", error);
+        common_vendor.index.showToast({
+          title: "刷新失败，请重试",
+          icon: "none",
+          duration: 2e3
+        });
+      } finally {
+        isRefreshing.value = false;
+        common_vendor.index.hideLoading();
+        common_vendor.index.stopPullDownRefresh();
+      }
+    });
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.o(common_vendor.unref(handleFilterToggle)),

@@ -23,17 +23,19 @@
 			<image class="background-image" :src="backgroundImage" mode="aspectFill"></image>
 		</view>
 		<!-- 导航图标区域 -->
-		 <view class="navigation">
+		<view class="navigation">
 			<NavigationIcons :statusBarHeight="statusBarHeight" :navigationList="navigationList"
-			@navigation-click="handleNavigationClick" :isFixed="isNavigationFixed" :scrollThreshold="500"
-			:containerHeight="220" />
-		 </view>
+				@navigation-click="handleNavigationClick" :isFixed="isNavigationFixed" :scrollThreshold="500"
+				:containerHeight="220" />
+		</view>
 
 		<!-- 滚动蒙层 -->
-		<view class="frosted-transition" :style="{top: statusBarHeight+navigationHeight-10+'px'}"	 v-if="scrollMask"></view>
+		<view class="frosted-transition" :style="{ top: statusBarHeight + navigationHeight - 10 + 'px' }" v-if="scrollMask">
+		</view>
 		<!-- 主内容区域 -->
 		<view class="main-content" :style="{ paddingTop: navigationHeight + 'px' }">
 			<scroll-view scroll-y @scroll="handleContentScroll" :style="{ height: calculateScrollViewHeight() + 'px' }">
+				
 				<!-- 轮播图区域 -->
 				<view class="carousel-section">
 					<!-- 使用原始数据 -->
@@ -63,6 +65,7 @@ import FilterDropdown from '@/components/business/FilterDropdown.vue';
 import WelfareCards from '@/components/business/WelfareCards.vue';
 import NavigationIcons from '@/components/business/NavigationIcons.vue';
 import throttle from '@/src/hooks/throttle.js'
+import { onPullDownRefresh } from '@dcloudio/uni-app';
 
 import {
 	onMounted,
@@ -107,7 +110,7 @@ const sortOptions = ref([{
 // ==================== 响应式数据 ====================
 
 const backgroundImage = BACKGROUND_IMAGE_URL;
-
+const isRefreshing = ref(false);
 // 页面全局点击事件处理 - 优化节流延迟并增加注释
 const handlePageClick = throttle(() => {
 	// 如果筛选下拉框未显示，直接返回，避免不必要的操作
@@ -392,7 +395,7 @@ const handleNavigationClick = (navigationPath) => {
 	if (currentNavigationPath.value === navigationPath.text) {
 		return;
 	}
-	
+
 	currentNavigationPath.value = navigationPath.text;
 	console.log(`导航点击:${currentNavigationPath.value}- ${navigationPath.text}`);
 
@@ -425,11 +428,11 @@ const handleSwiperChange = (event) => {
  */
 const getInfinteClassList = async (name) => {
 	const params = { page: 1, limit: 10 }
-	if(!name) {
+	if (!name) {
 		name = '无限赏'
 	}
 	try {
-		const result = await fetchInfinteClassList(name,params);
+		const result = await fetchInfinteClassList(name, params);
 		// 获取返回的数据
 		// 这里可以将数据赋值给响应式变量或进行其他处理
 		productList.value = [...result]; // 同时更新 productList
@@ -476,7 +479,7 @@ const calculateNavigationHeight = () => {
 		.selectAll('.navigation')
 		.boundingClientRect((data) => {
 			if (data && data.length > 0) {
-				console.log(data[0],"data[0]");
+				console.log(data[0], "data[0]");
 				const result = data[0]
 				navigationHeight.value = result.height
 				console.log('导航栏高度:', navigationHeight.value);
@@ -486,6 +489,50 @@ const calculateNavigationHeight = () => {
 		})
 		.exec();
 };
+
+onPullDownRefresh(async () => {
+	console.log('下拉刷新开始');
+	isRefreshing.value = true;
+	
+	try {
+		// 显示刷新提示
+		uni.showLoading({
+			title: '正在刷新...',
+			mask: true
+		});
+		
+		// 重新获取数据
+		await getInfinteClassList();
+		
+		// 模拟网络延迟，提供更好的用户体验
+		await new Promise(resolve => setTimeout(resolve, 800));
+		
+		console.log('下拉刷新完成');
+		
+		// 显示成功提示
+		uni.showToast({
+			title: '刷新成功',
+			icon: 'success',
+			duration: 1500
+		});
+		
+	} catch (error) {
+		console.error('下拉刷新失败:', error);
+		uni.showToast({
+			title: '刷新失败，请重试',
+			icon: 'none',
+			duration: 2000
+		});
+	} finally {
+		isRefreshing.value = false;
+		uni.hideLoading();
+		// 停止下拉刷新动画
+		uni.stopPullDownRefresh();
+	}
+});
+
+
+
 </script>
 
 
@@ -618,7 +665,7 @@ const calculateNavigationHeight = () => {
 }
 
 //  ==================== 导航图标区域样式 ====================
-.navigation{
+.navigation {
 	width: 100%;
 	height: 220rpx;
 	display: flex;
@@ -724,4 +771,5 @@ const calculateNavigationHeight = () => {
 		margin: 0 auto;
 	}
 }
+
 </style>

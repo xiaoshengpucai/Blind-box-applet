@@ -211,6 +211,7 @@ const _sfc_main = {
     const displayProducts = common_vendor.computed(() => {
       return productList.value;
     });
+    common_vendor.index.__f__("log", "at components/shared/ProductList.vue:352", "displayProducts", displayProducts.value);
     const skeletonStyle = common_vendor.computed(() => {
       if (props.layout === "grid") {
         return {

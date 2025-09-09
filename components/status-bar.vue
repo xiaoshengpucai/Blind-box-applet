@@ -42,9 +42,7 @@ const initStatusBarHeight = () => {
 			statusHeight = systemInfo.statusBarHeight
 			navHeight = menuButtonInfo.bottom - statusHeight + 4
 			total = statusHeight + navHeight
-			rightPadding = menuButtonInfo.right - menuButtonInfo.width - 10
-			
-			console.log('navBarRight', systemInfo , menuButtonInfo.right , menuButtonInfo.width)
+			rightPadding = menuButtonInfo.left - menuButtonInfo.width / 2
 		} catch (error) {
 			console.warn('获取胶囊位置失败，使用默认值:', error)
 		}

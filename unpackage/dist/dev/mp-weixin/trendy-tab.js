@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("./common/vendor.js");
 const src_api_product = require("./src/api/product.js");
+require("./src/api/index.js");
 if (!Math) {
   ProductList();
 }
@@ -72,12 +73,13 @@ const _sfc_main = {
     const productList = common_vendor.computed(() => {
       return props.productList.length > 0 ? props.productList : props.CarListToChild.length > 0 ? props.CarListToChild : localProductList.value;
     });
-    const handleProductClick = (product) => {
-      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:136", "商品点击:", product);
+    const handleProductClick = async (product) => {
+      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:137", "商品点击:", product);
       const productId = product.id || product.uid;
+      const category = product.category;
       if (productId) {
         common_vendor.index.navigateTo({
-          url: `/pages/Home/detail?id=${productId}`
+          url: `/pages/Home/detail?id=${product.id}&&category=${category}`
         });
       }
       emit("product-click", product);
@@ -86,21 +88,21 @@ const _sfc_main = {
       emit("image-load", product);
     };
     const handleImageError = (product) => {
-      common_vendor.index.__f__("warn", "at pages/Home/componets/trendy-tab.vue:162", "商品图片加载失败:", product);
+      common_vendor.index.__f__("warn", "at pages/Home/componets/trendy-tab.vue:164", "商品图片加载失败:", product);
       emit("image-error", product);
     };
     const handleActionClick = (payload) => {
-      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:171", "操作按钮点击:", payload);
+      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:173", "操作按钮点击:", payload);
     };
     const handleLoadMore = (pagination) => {
-      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:180", "加载更多:", pagination);
+      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:182", "加载更多:", pagination);
       emit("load-more", pagination);
       if (props.autoLoad) {
         loadMoreProducts(pagination);
       }
     };
     const handleRetry = () => {
-      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:192", "重试加载");
+      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:194", "重试加载");
       loadProducts();
     };
     const getWallpaperList = async (params = {}) => {
@@ -129,7 +131,7 @@ const _sfc_main = {
         }
       } catch (err) {
         error.value = err;
-        common_vendor.index.__f__("error", "at pages/Home/componets/trendy-tab.vue:228", "获取商品列表失败:", err);
+        common_vendor.index.__f__("error", "at pages/Home/componets/trendy-tab.vue:230", "获取商品列表失败:", err);
       } finally {
         loading.value = false;
       }
@@ -161,7 +163,7 @@ const _sfc_main = {
         }
       } catch (err) {
         error.value = err;
-        common_vendor.index.__f__("error", "at pages/Home/componets/trendy-tab.vue:271", "加载更多商品失败:", err);
+        common_vendor.index.__f__("error", "at pages/Home/componets/trendy-tab.vue:273", "加载更多商品失败:", err);
       } finally {
         loading.value = false;
       }

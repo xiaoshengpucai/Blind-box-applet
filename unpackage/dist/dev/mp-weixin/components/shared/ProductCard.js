@@ -110,7 +110,7 @@ const _sfc_main = {
         cardHeight: "auto",
         imageHeight: "360rpx",
         fontSize: "26rpx",
-        priceSize: "32rpx"
+        priceSize: "42rpx"
       },
       large: {
         cardWidth: "400rpx",
@@ -207,13 +207,18 @@ const _sfc_main = {
           ["border-radius"]: imageBorderRadius.value,
           ["enable-lazy-load"]: __props.enableLazyLoad
         }),
-        d: common_vendor.t(formatPrice(__props.product.price)),
-        e: common_vendor.s(priceStyle.value),
-        f: common_vendor.t(__props.product.category || __props.product.Title),
-        g: common_vendor.s(titleStyle.value),
-        h: __props.showActions
+        d: common_vendor.f(7, (item, index, i0) => {
+          return {
+            a: index
+          };
+        }),
+        e: common_vendor.t(formatPrice(__props.product.price)),
+        f: common_vendor.s(priceStyle.value),
+        g: common_vendor.t(__props.product.category || __props.product.Title),
+        h: common_vendor.s(titleStyle.value),
+        i: __props.showActions
       }, __props.showActions ? {
-        i: common_vendor.f(__props.actions, (action, k0, i0) => {
+        j: common_vendor.f(__props.actions, (action, k0, i0) => {
           return {
             a: common_vendor.t(action.text),
             b: action.key,
@@ -223,10 +228,10 @@ const _sfc_main = {
           };
         })
       } : {}, {
-        j: common_vendor.n(cardClasses.value),
-        k: common_vendor.s(cardStyle.value),
-        l: common_vendor.o(handleCardClick),
-        m: common_vendor.gei(_ctx, "")
+        k: common_vendor.n(cardClasses.value),
+        l: common_vendor.s(cardStyle.value),
+        m: common_vendor.o(handleCardClick),
+        n: common_vendor.gei(_ctx, "")
       });
     };
   }

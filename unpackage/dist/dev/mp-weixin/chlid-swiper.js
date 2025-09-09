@@ -1,6 +1,5 @@
 "use strict";
 const common_vendor = require("./common/vendor.js");
-const src_utils_format = require("./src/utils/format.js");
 if (!Array) {
   const _easycom_up_icon2 = common_vendor.resolveComponent("up-icon");
   _easycom_up_icon2();
@@ -37,6 +36,7 @@ const _sfc_main = {
       autoPlay,
       autoPlayInterval
     } = props;
+    common_vendor.index.__f__("log", "at pages/Home/componets/chlid-swiper.vue:78", "datalist-chlid-swiper", datalist);
     let autoPlayTimer = null;
     const currentIndex = common_vendor.ref(0);
     const transitionStyle = common_vendor.ref("transform 0.5s ease");
@@ -44,20 +44,35 @@ const _sfc_main = {
       return `translateY(-${currentIndex.value * 100}%)`;
     });
     const contentData = common_vendor.ref({});
-    contentData.value = datalist[0];
+    common_vendor.watchEffect(() => {
+      if (props.datalist && props.datalist.length > 0) {
+        contentData.value = props.datalist[0];
+      }
+    });
+    common_vendor.index.__f__("log", "at pages/Home/componets/chlid-swiper.vue:91", "-----------contentData", contentData.value);
     const initList = common_vendor.computed(() => {
-      datalist.forEach((item) => {
-        item.price = src_utils_format.formatPrice(item.price, { useThousand: true });
-      });
+      if (!props.datalist || props.datalist.length === 0) {
+        return [];
+      }
       return [
         // 复制最后一张放在开头
-        ...datalist.map((item) => ({ ...item, keyPrefix: `prev-${item.listId}` })),
+        ...props.datalist.map((item) => ({
+          ...item,
+          keyPrefix: `prev-${item.id}`
+        })),
         // 原始轮播图
-        ...datalist.map((item) => ({ ...item, keyPrefix: `original-${item.listId}` })),
+        ...props.datalist.map((item) => ({
+          ...item,
+          keyPrefix: `original-${item.id}`
+        })),
         // 复制第一张放在结尾
-        ...datalist.map((item) => ({ ...item, keyPrefix: `next-${item.listId}` }))
+        ...props.datalist.map((item) => ({
+          ...item,
+          keyPrefix: `next-${item.id}`
+        }))
       ];
     });
+    common_vendor.index.__f__("log", "at pages/Home/componets/chlid-swiper.vue:115", "initList", initList.value);
     const startAutoPlay = () => {
       autoPlayTimer = setInterval(() => {
         prevSlide();
@@ -70,11 +85,14 @@ const _sfc_main = {
       transitionStyle.value = "transform 0.5s ease";
       resetAutoPlay();
       currentIndex.value++;
+      if (currentIndex.value >= initList.value.length) {
+        currentIndex.value = props.datalist.length;
+      }
       contentData.value = initList.value[currentIndex.value];
-      if (currentIndex.value > datalist.length) {
+      if (currentIndex.value > props.datalist.length * 2 - 1) {
         setTimeout(() => {
           transitionStyle.value = "none";
-          currentIndex.value = 1;
+          currentIndex.value = props.datalist.length;
           isAnimating = false;
         }, 500);
       } else {
@@ -96,7 +114,10 @@ const _sfc_main = {
     }
     function changeIndex(index) {
       stopAutoPlay();
-      contentData.value = initList.value[index - 1];
+      contentData.value = initList.value.find((item) => item.id === index && item.keyPrefix.startsWith(
+        "original-"
+      ));
+      common_vendor.index.__f__("log", "at pages/Home/componets/chlid-swiper.vue:167", "contentData", contentData.value);
       startAutoPlay();
     }
     return (_ctx, _cache) => {
@@ -109,12 +130,12 @@ const _sfc_main = {
           name: "bag",
           size: "20"
         }),
-        c: contentData.value.src,
+        c: contentData.value.image_url,
         d: common_vendor.f(initList.value, (item, index, i0) => {
           return {
-            a: item.src,
+            a: item.image_url,
             b: common_vendor.t(item.title),
-            c: common_vendor.o(($event) => changeIndex(item.listId), item.keyPrefix),
+            c: common_vendor.o(($event) => changeIndex(item.id), item.keyPrefix),
             d: item.keyPrefix
           };
         }),

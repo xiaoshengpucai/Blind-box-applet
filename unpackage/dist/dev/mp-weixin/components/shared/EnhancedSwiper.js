@@ -234,7 +234,7 @@ const _sfc_main = {
       return slide[props.imageField] || slide.src || slide.imageUrl || slide.url || slide.image || "";
     };
     const handleSlideClick = (slide, index) => {
-      common_vendor.index.__f__("log", "at components/shared/EnhancedSwiper.vue:420", "-------handleSlideClick", {
+      common_vendor.index.__f__("log", "at components/shared/EnhancedSwiper.vue:400", "-------handleSlideClick", {
         slide,
         index,
         realIndex: realIndex.value

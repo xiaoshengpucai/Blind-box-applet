@@ -21,6 +21,7 @@ export function useLayoutList() {
 		} catch (err) {
 			error.value = err;
 			console.error('Failed to fetch infinte class list:', err);
+			return []; // 返回空数组
 		} finally {
 			isLoading.value = false;
 		}

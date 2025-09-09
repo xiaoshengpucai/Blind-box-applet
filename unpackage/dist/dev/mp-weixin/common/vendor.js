@@ -2237,6 +2237,9 @@ If this is a native custom element, make sure to exclude it from component resol
 function resolve(registry, name) {
   return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
 }
+function watchEffect(effect2, options) {
+  return doWatch(effect2, null, options);
+}
 const INITIAL_WATCHER_VALUE = {};
 function watch(source, cb, options) {
   if (!isFunction$2(cb)) {
@@ -7094,9 +7097,9 @@ function initOnError() {
   };
 }
 function initRuntimeSocketService() {
-  const hosts = "198.18.0.1,192.168.0.103,127.0.0.1";
+  const hosts = "198.18.0.1,192.168.0.105,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_txpFUG";
+  const id = "mp-weixin_D96lWU";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -12177,6 +12180,16 @@ This will fail in production.`);
   useStore.$id = id;
   return useStore;
 }
+const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => {
+  !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+};
+const onShow = /* @__PURE__ */ createHook(ON_SHOW);
+const onHide = /* @__PURE__ */ createHook(ON_HIDE);
+const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
+const onReady = /* @__PURE__ */ createHook(ON_READY);
+const onUnload = /* @__PURE__ */ createHook(ON_UNLOAD);
+const onPageScroll = /* @__PURE__ */ createHook(ON_PAGE_SCROLL);
+const onPullDownRefresh = /* @__PURE__ */ createHook(ON_PULL_DOWN_REFRESH);
 function bind$2(fn, thisArg) {
   return function wrap() {
     return fn.apply(thisArg, arguments);
@@ -15000,15 +15013,6 @@ function mpAdapter(config2, _a) {
     requestTask = request(transformRequestOption(transformConfig(mpRequestOption)));
   });
 }
-const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => {
-  !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
-};
-const onShow = /* @__PURE__ */ createHook(ON_SHOW);
-const onHide = /* @__PURE__ */ createHook(ON_HIDE);
-const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
-const onReady = /* @__PURE__ */ createHook(ON_READY);
-const onUnload = /* @__PURE__ */ createHook(ON_UNLOAD);
-const onPageScroll = /* @__PURE__ */ createHook(ON_PAGE_SCROLL);
 const icons = {
   "uicon-level": "",
   "uicon-column-line": "",
@@ -15540,6 +15544,7 @@ exports.onHide = onHide;
 exports.onLoad = onLoad;
 exports.onMounted = onMounted;
 exports.onPageScroll = onPageScroll;
+exports.onPullDownRefresh = onPullDownRefresh;
 exports.onReady = onReady;
 exports.onShow = onShow;
 exports.onUnload = onUnload;
@@ -15563,4 +15568,5 @@ exports.transitionMixin = transitionMixin;
 exports.unref = unref;
 exports.uviewPlus = uviewPlus;
 exports.watch = watch;
+exports.watchEffect = watchEffect;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/vendor.js.map

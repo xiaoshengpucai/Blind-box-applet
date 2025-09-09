@@ -5,9 +5,48 @@
 import axios from 'axios';
 import mpAdapter from 'axios-miniprogram-adapter'
 
+// 调试：打印 Vite 的环境变量，确认.env文件是否加载成功
+console.log('[Vite Environment Variables]', import.meta.env);
+
+// 根据运行平台和环境动态设置API基础URL
+const getBaseUrl = () => {
+  // 定义后备URL，以防.env文件加载失败
+  const fallbacks = {
+    production: 'http://localhost:3000/api/',
+    devtools: 'http://localhost:3000/api/',
+    device: 'http://192.168.0.105:3000/api/' // 将端口号 :3000 加回来
+  };
+
+  // Vite 会通过 import.meta.env.MODE 区分环境 ('development' 或 'production')
+  const isProduction = import.meta.env.MODE === 'production';
+
+  // 1. 首先判断是否为生产环境
+  if (isProduction) {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL || fallbacks.production;
+    console.log(`[API Setup] Running in production mode. API_URL: ${apiUrl}`);
+    return apiUrl;
+  }
+
+  // 2. 如果是开发环境，再判断运行平台
+  const platform = uni.getSystemInfoSync().platform;
+  console.log(`[API Setup] Running in development mode on platform: ${platform}`);
+  
+  if (platform === 'devtools') {
+    // 本地开发环境 (微信开发者工具模拟器)
+    const apiUrl = import.meta.env.VITE_API_BASE_URL_DEVTOOLS || fallbacks.devtools;
+    console.log(`[API Setup] Devtools API_URL: ${apiUrl}`);
+    return apiUrl;
+  } else {
+    // 真机调试 ('ios' or 'android')
+    const apiUrl = import.meta.env.VITE_API_BASE_URL_DEVICE || fallbacks.device;
+    console.log(`[API Setup] Device API_URL: ${apiUrl}`);
+    return apiUrl;
+  }
+};
+console.log(getBaseUrl(),'----------------------------------------getBaseUrl');
 // ==================== 配置常量 ====================
 const API_CONFIG = {
-  BASE_URL: 'http://localhost:3000/api/',
+  BASE_URL: `${getBaseUrl()}`,
   TIMEOUT: 10000,
   RETRY_TIMES: 3,
   RETRY_DELAY: 1000,
@@ -150,7 +189,7 @@ service.interceptors.request.use(
     // 添加请求ID，用于追踪
     config.requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
-    console.log(`[API Request] ${config.requestId}: ${config.method?.toUpperCase()} ${config.url}`);
+    console.log(`[API Request] ${API_CONFIG.BASE_URL} ${config.requestId}: ${config.method?.toUpperCase()} ${config.url}`);
     
     return config;
   },
@@ -174,6 +213,8 @@ service.interceptors.response.use(
     if (data.status === 200 || data.code === 200 || data.success) {
       return data.data || data.result || data;
     } else {
+      // 增加详细的错误日志，打印出完整的响应数据
+      // console.error('[API Response Error Body]', data); 
       throw new Error(data.message || data.msg || '请求失败');
     }
   },

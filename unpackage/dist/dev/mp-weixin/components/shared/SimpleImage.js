@@ -37,6 +37,7 @@ const _sfc_main = {
       const width = typeof props.width === "number" ? `${props.width}rpx` : props.width;
       const height = typeof props.height === "number" ? `${props.height}rpx` : props.height;
       const borderRadius = typeof props.borderRadius === "number" ? `${props.borderRadius}rpx` : props.borderRadius;
+      common_vendor.index.__f__("log", "at components/shared/SimpleImage.vue:62", "borderRadius", borderRadius);
       return {
         width,
         height,
@@ -54,7 +55,7 @@ const _sfc_main = {
       emit("load", e);
     };
     const handleError = (e) => {
-      common_vendor.index.__f__("warn", "at components/shared/SimpleImage.vue:93", "图片加载失败:", props.src);
+      common_vendor.index.__f__("warn", "at components/shared/SimpleImage.vue:94", "图片加载失败:", props.src);
       emit("error", e);
     };
     return (_ctx, _cache) => {

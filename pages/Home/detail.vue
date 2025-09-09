@@ -60,63 +60,6 @@
 	const autoPlay = ref(true); // 是否自动播放
 	const autoPlayInterval = ref(3000); // 自动播放间隔(毫秒)
 
-	// const datalist = [{
-	// 		listId: 1,
-	// 		title: '少女乐队的呐喊',
-	// 		price: '1100',
-	// 		level: '传说',
-	// 		chance: 0.5,
-	// 		src: 'https://q0.itc.cn/q_70/images03/20240819/15e51341a9364d7b8c9f631b458fb8b5.jpeg'
-	// 	},
-	// 	{
-	// 		listId: 2,
-	// 		title: '炽焰x笙歌 原神 女仆浴室共鸣系列 雷电将军',
-	// 		price: '2599',
-	// 		level: '超神',
-	// 		chance: 0.5,
-	// 		src: 'https://img1.baidu.com/it/u=3937103606,3676897764&fm=253&fmt=auto&app=120&f=JPEG?w=502&h=500'
-	// 	},
-	// 	{
-	// 		listId: 3,
-	// 		title: '原神 可莉·火花骑士Ver.1/7静态手办',
-	// 		price: '2599',
-	// 		level: '传说',
-	// 		chance: 1,
-	// 		src: 'https://img1.baidu.com/it/u=1636141268,890026111&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
-	// 	},
-	// 	{
-	// 		listId: 4,
-	// 		title: '集美殿堂 进击的巨人 艾伦耶格尔vs女巨人',
-	// 		price: '7158',
-	// 		level: '传说',
-	// 		chance: 1,
-	// 		src: 'https://img2.baidu.com/it/u=1357007271,1071071103&fm=253&fmt=auto&app=120&f=JPEG?w=503&h=500'
-	// 	},
-	// 	{
-	// 		listId: 5,
-	// 		title: 'coolbear studio三周年 尼尔机械纪元2B 豪华版',
-	// 		price: '4680',
-	// 		level: '传说',
-	// 		chance: 2,
-	// 		src: 'https://img0.baidu.com/it/u=478380046,1227329794&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500'
-	// 	}, {
-	// 		listId: 6,
-	// 		title: '魔法少女贴纸',
-	// 		price: '10',
-	// 		level: '普通',
-	// 		chance: 25,
-	// 		src: 'https://img2.baidu.com/it/u=188958811,1450173967&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
-	// 	}, {
-	// 		listId: 7,
-	// 		title: '原神贴纸',
-	// 		price: '5',
-	// 		level: '普通',
-	// 		chance: 70,
-	// 		src: 'https://img0.baidu.com/it/u=2809378840,1099363868&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
-	// 	}
-	// ];
-
-
 	const datalist = ref([]);
 
 	const levelList = [{
@@ -233,12 +176,6 @@
 		background-image: url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201712%2F05%2F20171205051539_HUvhM.thumb.400_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1755698284&t=0a49f5933badc42403a845e150616790');
 	}
 
-	// .nav-bar-content {
-	// 	position: absolute;
-	// 	top: 50%;
-	// 	left: 0;
-	// 	transform: translateY(-50%);
-	// }
 
 	.back {
 		width: 40rpx;
