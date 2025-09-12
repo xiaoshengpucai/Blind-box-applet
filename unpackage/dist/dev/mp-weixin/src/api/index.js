@@ -6,7 +6,7 @@ const getBaseUrl = () => {
   const fallbacks = {
     production: "http://localhost:3000/api/",
     devtools: "http://localhost:3000/api/",
-    device: "http://192.168.0.105:3000/api/"
+    device: "http://192.168.0.102:3000/api/"
     // 将端口号 :3000 加回来
   };
   const platform = common_vendor.index.getSystemInfoSync().platform;

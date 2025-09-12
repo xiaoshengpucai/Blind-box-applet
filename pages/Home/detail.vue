@@ -7,12 +7,12 @@
 			</view>
 		</status-bar>
 		<view class="main" :style=" {paddingTop: statusBarHeight + 'px'}">
-			<chlidSwiperVue :datalist="datalist" :isAnimating="isAnimating" :autoPlay="autoPlay"
-				:autoPlayInterval="autoPlayInterval">
-			</chlidSwiperVue>
-			<view class="tab" :class="tabClassShow?'tab-position':''">
-				<preview-vue :datalist="datalist" :level-list="levelList"></preview-vue>
-			</view>
+				<chlidSwiperVue :datalist="datalist" :isAnimating="isAnimating" :autoPlay="autoPlay"
+					:autoPlayInterval="autoPlayInterval">
+				</chlidSwiperVue>
+				<view class="tab" :class="tabClassShow?'tab-position':''">
+					<preview-vue :datalist="datalist" :level-list="levelList"></preview-vue>
+				</view>
 		</view>
 		<view class="raffle" >
 			<view class="raffle-type" v-for="item,index in raffleList" :key="item.id"> 
@@ -33,8 +33,6 @@
 <script setup>
 	import {
 		ref,
-		computed,
-		reactive,
 		getCurrentInstance,
 		onMounted
 	} from 'vue';
@@ -101,8 +99,12 @@
 	onLoad(async (option) => {
 		calssid.value = option.id;
 		category.value = option.category;
-		const result = await getInfinteLListDetail({category:category.value})
-		datalist.value = result;
+		try {
+			const result = await getInfinteLListDetail({category:category.value})
+			datalist.value = result;
+		} catch (error) {
+			console.error('加载数据失败:', error);
+		}
 		//接收子组件传值
 		const handleData = (data) => {
 			console.log(data, 'data');
@@ -191,7 +193,6 @@
 	}
 
 	.main {
-		height: 100%;
 		width: 100vw;
 		box-sizing: border-box;
 	}

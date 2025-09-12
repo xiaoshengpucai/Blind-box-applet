@@ -20,8 +20,12 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, inject } from 'vue';
 import { useThrottle } from '@/src/composables/useThrottle';
+
+// --- Inject ---
+const isVisible = inject('isFilterDropdownVisible');
+const toggleFilterDropdown = inject('toggleFilterDropdown');
 
 // ==================== Props定义 ====================
 const props = defineProps({
@@ -41,11 +45,11 @@ const props = defineProps({
     ]
   },
 
-  // 是否可见
-  visible: {
-    type: Boolean,
-    default: false
-  },
+  // 是否可见 (此 prop 将被废弃)
+  // visible: {
+  //   type: Boolean,
+  //   default: false
+  // },
 
   // 下拉框样式配置
   dropdownConfig: {
@@ -66,11 +70,11 @@ const props = defineProps({
 
 });
 
-// ==================== Emits定义 ====================
-const emit = defineEmits(['toggle', 'select', 'update:visible']);
+// ==================== Emits定义 (移除 update:visible) ====================
+const emit = defineEmits(['toggle', 'select']);
 
-// ==================== 状态管理 ====================
-const isVisible = ref(props.visible);
+// ==================== 状态管理 (此部分将被废弃) ====================
+// const isVisible = ref(props.visible);
 const currentSortType = ref(props.currentSort);
 
 // ==================== 计算属性 ====================
@@ -105,9 +109,12 @@ const sortOptions = computed(() => props.options);
 
 // ==================== 节流处理 ====================
 const throttledToggle = useThrottle(() => {
-  isVisible.value = !isVisible.value;
-  emit('toggle', isVisible.value);
-  emit('update:visible', isVisible.value);
+  // isVisible.value = !isVisible.value;
+  // emit('toggle', isVisible.value);
+  // emit('update:visible', isVisible.value);
+  if (toggleFilterDropdown) {
+    toggleFilterDropdown();
+  }
 }, props.throttleDelay);
 
 // ==================== 方法 ====================
@@ -131,44 +138,47 @@ const handleOptionSelect = (event) => {
   }
 
   currentSortType.value = sortType;
-  isVisible.value = false;
+  // isVisible.value = false;
 
   emit('select', {
     sortType,
     option: sortOptions.value.find(opt => opt.key === sortType)
   });
 
-  emit('update:visible', false);
+  // emit('update:visible', false);
+  if (toggleFilterDropdown) {
+    toggleFilterDropdown(); // 选择后自动关闭
+  }
 };
 
 /**
- * 显示下拉框
+ * 显示下拉框 (此方法将被废弃)
  */
-const show = () => {
-  isVisible.value = true;
-  emit('update:visible', true);
-};
+// const show = () => {
+//   isVisible.value = true;
+//   emit('update:visible', true);
+// };
 
 /**
- * 隐藏下拉框
+ * 隐藏下拉框 (此方法将被废弃)
  */
-const hide = () => {
-  isVisible.value = false;
-  emit('update:visible', false);
-};
+// const hide = () => {
+//   isVisible.value = false;
+//   emit('update:visible', false);
+// };
 
 /**
  * 重置选择
  */
 const reset = () => {
   currentSortType.value = '';
-  hide();
+  // hide();
 };
 
-// ==================== 监听器 ====================
-watch(() => props.visible, (newVisible) => {
-  isVisible.value = newVisible;
-});
+// ==================== 监听器 (移除对 visible 的监听) ====================
+// watch(() => props.visible, (newVisible) => {
+//   isVisible.value = newVisible;
+// });
 
 watch(() => props.currentSort, (newSort) => {
   currentSortType.value = newSort;
@@ -176,8 +186,8 @@ watch(() => props.currentSort, (newSort) => {
 
 // ==================== 暴露方法 ====================
 defineExpose({
-  show,
-  hide,
+  // show,
+  // hide,
   reset,
   isVisible
 });

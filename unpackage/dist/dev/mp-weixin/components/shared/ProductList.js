@@ -1,6 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const src_composables_useProductList = require("../../src/composables/useProductList.js");
+const stores_product = require("../../stores/product.js");
 if (!Math) {
   ProductCard();
 }
@@ -8,11 +8,6 @@ const ProductCard = () => "./ProductCard.js";
 const _sfc_main = {
   __name: "ProductList",
   props: {
-    // 商品数据
-    products: {
-      type: Array,
-      default: () => []
-    },
     // 列表标题
     title: {
       type: String,
@@ -158,23 +153,12 @@ const _sfc_main = {
     "update:products"
   ],
   setup(__props, { emit: __emit }) {
+    const productStore = stores_product.useProductStore();
+    const { productList, isLoading, hasMore, currentPage } = common_vendor.storeToRefs(productStore);
     const props = __props;
     const emit = __emit;
-    const {
-      productList,
-      originalList,
-      currentSortType,
-      loading,
-      error,
-      totalCount,
-      isEmpty,
-      hasMore,
-      currentPage,
-      setProductList,
-      loadMore,
-      refresh
-    } = src_composables_useProductList.useProductList(props.products);
-    const loadingMore = common_vendor.computed(() => loading.value && productList.value.length > 0);
+    const loadingMore = common_vendor.computed(() => isLoading.value && productList.value.length > 0);
+    const showSkeleton = common_vendor.computed(() => isLoading.value && productList.value.length === 0);
     const listClasses = common_vendor.computed(() => [
       "product-list",
       `product-list-${props.layout}`,
@@ -190,6 +174,11 @@ const _sfc_main = {
       }
       return style;
     });
+    const skeletonStyle = common_vendor.computed(() => {
+      return { width: "100%" };
+    });
+    const totalCount = common_vendor.computed(() => productList.value.length);
+    const isEmpty = common_vendor.computed(() => productList.value.length === 0);
     const gridStyle = common_vendor.computed(() => {
       const gap = typeof props.gap === "number" ? `${props.gap}rpx` : props.gap;
       if (props.layout === "grid") {
@@ -216,18 +205,6 @@ const _sfc_main = {
         padding: gap
       };
     });
-    const displayProducts = common_vendor.computed(() => {
-      return productList.value;
-    });
-    common_vendor.index.__f__("log", "at components/shared/ProductList.vue:367", "displayProducts", displayProducts.value);
-    const skeletonStyle = common_vendor.computed(() => {
-      if (props.layout === "grid") {
-        return {
-          width: `calc((100% - ${props.gap} * (${props.columns} - 1)) / ${props.columns})`
-        };
-      }
-      return { width: "100%" };
-    });
     const getProductKey = (product, index) => {
       return product.id || product.uid || `product-${index}`;
     };
@@ -246,20 +223,16 @@ const _sfc_main = {
     const handleLoadMore = () => {
       if (!hasMore.value || loadingMore.value)
         return;
-      loadMore();
+      productStore.loadMoreProducts();
       emit("load-more", {
         page: currentPage.value,
         pageSize: props.pageSize
       });
     };
     const handleRetry = () => {
-      refresh();
+      productStore.fetchProductList();
       emit("retry");
     };
-    common_vendor.watch(() => props.products, (newProducts) => {
-      setProductList(newProducts, true);
-      emit("update:products", newProducts);
-    }, { deep: true, immediate: true });
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: __props.showHeader
@@ -267,16 +240,16 @@ const _sfc_main = {
         b: common_vendor.t(__props.title),
         c: __props.showCount
       }, __props.showCount ? {
-        d: common_vendor.t(common_vendor.unref(totalCount))
+        d: common_vendor.t(totalCount.value)
       } : {}) : {}, {
-        e: common_vendor.unref(loading) && !common_vendor.unref(productList).length
-      }, common_vendor.unref(loading) && !common_vendor.unref(productList).length ? {} : common_vendor.unref(isEmpty) && !common_vendor.unref(loading) ? common_vendor.e({
+        e: common_vendor.unref(isLoading) && !common_vendor.unref(productList).length && !showSkeleton.value
+      }, common_vendor.unref(isLoading) && !common_vendor.unref(productList).length && !showSkeleton.value ? {} : isEmpty.value && !common_vendor.unref(isLoading) ? common_vendor.e({
         g: common_vendor.t(__props.emptyText),
         h: __props.showRetry
       }, __props.showRetry ? {
         i: common_vendor.o(handleRetry)
       } : {}) : {
-        j: common_vendor.f(displayProducts.value, (product, index, i0) => {
+        j: common_vendor.f(common_vendor.unref(productList), (product, index, i0) => {
           return {
             a: getProductKey(product, index),
             b: common_vendor.o(handleProductClick, getProductKey(product, index)),
@@ -304,7 +277,7 @@ const _sfc_main = {
         }),
         k: common_vendor.s(gridStyle.value)
       }, {
-        f: common_vendor.unref(isEmpty) && !common_vendor.unref(loading),
+        f: isEmpty.value && !common_vendor.unref(isLoading),
         l: __props.showLoadMore
       }, __props.showLoadMore ? common_vendor.e({
         m: loadingMore.value
@@ -313,18 +286,19 @@ const _sfc_main = {
       } : {}, {
         n: common_vendor.unref(hasMore)
       }) : {}, {
-        p: __props.showSkeleton
-      }, __props.showSkeleton ? {
+        p: showSkeleton.value
+      }, showSkeleton.value ? {
         q: common_vendor.f(__props.skeletonCount, (skeleton, k0, i0) => {
           return {
             a: skeleton
           };
         }),
-        r: common_vendor.s(skeletonStyle.value)
+        r: common_vendor.s(skeletonStyle.value),
+        s: common_vendor.s(gridStyle.value)
       } : {}, {
-        s: common_vendor.n(listClasses.value),
-        t: common_vendor.s(listStyle.value),
-        v: common_vendor.gei(_ctx, "")
+        t: common_vendor.n(listClasses.value),
+        v: common_vendor.s(listStyle.value),
+        w: common_vendor.gei(_ctx, "")
       });
     };
   }

@@ -2,6 +2,7 @@
 const common_vendor = require("./common/vendor.js");
 const src_api_product = require("./src/api/product.js");
 require("./src/api/index.js");
+const stores_product = require("./stores/product.js");
 if (!Math) {
   ProductList();
 }
@@ -26,11 +27,11 @@ const emptyText = "暂无商品";
 const _sfc_main = {
   __name: "trendy-tab",
   props: {
-    // 商品列表数据（兼容原有的 CarListToChild）
-    productList: {
-      type: Array,
-      default: () => []
-    },
+    // 商品列表数据 (此 prop 将被废弃，改为从 store 获取)
+    // productList: {
+    // 	type: Array,
+    // 	default: () => []
+    // },
     // 兼容原有的 props
     CarListToChild: {
       type: Array,
@@ -54,6 +55,8 @@ const _sfc_main = {
   },
   emits: ["product-click", "load-more", "image-load", "image-error"],
   setup(__props, { expose: __expose, emit: __emit }) {
+    const productStore = stores_product.useProductStore();
+    const { productList } = common_vendor.storeToRefs(productStore);
     const props = __props;
     const emit = __emit;
     const localProductList = common_vendor.ref([]);
@@ -70,11 +73,8 @@ const _sfc_main = {
       backgroundColor: "#eee",
       paddingBottom: "100rpx"
     };
-    const productList = common_vendor.computed(() => {
-      return props.productList.length > 0 ? props.productList : props.CarListToChild.length > 0 ? props.CarListToChild : localProductList.value;
-    });
     const handleProductClick = async (product) => {
-      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:137", "商品点击:", product);
+      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:143", "商品点击:", product);
       const productId = product.id || product.uid;
       const category = product.category;
       if (productId) {
@@ -88,21 +88,21 @@ const _sfc_main = {
       emit("image-load", product);
     };
     const handleImageError = (product) => {
-      common_vendor.index.__f__("warn", "at pages/Home/componets/trendy-tab.vue:164", "商品图片加载失败:", product);
+      common_vendor.index.__f__("warn", "at pages/Home/componets/trendy-tab.vue:170", "商品图片加载失败:", product);
       emit("image-error", product);
     };
     const handleActionClick = (payload) => {
-      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:173", "操作按钮点击:", payload);
+      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:179", "操作按钮点击:", payload);
     };
     const handleLoadMore = (pagination) => {
-      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:182", "加载更多:", pagination);
+      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:188", "加载更多:", pagination);
       emit("load-more", pagination);
       if (props.autoLoad) {
         loadMoreProducts(pagination);
       }
     };
     const handleRetry = () => {
-      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:194", "重试加载");
+      common_vendor.index.__f__("log", "at pages/Home/componets/trendy-tab.vue:200", "重试加载");
       loadProducts();
     };
     const getWallpaperList = async (params = {}) => {
@@ -131,7 +131,7 @@ const _sfc_main = {
         }
       } catch (err) {
         error.value = err;
-        common_vendor.index.__f__("error", "at pages/Home/componets/trendy-tab.vue:230", "获取商品列表失败:", err);
+        common_vendor.index.__f__("error", "at pages/Home/componets/trendy-tab.vue:236", "获取商品列表失败:", err);
       } finally {
         loading.value = false;
       }
@@ -163,7 +163,7 @@ const _sfc_main = {
         }
       } catch (err) {
         error.value = err;
-        common_vendor.index.__f__("error", "at pages/Home/componets/trendy-tab.vue:273", "加载更多商品失败:", err);
+        common_vendor.index.__f__("error", "at pages/Home/componets/trendy-tab.vue:279", "加载更多商品失败:", err);
       } finally {
         loading.value = false;
       }
@@ -197,7 +197,7 @@ const _sfc_main = {
         e: common_vendor.o(handleLoadMore),
         f: common_vendor.o(handleRetry),
         g: common_vendor.p({
-          products: productList.value,
+          products: common_vendor.unref(productList),
           title: __props.listTitle,
           layout: listLayout,
           columns,

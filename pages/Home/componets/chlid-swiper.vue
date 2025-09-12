@@ -1,38 +1,46 @@
 <template>
-	<view class="navigation">
-		<view class="nav-left">
-			<view class="gplay">
-				<up-icon name="order" size="20"></up-icon>
-				<text class="gplay-text">玩法</text>
+	<view class="chlid-swiper-container">
+		<view class="navigation">
+			<view class="nav-left">
+				<view class="gplay">
+					<up-icon name="order" size="20"></up-icon>
+					<text class="gplay-text">玩法</text>
+				</view>
+				<view class="gplay">
+					<up-icon name="bag" size="20"></up-icon>
+					<text class="gplay-text">仓库</text>
+				</view>
 			</view>
-			<view class="gplay">
-				<up-icon name="bag" size="20"></up-icon>
-				<text class="gplay-text">仓库</text>
+			<view class="nav-center">
+				<view class="nav_image">
+					<image style="width: 300rpx" :src="contentData.image_url" mode="widthFix"></image>
+				</view>
 			</view>
-		</view>
-		<view class="nav-center">
-			<view class="nav_image">
-				<image style="width: 300rpx" :src="contentData.image_url" mode="widthFix"></image>
-			</view>
-		</view>
-		<view class="nav-right">
-			<view class="swiper-container">
-				<view class="swiper-items" @click="changeIndex(item.id)" v-for="(item, index) in initList"
-					:key="item.keyPrefix" :style="{ transform: translateY, transition: transitionStyle }">
-					<image class="swiper-image" :src="item.image_url" mode="widthFix"></image>
-					<text class="swiper-label">
-						{{ item.title }}
-					</text>
+			<view class="nav-right">
+				<view class="swiper-container">
+					<view class="swiper-wrapper" :style="wrapperStyle">
+						<view class="swiper-items" @click="changeIndex(index)" v-for="(item, index) in initList"
+							:key="index">
+							<view class="swiper-image-wrapper">
+								<image class="swiper-image" :class="{ 'loaded': imageLoadedState[item.id] }"
+									:src="item.image_url" mode="aspectFill" @load="onImageLoad(item.id)"
+									@error="onImageError(item.id)"></image>
+							</view>
+							<text class="swiper-label">
+								{{ item.title }}
+							</text>
+						</view>
+					</view>
 				</view>
 			</view>
 		</view>
-	</view>
-	<view class="footer">
-		<view class="foot-title">
-			{{ contentData.title }}
-		</view>
-		<view class="foot-price">
-			参考价：￥{{ contentData.price }}
+		<view class="footer">
+			<view class="foot-title">
+				{{ contentData.title }}
+			</view>
+			<view class="foot-price">
+				参考价：￥{{ contentData.price }}
+			</view>
 		</view>
 	</view>
 </template>
@@ -43,20 +51,18 @@ import {
 	reactive,
 	computed,
 	onMounted,
+	onBeforeUnmount,
 	watch,
-	watchEffect
+	nextTick
 } from 'vue';
 import {
 	formatPrice
 } from '@/src/utils/format.js'
+
 const props = defineProps({
 	datalist: {
 		type: Array,
 		default: () => []
-	},
-	isAnimating: {
-		type: Boolean,
-		default: false
 	},
 	autoPlay: {
 		type: Boolean,
@@ -68,108 +74,144 @@ const props = defineProps({
 	}
 });
 
-let {
-	datalist,
-	isAnimating,
-	autoPlay,
-	autoPlayInterval
-} = props;
-
-console.log('datalist-chlid-swiper', datalist);
-let autoPlayTimer = null;
-const currentIndex = ref(0);
-const transitionStyle = ref('transform 0.5s ease');
-const translateY = computed(() => {
-	return `translateY(-${currentIndex.value * 100}%)`;
-});
-const contentData = ref({})
-watchEffect(() => {
-	if (props.datalist && props.datalist.length > 0) {
-		contentData.value = props.datalist[0];
-	}
-})
-console.log('-----------contentData', contentData.value);
-const initList = computed(() => {
-	if (!props.datalist || props.datalist.length === 0) {
-		return []
-	}
-
-	// 为无缝轮播复制首尾项
-	return [
-		// 复制最后一张放在开头
-		...props.datalist.map(item => ({ ...item,
-			keyPrefix: `prev-${item.id}`
-		})),
-		// 原始轮播图
-		...props.datalist.map(item => ({ ...item,
-			keyPrefix: `original-${item.id}`
-		})),
-		// 复制第一张放在结尾
-		...props.datalist.map(item => ({ ...item,
-			keyPrefix: `next-${item.id}`
-		}))
-	];
+const imageLoadedState = reactive({});
+watch(() => props.datalist, (newDatalist) => {
+	if (!newDatalist) return;
+	newDatalist.forEach(item => {
+		if (imageLoadedState[item.id] === undefined) {
+			imageLoadedState[item.id] = false;
+		}
+	});
+}, {
+	deep: true,
+	immediate: true
 });
 
-
-console.log('initList', initList.value);
-//自动播放
-const startAutoPlay = () => {
-	autoPlayTimer = setInterval(() => {
-		prevSlide();
-	}, autoPlayInterval);
+const onImageLoad = (id) => {
+	imageLoadedState[id] = true;
+};
+const onImageError = (id) => {
+	imageLoadedState[id] = true;
 };
 
-const prevSlide = () => {
-	if (isAnimating) return;
-	isAnimating = true;
-	transitionStyle.value = 'transform 0.5s ease';
-	resetAutoPlay();
-	currentIndex.value++;
-	if (currentIndex.value >= initList.value.length) {
-		currentIndex.value = props.datalist.length;
-	}
-	contentData.value = initList.value[currentIndex.value];
+let autoPlayTimer = null;
+const currentIndex = ref(0);
+const isAnimating = ref(false);
+const transitionEnabled = ref(true);
 
-	if (currentIndex.value > props.datalist.length * 2 - 1) {
-		setTimeout(() => {
-			transitionStyle.value = 'none';
-			currentIndex.value = props.datalist.length;
-			isAnimating = false;
-		}, 500);
-	} else {
-		isAnimating = false;
+const initList = computed(() => {
+	if (!props.datalist || props.datalist.length === 0) return [];
+	return [...props.datalist, ...props.datalist, ...props.datalist];
+});
+
+watch(() => props.datalist, (newVal) => {
+	if (newVal && newVal.length > 0) {
+		transitionEnabled.value = false;
+		currentIndex.value = newVal.length;
+		nextTick(() => {
+			transitionEnabled.value = true;
+		});
 	}
+}, {
+	immediate: true,
+	deep: true
+});
+
+const contentData = computed(() => {
+	if (!initList.value || initList.value.length === 0) return {};
+	return initList.value[currentIndex.value];
+});
+
+const wrapperStyle = computed(() => {
+	const itemHeight = 120; // rpx
+	const containerHeight = 360; // rpx
+	const offset = (containerHeight - itemHeight) / 2;
+	const translateY = -currentIndex.value * itemHeight + offset;
+	return {
+		transform: `translateY(${translateY}rpx)`,
+		transition: transitionEnabled.value ? 'transform 0.5s ease-in-out' : 'none',
+	};
+});
+
+const prevSlide = () => {
+	if (isAnimating.value || props.datalist.length <= 1) return;
+	isAnimating.value = true;
+	transitionEnabled.value = true;
+	resetAutoPlay()
+	currentIndex.value++;
+	if (currentIndex.value >= props.datalist.length * 2) {
+		setTimeout(() => {
+			transitionEnabled.value = false;
+			currentIndex.value = props.datalist.length;
+			isAnimating.value = false
+		}, 500)
+	} else {
+		isAnimating.value = false;
+	}
+};
+
+const startAutoPlay = () => {
+	if (!props.autoPlay || props.datalist.length <= 1) return;
+	stopAutoPlay();
+	autoPlayTimer = setInterval(prevSlide, props.autoPlayInterval);
+};
+
+const stopAutoPlay = () => {
+	if (autoPlayTimer) {
+		clearInterval(autoPlayTimer);
+		autoPlayTimer = null;
+	}
+};
+
+const resetAutoPlay = () => {
+	stopAutoPlay();
+	startAutoPlay();
+};
+
+const changeIndex = (clickedIndex) => {
+	if (isAnimating.value||clickedIndex === currentIndex.value) return;
+	const trueIndex = clickedIndex % props.datalist.length;
+	const targetInMiddle = props.datalist.length + trueIndex;
+	isAnimating.value = true;
+	transitionEnabled.value = true;
+	currentIndex.value = clickedIndex;
+	resetAutoPlay();
+	if (currentIndex.value !== targetInMiddle) {
+		setTimeout(() => {
+			transitionEnabled.value = false;
+			currentIndex.value = targetInMiddle;
+			isAnimating.value = false
+		}, 500)
+	} else {
+		isAnimating.value = false;
+	}
+
 };
 
 onMounted(() => {
 	startAutoPlay();
 });
 
-// 停止自动播放
-function stopAutoPlay() {
-	if (autoPlayTimer) {
-		clearInterval(autoPlayTimer);
-		autoPlayTimer = null;
-	}
-}
-
-// 重置自动播放计时器
-function resetAutoPlay() {
+onBeforeUnmount(() => {
 	stopAutoPlay();
-	startAutoPlay();
-}
+});
 
-function changeIndex(index) {
-	stopAutoPlay()
-	contentData.value = initList.value.find(item => item.id === index && item.keyPrefix.startsWith(
-		'original-'));
-	console.log('contentData', contentData.value);
-	startAutoPlay()
-}
+watch(() => props.autoPlay, (newVal) => {
+	if (newVal) {
+		startAutoPlay();
+	} else {
+		stopAutoPlay();
+	}
+});
 </script>
 
 <style lang="scss" scoped>
+.chlid-swiper-container {
+	height: 530rpx;
+	display: flex;
+	flex-direction: column;
+}
+
 .navigation {
 	width: 100vw;
 	height: 420rpx;
@@ -238,6 +280,10 @@ function changeIndex(index) {
 			align-items: center;
 			overflow: hidden;
 
+			.swiper-wrapper {
+				transition: transform 0.5s ease-in-out;
+			}
+
 			.swiper-items {
 				width: 80rpx;
 				height: 120rpx;
@@ -246,22 +292,37 @@ function changeIndex(index) {
 				justify-content: center;
 				align-items: center;
 
-				.swiper-image {
-					width: 100%;
-					height: 100%;
+				.swiper-image-wrapper {
+					width: 80rpx;
+					height: 80rpx;
 					border-radius: 15rpx;
 					border: 2px solid #A873D5;
+					overflow: hidden;
+					position: relative;
+					background-color: #f0f0f0;
 
 					&::after {
 						content: "";
 						border: 2px solid #A873D5;
 						border-radius: 15rpx;
 						position: absolute;
-						top: 1rpx;
-						left: 2rpx;
+						top: 0;
+						left: 0;
 						width: 100%;
-						height: 80rpx;
-						z-index: 99;
+						height: 100%;
+						box-sizing: border-box;
+						pointer-events: none;
+					}
+				}
+
+				.swiper-image {
+					width: 100%;
+					height: 100%;
+					opacity: 0;
+					transition: opacity 0.4s ease-in-out;
+
+					&.loaded {
+						opacity: 1;
 					}
 				}
 

@@ -9,7 +9,7 @@
     </view>
     
     <!-- 加载状态 -->
-    <view v-if="loading && !productList.length" class="loading-container">
+    <view v-if="isLoading && !productList.length && !showSkeleton" class="loading-container">
       <slot name="loading">
         <view class="loading-spinner"></view>
         <text class="loading-text">加载中...</text>
@@ -17,7 +17,7 @@
     </view>
     
     <!-- 空状态 -->
-    <view v-else-if="isEmpty && !loading" class="empty-container">
+    <view v-else-if="isEmpty && !isLoading" class="empty-container">
       <slot name="empty">
         <view class="empty-icon">📦</view>
         <text class="empty-text">{{ emptyText }}</text>
@@ -30,7 +30,7 @@
     <!-- 商品列表 -->
     <view v-else class="product-grid" :style="gridStyle">
       <ProductCard
-        v-for="(product, index) in displayProducts"
+        v-for="(product, index) in productList"
         :key="getProductKey(product, index)"
         :product="product"
         :layout="cardLayout"
@@ -70,7 +70,7 @@
     </view>
     
     <!-- 骨架屏 -->
-    <view v-if="showSkeleton" class="skeleton-container">
+    <view v-if="showSkeleton" class="skeleton-container" :style="gridStyle">
       <view 
         v-for="skeleton in skeletonCount"
         :key="skeleton"
@@ -92,14 +92,15 @@
 import { computed, watch, toRefs } from 'vue';
 import { useProductList } from '@/src/composables/useProductList';
 import ProductCard from './ProductCard.vue';
+import { useProductStore } from '@/stores/product.js';
+import { storeToRefs } from 'pinia';
+
+// --- Pinia Store ---
+const productStore = useProductStore();
+const { productList, isLoading, hasMore, currentPage } = storeToRefs(productStore);
 
 // ==================== Props定义 ====================
 const props = defineProps({
-  // 商品数据
-  products: {
-    type: Array,
-    default: () => []
-  },
   
   // 列表标题
   title: {
@@ -274,26 +275,17 @@ const emit = defineEmits([
   'update:products'
 ]);
 
-// ==================== 使用商品列表Hook ====================
-const {
-  productList,
-  originalList,
-  currentSortType,
-  loading,
-  error,
-  totalCount,
-  isEmpty,
-  hasMore,
-  currentPage,
-  setProductList,
-  loadMore,
-  refresh
-} = useProductList(props.products);
 
 // 加载更多状态
-const loadingMore = computed(() => loading.value && productList.value.length > 0);
+const loadingMore = computed(() => isLoading.value && productList.value.length > 0);
 
 // ==================== 计算属性 ====================
+/**
+ * 是否显示骨架屏
+ * 只在首次加载时显示
+ */
+const showSkeleton = computed(() => isLoading.value && productList.value.length === 0);
+
 /**
  * 列表类名
  */
@@ -323,6 +315,21 @@ const listStyle = computed(() => {
 
   return style;
 });
+
+/**
+ * 骨架屏样式
+ */
+const skeletonStyle = computed(() => {
+  return { width: '100%' };
+});
+/**
+ * 总商品数
+ */
+const totalCount = computed(() => productList.value.length);
+/**
+ * 是否为空
+ */
+const isEmpty = computed(() => productList.value.length === 0);
 
 /**
  * 网格样式
@@ -356,25 +363,6 @@ const gridStyle = computed(() => {
     gap,
     padding: gap
   };
-});
-
-/**
- * 显示的商品列表
- */
-const displayProducts = computed(() => {
-  return productList.value;
-});
-console.log('displayProducts', displayProducts.value);
-/**
- * 骨架屏样式
- */
-const skeletonStyle = computed(() => {
-  if (props.layout === 'grid') {
-    return {
-      width: `calc((100% - ${props.gap} * (${props.columns} - 1)) / ${props.columns})`
-    };
-  }
-  return { width: '100%' };
 });
 
 // ==================== 方法 ====================
@@ -426,7 +414,7 @@ const handleActionClick = (payload) => {
 const handleLoadMore = () => {
   if (!hasMore.value || loadingMore.value) return;
   
-  loadMore();
+  productStore.loadMoreProducts();
   emit('load-more', {
     page: currentPage.value,
     pageSize: props.pageSize
@@ -437,18 +425,10 @@ const handleLoadMore = () => {
  * 处理重试
  */
 const handleRetry = () => {
-  refresh();
+  productStore.fetchProductList();
   emit('retry');
 };
 
-// ==================== 监听器 ====================
-/**
- * 监听商品数据变化
- */
-watch(() => props.products, (newProducts) => {
-  setProductList(newProducts, true);
-  emit('update:products', newProducts);
-}, { deep: true, immediate: true });
 </script>
 
 <style lang="scss" scoped>
@@ -458,10 +438,12 @@ watch(() => props.products, (newProducts) => {
   padding-bottom: 100rpx;
   &-grid {
     // Grid布局已在计算属性中定义
+    display: block;
   }
   
   &-list {
     // List布局已在计算属性中定义
+    display: block;
   }
   
   &-waterfall {
@@ -593,18 +575,38 @@ watch(() => props.products, (newProducts) => {
   grid-template-columns: repeat(2, 1fr);
   gap: 20rpx;
   padding: 20rpx;
+  background-color: #F5F5F5;
 }
 
 .skeleton-item {
   background-color: #fff;
+  width: 300rpx;
   border-radius: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  animation: skeleton-loading 1.5s ease-in-out infinite;
+  position: relative;
   
   .skeleton-image {
     width: 100%;
     height: 360rpx;
-    background-color: #f0f0f0;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+    position: relative;
+    
+    // 模拟标签区域
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 170rpx;
+      height: 55rpx;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: skeleton-shimmer 1.5s infinite;
+      border-radius: 10rpx;
+    }
   }
   
   .skeleton-content {
@@ -612,8 +614,10 @@ watch(() => props.products, (newProducts) => {
     
     .skeleton-price {
       width: 60%;
-      height: 32rpx;
-      background-color: #f0f0f0;
+      height: 42rpx;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: skeleton-shimmer 1.5s infinite;
       border-radius: 4rpx;
       margin-bottom: 15rpx;
     }
@@ -621,7 +625,9 @@ watch(() => props.products, (newProducts) => {
     .skeleton-title {
       width: 80%;
       height: 26rpx;
-      background-color: #f0f0f0;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: skeleton-shimmer 1.5s infinite;
       border-radius: 4rpx;
       margin-bottom: 10rpx;
     }
@@ -629,9 +635,26 @@ watch(() => props.products, (newProducts) => {
     .skeleton-description {
       width: 100%;
       height: 24rpx;
-      background-color: #f0f0f0;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: skeleton-shimmer 1.5s infinite;
       border-radius: 4rpx;
     }
+  }
+  
+  // 模拟右上角标签区域
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 200rpx;
+    height: 40rpx;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+    border-radius: 10rpx;
+    z-index: 1;
   }
 }
 
@@ -641,10 +664,9 @@ watch(() => props.products, (newProducts) => {
   100% { transform: rotate(360deg); }
 }
 
-@keyframes skeleton-loading {
-  0% { opacity: 1; }
-  50% { opacity: 0.7; }
-  100% { opacity: 1; }
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 // 响应式适配

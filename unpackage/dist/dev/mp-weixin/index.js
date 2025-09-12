@@ -1,7 +1,7 @@
 "use strict";
 const common_vendor = require("./common/vendor.js");
 const src_hooks_throttle = require("./src/hooks/throttle.js");
-const src_composables_useLayoutList = require("./src/composables/useLayoutList.js");
+const stores_product = require("./stores/product.js");
 if (!Array) {
   const _easycom_up_icon2 = common_vendor.resolveComponent("up-icon");
   _easycom_up_icon2();
@@ -21,7 +21,13 @@ const SCROLL_THRESHOLD = 500;
 const _sfc_main = {
   __name: "index",
   setup(__props) {
-    const { fetchInfinteClassList } = src_composables_useLayoutList.useLayoutList();
+    const productStore = stores_product.useProductStore();
+    const {
+      productList,
+      hasMore,
+      isLoading,
+      currentCategory
+    } = common_vendor.storeToRefs(productStore);
     const THROTTLE_DELAY = {
       PAGE_CLICK: 300,
       // 降低页面点击节流延迟，提升响应性
@@ -49,9 +55,6 @@ const _sfc_main = {
     ]);
     const backgroundImage = BACKGROUND_IMAGE_URL;
     const isRefreshing = common_vendor.ref(false);
-    const currentPage = common_vendor.ref(1);
-    const hasMore = common_vendor.ref(true);
-    const isLoadingMore = common_vendor.ref(false);
     const handlePageClick = src_hooks_throttle.throttle(() => {
       if (!isFilterDropdownVisible.value)
         return;
@@ -59,7 +62,7 @@ const _sfc_main = {
     }, THROTTLE_DELAY.PAGE_CLICK);
     const statusBarHeight = common_vendor.ref(0);
     const handleStatusBarHeight = (height) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:152", height, "height----------------");
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:168", height, "height----------------");
       statusBarHeight.value = height;
     };
     const isFilterDropdownVisible = common_vendor.ref(false);
@@ -77,7 +80,9 @@ const _sfc_main = {
         showFilterDropdown();
       }
     }, THROTTLE_DELAY.FILTER_TOGGLE);
-    const productList = common_vendor.ref([]);
+    common_vendor.provide("isFilterDropdownVisible", isFilterDropdownVisible);
+    common_vendor.provide("hideFilterDropdown", hideFilterDropdown);
+    common_vendor.provide("toggleFilterDropdown", handleFilterToggle);
     const sortProducts = {
       /**
        * 按创建时间排序（最新）
@@ -181,7 +186,7 @@ const _sfc_main = {
     ]);
     const carouselSlides = common_vendor.computed(() => {
       const slides = carouselData.value;
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:321", "carouselSlides computed:", {
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:344", "carouselSlides computed:", {
         slides,
         length: slides == null ? void 0 : slides.length,
         isArray: Array.isArray(slides),
@@ -189,7 +194,7 @@ const _sfc_main = {
       });
       return slides;
     });
-    common_vendor.index.__f__("log", "at pages/Home/index.vue:329", "carouselSlides computed:", carouselSlides.value);
+    common_vendor.index.__f__("log", "at pages/Home/index.vue:352", "carouselSlides computed:", carouselSlides.value);
     const carouselConfig = {
       switchMode: "fade",
       // 切换模式: fade | slide
@@ -256,54 +261,17 @@ const _sfc_main = {
         return;
       }
       currentNavigationPath.value = navigationPath.text;
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:420", `导航点击:${currentNavigationPath.value}- ${navigationPath.text}`);
-      currentPage.value = 1;
-      hasMore.value = true;
-      getInfinteClassList(navigationPath.text, false);
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:442", `导航点击:${currentNavigationPath.value}- ${navigationPath.text}`);
+      productStore.fetchProductList(navigationPath.text);
     };
     const handleWelfareCardClick = (welfareItem) => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:433", `福利卡片点击于: ${(/* @__PURE__ */ new Date()).toLocaleTimeString()}`, welfareItem.title);
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:453", `福利卡片点击于: ${(/* @__PURE__ */ new Date()).toLocaleTimeString()}`, welfareItem.title);
     };
     const handleSwiperChange = (event) => {
     };
-    const getInfinteClassList = async (name, isLoadMore = false) => {
-      if (!name) {
-        name = currentNavigationPath.value || "无限赏";
-      }
-      if (!hasMore.value && isLoadMore)
-        return;
-      if (isLoadingMore.value && isLoadMore)
-        return;
-      if (isLoadMore) {
-        isLoadingMore.value = true;
-      }
-      const params = { page: currentPage.value, limit: 10 };
-      try {
-        const result = await fetchInfinteClassList(name, params);
-        if (result && result.length > 0) {
-          if (isLoadMore) {
-            productList.value = [...productList.value, ...result];
-          } else {
-            productList.value = [...result];
-          }
-          if (result.length < params.limit) {
-            hasMore.value = false;
-          }
-        } else {
-          hasMore.value = false;
-        }
-      } catch (error) {
-        common_vendor.index.__f__("error", "at pages/Home/index.vue:485", "获取无限列表数据失败:", error);
-        hasMore.value = false;
-      } finally {
-        if (isLoadMore) {
-          isLoadingMore.value = false;
-        }
-      }
-    };
     common_vendor.onMounted(() => {
       initializeComponent();
-      getInfinteClassList();
+      productStore.fetchProductList();
     });
     const initializeComponent = () => {
       var _a;
@@ -319,82 +287,67 @@ const _sfc_main = {
       const query = common_vendor.index.createSelectorQuery().in(componentInstance.value);
       query.selectAll(".navigation").boundingClientRect((data) => {
         if (data && data.length > 0) {
-          common_vendor.index.__f__("log", "at pages/Home/index.vue:531", data[0], "data[0]");
+          common_vendor.index.__f__("log", "at pages/Home/index.vue:510", data[0], "data[0]");
           const result = data[0];
           navigationHeight.value = result.height;
         } else {
-          common_vendor.index.__f__("warn", "at pages/Home/index.vue:535", "未找到导航栏元素");
+          common_vendor.index.__f__("warn", "at pages/Home/index.vue:514", "未找到导航栏元素");
         }
       }).exec();
     };
     const handleRefresherRefresh = async () => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:545", "自定义下拉刷新开始");
       if (isRefreshing.value)
         return;
       isRefreshing.value = true;
       try {
-        currentPage.value = 1;
-        hasMore.value = true;
-        await getInfinteClassList(currentNavigationPath.value, false);
-        common_vendor.index.__f__("log", "at pages/Home/index.vue:557", "自定义下拉刷新完成");
-      } catch (error) {
-        common_vendor.index.__f__("error", "at pages/Home/index.vue:560", "下拉刷新失败:", error);
-        common_vendor.index.showToast({
-          title: "刷新失败，请重试",
-          icon: "none",
-          duration: 2e3
-        });
+        await productStore.fetchProductList(currentCategory.value);
       } finally {
         isRefreshing.value = false;
       }
     };
     common_vendor.onPullDownRefresh(async () => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:573", "页面下拉刷新 (此功能已由scroll-view替代)");
+      common_vendor.index.__f__("log", "at pages/Home/index.vue:534", "页面下拉刷新 (此功能已由scroll-view替代)");
       common_vendor.index.stopPullDownRefresh();
     });
     const handleScrollToLower = async () => {
-      common_vendor.index.__f__("log", "at pages/Home/index.vue:582", "滑到底部，加载更多...");
-      currentPage.value++;
-      await getInfinteClassList(currentNavigationPath.value, true);
+      await productStore.loadMoreProducts();
     };
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.o(common_vendor.unref(handleFilterToggle)),
         b: common_vendor.o(handleSortSelection),
-        c: common_vendor.o(($event) => isFilterDropdownVisible.value = $event),
-        d: common_vendor.p({
+        c: common_vendor.p({
           currentSort: currentSortType.value,
-          options: sortOptions.value,
-          visible: isFilterDropdownVisible.value
+          options: sortOptions.value
         }),
-        e: common_vendor.p({
+        d: common_vendor.p({
           name: "search",
           color: "#fff",
           size: "22"
         }),
-        f: common_vendor.p({
+        e: common_vendor.p({
           name: "bell",
           color: "#fff",
           size: "22"
         }),
-        g: common_vendor.o(handleStatusBarHeight),
-        h: common_vendor.o(() => {
+        f: common_vendor.o(handleStatusBarHeight),
+        g: common_vendor.o(() => {
         }),
-        i: common_vendor.unref(backgroundImage),
-        j: common_vendor.o(handleNavigationClick),
-        k: common_vendor.p({
+        h: common_vendor.unref(backgroundImage),
+        i: common_vendor.o(handleNavigationClick),
+        j: common_vendor.p({
           statusBarHeight: statusBarHeight.value,
           navigationList,
           isFixed: isNavigationFixed.value,
           scrollThreshold: 500,
           containerHeight: 220
         }),
-        l: scrollMask.value
+        k: scrollMask.value
       }, scrollMask.value ? {
-        m: statusBarHeight.value + navigationHeight.value - 10 + "px"
+        l: statusBarHeight.value + navigationHeight.value - 10 + "px"
       } : {}, {
-        n: common_vendor.o(handleSwiperChange),
-        o: common_vendor.p({
+        m: common_vendor.o(handleSwiperChange),
+        n: common_vendor.p({
           slide: carouselData.value,
           switchModeL: carouselConfig.switchMode,
           circular: carouselConfig.circular,
@@ -404,24 +357,24 @@ const _sfc_main = {
           isshowcontrols: carouselConfig.isshowcontrols,
           duration: carouselConfig.duration
         }),
-        p: common_vendor.o(handleWelfareCardClick),
-        q: common_vendor.p({
+        o: common_vendor.o(handleWelfareCardClick),
+        p: common_vendor.p({
           cards: welfareCardList
         }),
-        r: common_vendor.p({
-          productList: productList.value
+        q: common_vendor.p({
+          productList: common_vendor.unref(productList)
         }),
-        s: isLoadingMore.value
-      }, isLoadingMore.value ? {} : !hasMore.value && productList.value.length > 0 ? {} : {}, {
-        t: !hasMore.value && productList.value.length > 0,
-        v: common_vendor.o((...args) => common_vendor.unref(handleContentScroll) && common_vendor.unref(handleContentScroll)(...args)),
-        w: calculateScrollViewHeight() + "px",
-        x: isRefreshing.value,
-        y: common_vendor.o(handleRefresherRefresh),
-        z: common_vendor.o(handleScrollToLower),
-        A: navigationHeight.value + "px",
-        B: common_vendor.o((...args) => common_vendor.unref(handlePageClick) && common_vendor.unref(handlePageClick)(...args)),
-        C: common_vendor.gei(_ctx, "")
+        r: common_vendor.unref(isLoading)
+      }, common_vendor.unref(isLoading) ? {} : !common_vendor.unref(hasMore) && common_vendor.unref(productList).length > 0 ? {} : {}, {
+        s: !common_vendor.unref(hasMore) && common_vendor.unref(productList).length > 0,
+        t: common_vendor.o((...args) => common_vendor.unref(handleContentScroll) && common_vendor.unref(handleContentScroll)(...args)),
+        v: calculateScrollViewHeight() + "px",
+        w: isRefreshing.value,
+        x: common_vendor.o(handleRefresherRefresh),
+        y: common_vendor.o(handleScrollToLower),
+        z: navigationHeight.value + "px",
+        A: common_vendor.o((...args) => common_vendor.unref(handlePageClick) && common_vendor.unref(handlePageClick)(...args)),
+        B: common_vendor.gei(_ctx, "")
       });
     };
   }

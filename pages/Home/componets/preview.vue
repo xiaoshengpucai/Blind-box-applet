@@ -1,16 +1,16 @@
 <template>
 	<view class="tab" :class="preSetPositon ? 'tab-position' : ''">
 		<view class="tab-box">
-			<view class="tab-item" @click="handleTabClick(0)">
+			<view class="tab-item" @click="() => tabChangeIndex = 0">
 				赏品预览
 			</view>
-			<view class="tab-item " @click="handleTabClick(1)">
+			<view class="tab-item " @click="() => tabChangeIndex = 1">
 				中赏记录
 			</view>
 			<view class="active" :style="{ left: tabChangeLeft + 'px' }"></view>
 		</view>
 		<view class="preview" v-if="tabChangeIndex === 0">
-			<view class="controls-left" @click="tagLeft()">
+			<view class="controls-left" @click="tagChange(false)">
 				<image class="icon" style="width:80rpx;opacity: 0.5;"
 					src="data:image/svg+xml;base64,PHN2ZyB0PSIxNzU0NDA3MjUyMjM4IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEzNjYgMTAyNCIgdmVyc2lvbj0iMS4xIg0KCQkJCQl4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjEwMDQ0IiB3aWR0aD0iMzIiIGhlaWdodD0iMzIiPg0KCQkJCQk8cGF0aA0KCQkJCQkJZD0iTTc5Ni40NDQ0NDQgODA0LjU3MTQyOCA3OTYuNDQ0NDQ0IDEwMjQgMCA1MTIgNzk2LjQ0NDQ0NCAwIDc5Ni40NDQ0NDQgMjE5LjQyODU3MiAzNDEuMzMzMzMzIDUxMiA3OTYuNDQ0NDQ0IDgwNC41NzE0MjhaTTEzNjUuMzMzMzMzIDEwMjQgMTM2NS4zMzMzMzMgMCA1NjguODg4ODg5IDUxMiAxMzY1LjMzMzMzMyAxMDI0WiINCgkJCQkJCWZpbGw9IiNmNGVhMmEiIHAtaWQ9IjEwMDQ1Ij48L3BhdGg+DQoJCQkJPC9zdmc+"
 					mode="widthFix">
@@ -19,12 +19,12 @@
 			<view class="tag-list">
 				<view class="tag-item" :class="{ 'active': changeGrade === item.grade }"
 					:style="{ backgroundColor: getTagColor(item.grade).Color }" v-for="item, index in tagLabel"
-					:key="index" @click="handleClickTag(item.grade)">
+					:key="index" @click="() => tagChange(index, item.grade)">
 					<text class="tag">{{ item.grade }}</text>
 					<text class="chance">{{ item.probability }}%</text>
 				</view>
 			</view>
-			<view class="controls-right" @click="tagRight()">
+			<view class="controls-right" @click="tagChange(true)">
 				<image class="icon" style="width:80rpx;opacity: 0.5;"
 					src="data:image/svg+xml;base64,PHN2ZyB0PSIxNzU0NDA3MzAzNzg0IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEzNjYgMTAyNCIgdmVyc2lvbj0iMS4xIg0KCQkJCQl4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjExNDM1IiB3aWR0aD0iMzIiIGhlaWdodD0iMzIiPg0KCQkJCQk8cGF0aA0KCQkJCQkJZD0iTTU2OC44ODg4ODkgODA0LjU3MTQyOCA1NjguODg4ODg5IDEwMjQgMTM2NS4zMzMzMzMgNTEyIDU2OC44ODg4ODkgMCA1NjguODg4ODg5IDIxOS40Mjg1NzIgMTAyNCA1MTIgNTY4Ljg4ODg4OSA4MDQuNTcxNDI4Wk0wIDEwMjQgMCAwIDc5Ni40NDQ0NDQgNTEyIDAgMTAyNFoiDQoJCQkJCQlmaWxsPSIjZjRlYTJhIiBwLWlkPSIxMTQzNiI+PC9wYXRoPg0KCQkJCTwvc3ZnPg=="
 					mode="widthFix"></image>
@@ -40,8 +40,7 @@
 			</view>
 		</view>
 	</view>
-	<view class="p-detail" :style="preSetPositon ? { 'marginTop': 150 + 'px' } : ''" v-if="tabChangeIndex === 0">
-
+	<view class="p-detail"	 v-if="tabChangeIndex === 0">
 		<view class="p-detail-content" v-for="(item) in filteredList" :key="item.id"
 			:style="{ borderColor: getTagColor(item.grade).Color }" @click="showPopup(item.id)">
 			<view class="p-img">
@@ -53,17 +52,27 @@
 			</view>
 		</view>
 	</view>
-	<view class="record-detail" v-if="tabChangeIndex === 1">
-		<view class="record-detail-list" v-for="(item, index) in recordDetailList" :key="index"
-			:style="{ borderColor: getTagColor(item.grade).Color, backgroundColor: getTagColor(item.grade).recolor }">
-			<view class="r-d-img">
-				<image class="_image" :src="item.image_url" mode="aspectFill"></image>
+	<!-- START: Refactored Record Detail Section -->
+	<view class="record-detail-container" :style="preSetPositon ? { marginTop: 100 + 'px' } : ''" v-if="tabChangeIndex === 1">
+		<view class="record-detail-list" :style="recordliststyle" v-for="(record, index) in recordDetailList"
+			:key="index">
+			<view class="item-info">
+				<image class="item-image-left" :src="record.item.image_url" mode="aspectFill"></image>
 			</view>
-			<view class="r-d-">
-				111
+			<view class="record-content">
+				<text class="item-title">{{ record.item.title }}</text>
+				<view class="draw-info">
+					<text class="draw-count">{{ record.drawCount }}发</text>
+					<text class="extra-info">{{ record.extraInfo }}</text>
+				</view>
+			</view>
+			<view class="timestamp-container">
+				<text class="timestamp">{{ record.timestamp }}</text>
 			</view>
 		</view>
 	</view>
+	<!-- END: Refactored Record Detail Section -->
+
 	<up-popup :show="show" :round="10" mode="center" @open="showPopup" @close="closePopup">
 		<view class="up-popup" v-if="showData">
 			<view class="show-image" :style="{ borderColor: getTagColor(showData.grade).Color }">
@@ -92,12 +101,19 @@ import {
 	getCurrentInstance,
 	onMounted,
 	watch,
-	nextTick
+	nextTick,
+	toRefs
 } from 'vue'
 import {
 	onReady,
 	onPageScroll
 } from '@dcloudio/uni-app'
+import {
+	useTagColors
+} from '@/src/composables/useTagColors.js'
+import {
+	useGrades
+} from '@/src/composables/useGrades.js'
 
 const props = defineProps({
 	datalist: {
@@ -112,66 +128,25 @@ const props = defineProps({
 const {
 	datalist,
 	levelList
-} = props
+} = toRefs(props)
+
+const {
+	getTagColor
+} = useTagColors()
+const {
+	tagLabel
+} = useGrades(datalist)
 
 const tabChangeIndex = ref(0);
-const handleTabClick = (index) => {
-	if (tabChangeIndex.value === index) return
-	tabChangeIndex.value = index
-};
-console.log('datalist-------------------datalist', datalist);
+
+
 const tabInfo = ref([]);
 const tabChangeLeft = computed(() => {
+	if (tabInfo.value.length === 0) return 0;
 	return tabInfo.value[tabChangeIndex.value]?.left + 3;
 });
 
-
-let changeGrade = ref('超神')
-//映射规则
-const sortOrder = {
-	'超神': 1,
-	'传说': 2,
-	'普通': 3
-}
-const tagColors = {
-	'超神': '#53F1E3',
-	'传说': '#B3F5C0',
-	'普通': '#CAA8E5'
-}
-const gradeList = computed(() => {
-	const result = {}
-	props.datalist.forEach(item => {
-		console.log('item-------------------item', item);
-
-		const {
-			grade,
-			probability
-		} = item
-
-		if (!result[grade]) {
-			result[grade] = []
-		}
-		result[grade] = {
-			Total: result[grade].Total ? result[grade].Total + 1 : 1,
-			probability: result[grade].probability ? result[grade].probability + probability : probability
-		}
-	})
-	return result
-})
-console.log('gradeList-------------------gradeList1', gradeList.value);
-
-
-const tagLabel = computed(() => {
-	const entries = Object.entries(gradeList.value)
-		.map(([key,val])=>{
-			return {
-				grade:key,
-				...val
-			}
-		}).sort((a, b) => sortOrder[a.grade] - sortOrder[b.grade])
-	return entries
-})
-
+let changeGrade = ref('')
 watch(tagLabel, (newVal) => {
 	if (newVal.length > 0) {
 		changeGrade.value = newVal[0].grade
@@ -180,139 +155,137 @@ watch(tagLabel, (newVal) => {
 	immediate: true
 })
 
-//处理颜色函数
-function hexToRgba(hex, opacity) {
-	if (!hex) {
-		hex = '#CCCCCC'
-	}
-	hex = hex.replace('#', '')
-	const r = parseInt(hex.substring(0, 2), 16)
-	const g = parseInt(hex.substring(2, 4), 16)
-	const b = parseInt(hex.substring(4, 6), 16)
-	return `rgba(${r},${g},${b},${opacity})`
-}
-
-
-const getTagColor = (grade) => {
-	const color = tagColors[grade] || '#CCCCCC';
-	return {
-		Color: hexToRgba(color, 1),
-		bgColor: `linear-gradient(to bottom, ${hexToRgba(color, .5)} 0%, #fff 25%)`,
-		recolor: `${hexToRgba(color, 0.2)}`
-	}
-}
 const currentTagIndex = ref(0)
 
-function handleClickTag(grade) {
-	if (grade === changeGrade.value) return
-	changeGrade.value = grade
-}
-
-function tagLeft() {
-	currentTagIndex.value = currentTagIndex.value === 0 ?
-		tagLabel.value.length - 1 :
-		currentTagIndex.value - 1
+//  切换标签
+const tagChange = (isnext) => {
+	if (isnext) {
+		currentTagIndex.value = currentTagIndex.value === tagLabel.value.length - 1 ?
+			0 :
+			currentTagIndex.value + 1
+	} else {
+		currentTagIndex.value = currentTagIndex.value === 0 ?
+			tagLabel.value.length - 1 :
+			currentTagIndex.value - 1
+	}
 	changeGrade.value = tagLabel.value[currentTagIndex.value].grade
 }
 
-function tagRight() {
-	currentTagIndex.value = currentTagIndex.value === tagLabel.value.length - 1 ?
-		0 :
-		currentTagIndex.value + 1
-	changeGrade.value = tagLabel.value[currentTagIndex.value].grade
-}
 
-// 先创建计算属性
 const filteredList = computed(() => {
-	return props.datalist.filter(item => item.grade === changeGrade.value)
+	return datalist.value.filter(item => item.grade === changeGrade.value)
 })
 
-
-console.log('filteredList-------------------filteredList', filteredList.value);
 const instance = getCurrentInstance()
+const instanceProxy = instance?.proxy
+
 let previewRect = reactive([])
 const preSetPositon = ref(false)
 const recordIndex = ref(0)
 const recordChangeRect = ref([])
 const recordChangeLeft = computed(() => {
-	if (!recordChangeRect.value[recordIndex.value]) return
+	if (!recordChangeRect.value[recordIndex.value]) return 0
 	const left = recordChangeRect.value[recordIndex.value].left
 	const width = recordChangeRect.value[recordIndex.value].width
 	let result = left + width / 2 - 10
 	return result
 });
-const recordTragetTag = ref('超神' || '传说')
+// console.log('recordChangeLeft-------------------recordChangeLeft', recordChangeLeft.value);
+const recordTragetTag = ref('')
 const changRecordIndex = (index, target) => {
 	if (recordIndex.value === index) return
 	recordIndex.value = index
 	recordTragetTag.value = target
-
 }
-const recordDetailList = computed(() => {
-	let result = props.datalist.filter(item => item.grade === recordTragetTag.value)
-	return result
+
+const recordDetailList = ref([])
+
+const generateMockRecords = (items) => {
+	if (!items || items.length === 0) return [];
+	const item =  items.map((item, index) => ({
+		item: {
+			title: item.title,
+			image_url: item.image_url,
+		},
+		timestamp: `2025-09-12 15:${20 + index}:${10 + index}`,
+		drawCount: Math.floor(Math.random() * 90) + 10,
+		extraInfo: index === 0 ? '距本次中赏已过5发' : ''
+	}));
+	return [...item,...item,...item]
+};
+
+watch(tabChangeIndex, (newIndex) => {
+	if (newIndex === 1) {
+		const items = datalist.value.filter(item => item.grade === tagLabel.value[recordIndex.value]?.grade);
+		recordDetailList.value = generateMockRecords(items);
+	}
+
+	if (newIndex === 1 && recordChangeRect.value.length === 0) {
+		nextTick(() => {
+			if (instanceProxy) {
+				uni.createSelectorQuery().in(instanceProxy)
+					.selectAll('.record-item')
+					.boundingClientRect((data) => {
+						if (data && data.length > 0) {
+							recordChangeRect.value = [...data]
+						}
+					})
+					.exec();
+			}
+		});
+	}
+});
+
+const recordliststyle = computed(() => {
+	let tag = tagLabel.value[recordIndex.value]?.grade
+	return {
+		border: `5rpx solid ${useTagColors().getTagColor(tag).Color}`,
+		backgroundColor: useTagColors().getTagColor(tag).recolor
+	}
 })
-console.log('recordDetailList-------------------recordDetailList', recordDetailList.value);
 
-// 初始化
-onMounted(async () => {
-	await nextTick()
-	// 获取组件实例
-	const instanceRef = ref(instance?.proxy)
-	if (!instanceRef.value) return
+watch(recordTragetTag, (newTag) => {
+	const items = datalist.value.filter(item => item.grade === newTag);
+	recordDetailList.value = generateMockRecords(items);
+});
 
-	// // 获取 preview 的位置
-	uni.createSelectorQuery().in(instanceRef.value)
+onMounted(() => {
+	if (!instanceProxy) return
+
+	uni.createSelectorQuery().in(instanceProxy)
 		.select('.tab-box')
 		.boundingClientRect((data) => {
 			previewRect = data
-			srollPreviewPostion(previewRect)
 		})
 		.exec();
-	// // 获取 tab-item 的位置
-	uni.createSelectorQuery().in(instanceRef.value)
+
+	uni.createSelectorQuery().in(instanceProxy)
 		.selectAll('.tab-item')
 		.boundingClientRect((data) => {
 			tabInfo.value = [...data];
 		})
 		.exec();
-	// // // 获取 tab-item 的位置
-	uni.createSelectorQuery().in(instanceRef.value)
-		.selectAll('.record-item')
-		.boundingClientRect((data) => {
-			recordChangeRect.value = [...data]
-		})
-		.exec();
 })
-// 位置监听
-const srollPreviewPostion = (previewRect) => {
-	return previewRect.top
-}
-onPageScroll((e) => {
-	const previewTop = srollPreviewPostion(previewRect)
-	if (e.scrollTop <= previewTop) {
-		preSetPositon.value = false
 
-	} else {
-		preSetPositon.value = true
-	}
+onPageScroll((e) => {
+	if (!previewRect || previewRect.top === undefined) return
+	console.log('e.scrollTop-------------------e.scrollTop', e.scrollTop,previewRect.top)
+	preSetPositon.value = e.scrollTop > previewRect.top
 })
 
 const show = ref(false)
 const showData = ref(null)
 const showPopup = (id) => {
-	props.datalist.forEach(item => {
-		if (item.id === id) {
-			show.value = true
-			showData.value = item
-		}
-	})
+	const item = datalist.value.find(item => item.id === id)
+	if (item) {
+		show.value = true
+		showData.value = item
+	}
 }
+
 const closePopup = () => {
 	show.value = false
 }
-
-
 </script>
 
 <style lang='scss' scoped>
@@ -325,6 +298,7 @@ const closePopup = () => {
 	background-color: rgba(0, 0, 0, 0.3);
 	/* 设置背景颜色和透明度 */
 	z-index: 999;
+	color: #fff;
 }
 
 .tab {
@@ -335,6 +309,7 @@ const closePopup = () => {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	transition: all 0.3s ease-in-out;
 }
 
 .tab-box {
@@ -533,15 +508,15 @@ const closePopup = () => {
 		display: flex;
 		align-items: center;
 		padding-left: 40rpx;
-
 		.record-item {
 			width: 130rpx;
 			height: 80rpx;
-			font-size: 24rpx;
+			font-size: 28rpx;
 			font-weight: bold;
 			display: flex;
 			justify-content: center;
 			line-height: 80rpx;
+			
 		}
 
 		.record-active {
@@ -549,7 +524,7 @@ const closePopup = () => {
 			height: 7rpx;
 			background-color: #FDA32E;
 			border-radius: 10rpx;
-			bottom: 12rpx;
+			bottom: 10rpx;
 			position: absolute;
 			left: 0;
 			transition: all 0.3s ease-in-out;
@@ -559,28 +534,76 @@ const closePopup = () => {
 	}
 }
 
-.record-detail {
-	&-list {
-		width: 90%;
-		height: 130rpx;
-		margin: 5rpx auto;
-		background-color: #B4B5A9;
-		border: 5rpx solid transparent;
-		border-radius: 10rpx;
+/* START: New styles for Record Detail */
+.record-detail-container {
+	width: 100%;
+	padding: 0 30rpx;
+	box-sizing: border-box;
+	padding-bottom: 200rpx;
+	// transition: all .5s ease-in-out;
+	/* Add some padding at the bottom */
+
+	.record-detail-list {
 		display: flex;
 		align-items: center;
-		padding: 0 20rpx;
-	}
+		border-radius: 15rpx;
+		padding: 10rpx;
+		margin-bottom: 10rpx;
 
-	.r-d-img {
-		width: 110rpx;
-		height: 110rpx;
-		overflow: hidden;
-	}
+		.item-info {
+			margin-right: 20rpx;
+			flex-shrink: 0;
 
-	.r-d-img>._image {
-		width: 110rpx;
-		height: 110rpx;
+			.item-image-left {
+				width: 120rpx;
+				height: 120rpx;
+				border-radius: 10rpx;
+			}
+		}
+
+		.record-content {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			gap: 10rpx;
+			overflow: hidden;
+
+			.item-title {
+				font-size: 28rpx;
+				font-weight: 500;
+				color: #333;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.draw-info {
+				display: flex;
+				align-items: baseline;
+				gap: 15rpx;
+
+				.draw-count {
+					font-size: 26rpx;
+					color: #555;
+				}
+
+				.extra-info {
+					font-size: 24rpx;
+					color: #999;
+				}
+			}
+		}
+
+		.timestamp-container {
+			flex-shrink: 0;
+			margin-left: 20rpx;
+
+			.timestamp {
+				font-size: 18rpx;
+				color: #999;
+			}
+		}
 	}
 }
 </style>

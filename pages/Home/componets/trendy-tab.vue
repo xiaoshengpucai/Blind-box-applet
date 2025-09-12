@@ -37,14 +37,20 @@
 	import ProductList from '@/components/shared/ProductList.vue';
 	import api from '@/src/api/product.js';
 	import { getInfinteLListDetail } from '@/src/api/layout-list.js';
+	import { useProductStore } from '@/stores/product.js';
+	import { storeToRefs } from 'pinia';
+
+	// --- Pinia Store ---
+	const productStore = useProductStore();
+	const { productList } = storeToRefs(productStore);
 
 	// ==================== Props定义 ====================
 	const props = defineProps({
-		// 商品列表数据（兼容原有的 CarListToChild）
-		productList: {
-			type: Array,
-			default: () => []
-		},
+		// 商品列表数据 (此 prop 将被废弃，改为从 store 获取)
+		// productList: {
+		// 	type: Array,
+		// 	default: () => []
+		// },
 		
 		// 兼容原有的 props
 		CarListToChild: {
@@ -115,18 +121,18 @@
 		paddingBottom: '100rpx'
 	};
 
-	// ==================== 计算属性 ====================
+	// ==================== 计算属性 (此部分将被废弃) ====================
 	/**
 	 * 实际显示的商品列表
 	 */
-	const productList = computed(() => {
-		// 优先使用新的 productList，兼容旧的 CarListToChild
-		return props.productList.length > 0 
-			? props.productList 
-			: (props.CarListToChild.length > 0 
-				? props.CarListToChild 
-				: localProductList.value);
-	});
+	// const productList = computed(() => {
+	// 	// 优先使用新的 productList，兼容旧的 CarListToChild
+	// 	return props.productList.length > 0 
+	// 		? props.productList 
+	// 		: (props.CarListToChild.length > 0 
+	// 			? props.CarListToChild 
+	// 			: localProductList.value);
+	// });
 
 	// ==================== 方法 ====================
 	/**

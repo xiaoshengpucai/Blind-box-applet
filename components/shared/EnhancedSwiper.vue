@@ -397,11 +397,6 @@ const goToSlide = (index) => {
  * @param {number} index - 索引
  */
 const handleSlideClick = (slide, index) => {
-	console.log('-------handleSlideClick', {
-		slide,
-		index,
-		realIndex: realIndex.value
-	});
 	emit('slide-click', {
 		slide,
 		index: props.mode === 'slide' ? realIndex.value : index, // 使用真实索引
