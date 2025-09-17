@@ -52,7 +52,6 @@ body.data-v-a42b862d {
   transform: translateY(-50%);
 }
 .main.data-v-a42b862d {
-  height: 100%;
   width: 100vw;
   box-sizing: border-box;
 }

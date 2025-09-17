@@ -41,7 +41,7 @@ export const useProductStore = defineStore('product', {
         const params = { page: this.currentPage, limit: 10 };
         const result = await fetchProductsAPI(this.currentCategory, params);
 
-        if (result && result.length > 0) {
+        if (result && Array.isArray(result)) {
           this.productList = result;
           this.hasMore = result.length === params.limit;
         } else {
@@ -70,7 +70,7 @@ export const useProductStore = defineStore('product', {
         const params = { page: this.currentPage, limit: 10 };
         const result = await fetchProductsAPI(this.currentCategory, params);
 
-        if (result && result.length > 0) {
+        if (result && Array.isArray(result) && result.length > 0) {
           this.productList.push(...result);
           this.hasMore = result.length === params.limit;
         } else {

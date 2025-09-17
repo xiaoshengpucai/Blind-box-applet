@@ -14,7 +14,7 @@ const getBaseUrl = () => {
   const fallbacks = {
     production: 'http://localhost:3000/api/',
     devtools: 'http://localhost:3000/api/',
-    device: 'http://192.168.0.105:3000/api/' // 将端口号 :3000 加回来
+    device: 'http://192.168.0.104:3000/api/' // 将端口号 :3000 加回来
   };
 
   // Vite 会通过 import.meta.env.MODE 区分环境 ('development' 或 'production')

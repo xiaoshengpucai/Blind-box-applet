@@ -1,7 +1,7 @@
 <template>
   <view class="uni-lazy-image-container" :style="containerStyle">
     <!-- 图片元素 -->
-    <image
+   <image
       class="uni-lazy-image"
       :class="imageClasses"
       :src="imageSrc"
@@ -11,7 +11,7 @@
       @load="handleLoad"
       @error="handleError"
     />
-    
+   
     <!-- 加载中状态 -->
     <view v-if="isLoading && showLoading" class="loading-overlay" :style="loadingStyle">
       <slot name="loading">

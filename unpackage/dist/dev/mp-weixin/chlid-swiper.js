@@ -15,10 +15,6 @@ const _sfc_main = {
       type: Array,
       default: () => []
     },
-    isAnimating: {
-      type: Boolean,
-      default: false
-    },
     autoPlay: {
       type: Boolean,
       default: true
@@ -30,96 +26,126 @@ const _sfc_main = {
   },
   setup(__props) {
     const props = __props;
-    let {
-      datalist,
-      isAnimating,
-      autoPlay,
-      autoPlayInterval
-    } = props;
-    common_vendor.index.__f__("log", "at pages/Home/componets/chlid-swiper.vue:78", "datalist-chlid-swiper", datalist);
+    const imageLoadedState = common_vendor.reactive({});
+    common_vendor.watch(() => props.datalist, (newDatalist) => {
+      if (!newDatalist)
+        return;
+      newDatalist.forEach((item) => {
+        if (imageLoadedState[item.id] === void 0) {
+          imageLoadedState[item.id] = false;
+        }
+      });
+    }, {
+      deep: true,
+      immediate: true
+    });
+    const onImageLoad = (id) => {
+      imageLoadedState[id] = true;
+    };
+    const onImageError = (id) => {
+      imageLoadedState[id] = true;
+    };
     let autoPlayTimer = null;
     const currentIndex = common_vendor.ref(0);
-    const transitionStyle = common_vendor.ref("transform 0.5s ease");
-    const translateY = common_vendor.computed(() => {
-      return `translateY(-${currentIndex.value * 100}%)`;
-    });
-    const contentData = common_vendor.ref({});
-    common_vendor.watchEffect(() => {
-      if (props.datalist && props.datalist.length > 0) {
-        contentData.value = props.datalist[0];
-      }
-    });
-    common_vendor.index.__f__("log", "at pages/Home/componets/chlid-swiper.vue:91", "-----------contentData", contentData.value);
+    const isAnimating = common_vendor.ref(false);
+    const transitionEnabled = common_vendor.ref(true);
     const initList = common_vendor.computed(() => {
-      if (!props.datalist || props.datalist.length === 0) {
+      if (!props.datalist || props.datalist.length === 0)
         return [];
-      }
-      return [
-        // 复制最后一张放在开头
-        ...props.datalist.map((item) => ({
-          ...item,
-          keyPrefix: `prev-${item.id}`
-        })),
-        // 原始轮播图
-        ...props.datalist.map((item) => ({
-          ...item,
-          keyPrefix: `original-${item.id}`
-        })),
-        // 复制第一张放在结尾
-        ...props.datalist.map((item) => ({
-          ...item,
-          keyPrefix: `next-${item.id}`
-        }))
-      ];
+      return [...props.datalist, ...props.datalist, ...props.datalist];
     });
-    common_vendor.index.__f__("log", "at pages/Home/componets/chlid-swiper.vue:115", "initList", initList.value);
-    const startAutoPlay = () => {
-      autoPlayTimer = setInterval(() => {
-        prevSlide();
-      }, autoPlayInterval);
-    };
+    common_vendor.watch(() => props.datalist, (newVal) => {
+      if (newVal && newVal.length > 0) {
+        transitionEnabled.value = false;
+        currentIndex.value = newVal.length;
+        common_vendor.nextTick$1(() => {
+          transitionEnabled.value = true;
+        });
+      }
+    }, {
+      immediate: true,
+      deep: true
+    });
+    const contentData = common_vendor.computed(() => {
+      if (!initList.value || initList.value.length === 0)
+        return {};
+      return initList.value[currentIndex.value];
+    });
+    const wrapperStyle = common_vendor.computed(() => {
+      const itemHeight = 120;
+      const containerHeight = 360;
+      const offset = (containerHeight - itemHeight) / 2;
+      const translateY = -currentIndex.value * itemHeight + offset;
+      return {
+        transform: `translateY(${translateY}rpx)`,
+        transition: transitionEnabled.value ? "transform 0.5s ease-in-out" : "none"
+      };
+    });
     const prevSlide = () => {
-      if (isAnimating)
+      if (isAnimating.value || props.datalist.length <= 1)
         return;
-      isAnimating = true;
-      transitionStyle.value = "transform 0.5s ease";
+      isAnimating.value = true;
+      transitionEnabled.value = true;
       resetAutoPlay();
       currentIndex.value++;
-      if (currentIndex.value >= initList.value.length) {
-        currentIndex.value = props.datalist.length;
-      }
-      contentData.value = initList.value[currentIndex.value];
-      if (currentIndex.value > props.datalist.length * 2 - 1) {
+      if (currentIndex.value >= props.datalist.length * 2) {
         setTimeout(() => {
-          transitionStyle.value = "none";
+          transitionEnabled.value = false;
           currentIndex.value = props.datalist.length;
-          isAnimating = false;
+          isAnimating.value = false;
         }, 500);
       } else {
-        isAnimating = false;
+        isAnimating.value = false;
+      }
+    };
+    const startAutoPlay = () => {
+      if (!props.autoPlay || props.datalist.length <= 1)
+        return;
+      stopAutoPlay();
+      autoPlayTimer = setInterval(prevSlide, props.autoPlayInterval);
+    };
+    const stopAutoPlay = () => {
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+      }
+    };
+    const resetAutoPlay = () => {
+      stopAutoPlay();
+      startAutoPlay();
+    };
+    const changeIndex = (clickedIndex) => {
+      if (isAnimating.value || clickedIndex === currentIndex.value)
+        return;
+      const trueIndex = clickedIndex % props.datalist.length;
+      const targetInMiddle = props.datalist.length + trueIndex;
+      isAnimating.value = true;
+      transitionEnabled.value = true;
+      currentIndex.value = clickedIndex;
+      resetAutoPlay();
+      if (currentIndex.value !== targetInMiddle) {
+        setTimeout(() => {
+          transitionEnabled.value = false;
+          currentIndex.value = targetInMiddle;
+          isAnimating.value = false;
+        }, 500);
+      } else {
+        isAnimating.value = false;
       }
     };
     common_vendor.onMounted(() => {
       startAutoPlay();
     });
-    function stopAutoPlay() {
-      if (autoPlayTimer) {
-        clearInterval(autoPlayTimer);
-        autoPlayTimer = null;
+    common_vendor.onBeforeUnmount(() => {
+      stopAutoPlay();
+    });
+    common_vendor.watch(() => props.autoPlay, (newVal) => {
+      if (newVal) {
+        startAutoPlay();
+      } else {
+        stopAutoPlay();
       }
-    }
-    function resetAutoPlay() {
-      stopAutoPlay();
-      startAutoPlay();
-    }
-    function changeIndex(index) {
-      stopAutoPlay();
-      contentData.value = initList.value.find((item) => item.id === index && item.keyPrefix.startsWith(
-        "original-"
-      ));
-      common_vendor.index.__f__("log", "at pages/Home/componets/chlid-swiper.vue:167", "contentData", contentData.value);
-      startAutoPlay();
-    }
+    });
     return (_ctx, _cache) => {
       return {
         a: common_vendor.p({
@@ -133,16 +159,19 @@ const _sfc_main = {
         c: contentData.value.image_url,
         d: common_vendor.f(initList.value, (item, index, i0) => {
           return {
-            a: item.image_url,
-            b: common_vendor.t(item.title),
-            c: common_vendor.o(($event) => changeIndex(item.id), item.keyPrefix),
-            d: item.keyPrefix
+            a: imageLoadedState[item.id] ? 1 : "",
+            b: item.image_url,
+            c: common_vendor.o(($event) => onImageLoad(item.id), index),
+            d: common_vendor.o(($event) => onImageError(item.id), index),
+            e: common_vendor.t(item.title),
+            f: common_vendor.o(($event) => changeIndex(index), index),
+            g: index
           };
         }),
-        e: translateY.value,
-        f: transitionStyle.value,
-        g: common_vendor.t(contentData.value.title),
-        h: common_vendor.t(contentData.value.price)
+        e: common_vendor.s(wrapperStyle.value),
+        f: common_vendor.t(contentData.value.title),
+        g: common_vendor.t(contentData.value.price),
+        h: common_vendor.gei(_ctx, "")
       };
     };
   }

@@ -3,7 +3,7 @@ import mpAdapter from 'axios-miniprogram-adapter'
 
 // 创建 axios 实例（修正适配器名称）
 const service = axios.create({
-  baseURL: 'https://tea.qingnian8.com/api',
+  baseURL: process.env.NODE_ENV === 'development' ? '/api' : 'http://ijls-wxuani.webn.cc',
   timeout: 5000, // 增加超时时间到 5 秒
   headers: {
     'access-key': '624590'

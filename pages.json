@@ -26,7 +26,8 @@
 		{
 			"path": "pages/Mall/index",
 			"style": {
-				"navigationBarTitleText": ""
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
 			}
 		},
 		{

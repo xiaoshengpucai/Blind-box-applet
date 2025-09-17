@@ -40,7 +40,7 @@
 			</view>
 		</view>
 	</view>
-	<view class="p-detail"	 v-if="tabChangeIndex === 0">
+	<view class="p-detail" v-if="tabChangeIndex === 0">
 		<view class="p-detail-content" v-for="(item) in filteredList" :key="item.id"
 			:style="{ borderColor: getTagColor(item.grade).Color }" @click="showPopup(item.id)">
 			<view class="p-img">
@@ -53,7 +53,8 @@
 		</view>
 	</view>
 	<!-- START: Refactored Record Detail Section -->
-	<view class="record-detail-container" :style="preSetPositon ? { marginTop: 100 + 'px' } : ''" v-if="tabChangeIndex === 1">
+	<view class="record-detail-container" :style="preSetPositon ? { marginTop: 100 + 'px' } : ''"
+		v-if="tabChangeIndex === 1">
 		<view class="record-detail-list" :style="recordliststyle" v-for="(record, index) in recordDetailList"
 			:key="index">
 			<view class="item-info">
@@ -105,7 +106,6 @@ import {
 	toRefs
 } from 'vue'
 import {
-	onReady,
 	onPageScroll
 } from '@dcloudio/uni-app'
 import {
@@ -126,8 +126,7 @@ const props = defineProps({
 	}
 })
 const {
-	datalist,
-	levelList
+	datalist
 } = toRefs(props)
 
 const {
@@ -202,7 +201,7 @@ const recordDetailList = ref([])
 
 const generateMockRecords = (items) => {
 	if (!items || items.length === 0) return [];
-	const item =  items.map((item, index) => ({
+	return items.map((item, index) => ({
 		item: {
 			title: item.title,
 			image_url: item.image_url,
@@ -211,7 +210,6 @@ const generateMockRecords = (items) => {
 		drawCount: Math.floor(Math.random() * 90) + 10,
 		extraInfo: index === 0 ? '距本次中赏已过5发' : ''
 	}));
-	return [...item,...item,...item]
 };
 
 watch(tabChangeIndex, (newIndex) => {
@@ -269,7 +267,7 @@ onMounted(() => {
 
 onPageScroll((e) => {
 	if (!previewRect || previewRect.top === undefined) return
-	console.log('e.scrollTop-------------------e.scrollTop', e.scrollTop,previewRect.top)
+	console.log('e.scrollTop-------------------e.scrollTop', e.scrollTop, previewRect.top)
 	preSetPositon.value = e.scrollTop > previewRect.top
 })
 
@@ -508,6 +506,7 @@ const closePopup = () => {
 		display: flex;
 		align-items: center;
 		padding-left: 40rpx;
+
 		.record-item {
 			width: 130rpx;
 			height: 80rpx;
@@ -516,7 +515,7 @@ const closePopup = () => {
 			display: flex;
 			justify-content: center;
 			line-height: 80rpx;
-			
+
 		}
 
 		.record-active {

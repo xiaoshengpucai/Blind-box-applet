@@ -1,5 +1,5 @@
 <template>
-  <view class="simple-image-container" :style="containerStyle">
+ <view class="simple-image-container" :style="containerStyle">
     <image
       class="simple-image"
       :lazy-load="true"

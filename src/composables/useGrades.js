@@ -27,7 +27,8 @@ export function useGrades(datalist) {
 				};
 			}
 			result[grade].Total++;
-			result[grade].probability += probability;
+			// 处理计算精度，避免浮点数累加误差
+			result[grade].probability = Number((result[grade].probability + Number(probability)).toFixed(6));
 			result[grade].items.push(item);
 		});
 		return result;

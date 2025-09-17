@@ -66,7 +66,7 @@
       >
         加载更多
       </button>
-      <text v-else class="no-more-text">没有更多了</text>
+      <text v-else class="no-more-text">沒有更多了</text>
     </view>
     
     <!-- 骨架屏 -->
@@ -90,7 +90,6 @@
 
 <script setup>
 import { computed, watch, toRefs } from 'vue';
-import { useProductList } from '@/src/composables/useProductList';
 import ProductCard from './ProductCard.vue';
 import { useProductStore } from '@/stores/product.js';
 import { storeToRefs } from 'pinia';
@@ -220,11 +219,6 @@ const props = defineProps({
   enableLazyLoad: {
     type: Boolean,
     default: true
-  },
-  
-  enableVirtualScroll: {
-    type: Boolean,
-    default: false
   },
   
   // 价格前缀

@@ -1,594 +1,580 @@
 <template>
-  <view 
-    class="product-card" 
-    :class="cardClasses"
-    :style="cardStyle"
-    @click="handleCardClick"
-  >
-    <!-- 商品图片 -->
-    <view class="product-image-container">
-      <UniLazyImage
-        :src="product.image_url || product.smallPicurl"
-        :placeholder="defaultImages.placeholder"
-        :error-image="defaultImages.error"
-        :width="imageWidth"
-        :height="imageHeight"
-        :border-radius="imageBorderRadius"
-        :enable-lazy-load="enableLazyLoad"
-        @load="handleImageLoad"
-        @error="handleImageError"
-      />
-      <view class="label-Card">惊喜连连</view>
-      <view class="tag-Card">
-					<view class="tag" v-for="(item, index) in 7" :key="index"></view>
-				</view>
-    </view>
-    
-    <!-- 商品信息 -->
-    <view class="product-info">
-      <!-- 商品价格 -->
-      <view class="price-container">
-        <text class="current-price" :style="priceStyle">
-          {{ formatPrice(product.price) }}
-        </text>
-      </view>
-      
-      <!-- 商品标题 -->
-      <view class="product-title" :style="titleStyle">
-        {{ product.category || product.Title }}
-      </view>
-      
-    </view>
-    
-    <!-- 操作按钮 -->
-    <view v-if="showActions" class="action-buttons">
-      <button 
-        v-for="action in actions"
-        :key="action.key"
-        class="action-button"
-        :class="action.class"
-        :style="action.style"
-        @click.stop="handleActionClick(action)"
-      >
-        {{ action.text }}
-      </button>
-    </view>
-  </view>
+	<view class="product-card" :class="cardClasses" :style="cardStyle" @click="handleCardClick">
+		<!-- 商品图片 -->
+		<view class="product-image-container">
+			<UniLazyImage :src="product.image_url || product.smallPicurl" :placeholder="defaultImages.placeholder"
+				:error-image="defaultImages.error" :width="imageWidth" :height="imageHeight"
+				:border-radius="imageBorderRadius" :enable-lazy-load="enableLazyLoad" @load="handleImageLoad"
+				@error="handleImageError" />
+			<view class="label-Card">惊喜连连</view>
+			<view class="tag-Card">
+				<view class="tag" v-for="(item, index) in 7" :key="index"></view>
+			</view>
+		</view>
+
+		<!-- 商品信息 -->
+		<view class="product-info">
+			<!-- 商品价格 -->
+			<view class="price-container">
+				<text class="current-price" :style="priceStyle">
+					{{ formatPrice(product.price) }}
+				</text>
+			</view>
+
+			<!-- 商品标题 -->
+			<view class="product-title" :style="titleStyle">
+				{{ product.category || product.Title }}
+			</view>
+
+		</view>
+
+		<!-- 操作按钮 -->
+		<view v-if="showActions" class="action-buttons">
+			<button v-for="action in actions" :key="action.key" class="action-button" :class="action.class"
+				:style="action.style" @click.stop="handleActionClick(action)">
+				{{ action.text }}
+			</button>
+		</view>
+	</view>
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import UniLazyImage from './UniLazyImage.vue';
+	import {
+		computed
+	} from 'vue';
+	import UniLazyImage from './UniLazyImage.vue';
 
-// ==================== Props定义 ====================
-const props = defineProps({
-  // 商品数据
-  product: {
-    type: Object,
-    required: true,
-    validator: (value) => {
-      return value && (value.id);
-    }
-  },
-  
-  // 卡片布局模式
-  layout: {
-    type: String,
-    default: 'vertical', // vertical | horizontal | grid
-    validator: (value) => ['vertical', 'horizontal', 'grid'].includes(value)
-  },
-  
-  // 卡片尺寸
-  size: {
-    type: String,
-    default: 'medium', // small | medium | large
-    validator: (value) => ['small', 'medium', 'large'].includes(value)
-  },
-  
-  // 图片尺寸配置
-  imageConfig: {
-    type: Object,
-    default: () => ({
-      width: '100%',
-      height: '360rpx',
-      borderRadius: '10rpx'
-    })
-  },
-  
-  // 是否显示评分
-  showRating: {
-    type: Boolean,
-    default: false
-  },
-  
-  // 是否显示描述
-  showDescription: {
-    type: Boolean,
-    default: false
-  },
-  
-  // 是否显示额外信息
-  showExtraInfo: {
-    type: Boolean,
-    default: false
-  },
-  
-  // 是否显示操作按钮
-  showActions: {
-    type: Boolean,
-    default: false
-  },
-  
-  // 操作按钮配置
-  actions: {
-    type: Array,
-    default: () => []
-  },
-  
-  // 价格前缀
-  pricePrefix: {
-    type: String,
-    default: '¥'
-  },
-  
-  // 最大显示标签数
-  maxTags: {
-    type: Number,
-    default: 3
-  },
-  
-  // 是否启用懒加载
-  enableLazyLoad: {
-    type: Boolean,
-    default: true
-  },
-  
-  // 自定义样式
-  customStyle: {
-    type: Object,
-    default: () => ({})
-  },
-  
-  // 自定义类名
-  customClass: {
-    type: String,
-    default: ''
-  }
-});
+	// ==================== Props定义 ====================
+	const props = defineProps({
+		// 商品数据
+		product: {
+			type: Object,
+			required: true,
+			validator: (value) => {
+				return value && (value.id);
+			}
+		},
 
-// ==================== Emits定义 ====================
-const emit = defineEmits(['click', 'image-load', 'image-error', 'action-click']);
+		// 卡片布局模式
+		layout: {
+			type: String,
+			default: 'vertical', // vertical | horizontal | grid
+			validator: (value) => ['vertical', 'horizontal', 'grid'].includes(value)
+		},
 
-// ==================== 常量定义 ====================
-const defaultImages = {
-  placeholder: 'https://img1.baidu.com/it/u=2244894265,3017695745&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=1082',
-  error: 'https://img2.baidu.com/it/u=1455518479,3144936783&fm=253&fmt=auto&app=120&f=PNG?w=500&h=1065'
-};
+		// 卡片尺寸
+		size: {
+			type: String,
+			default: 'medium', // small | medium | large
+			validator: (value) => ['small', 'medium', 'large'].includes(value)
+		},
 
-// 尺寸配置
-const sizeConfigs = {
-  small: {
-    cardWidth: '300rpx',
-    cardHeight: 'auto',
-    imageHeight: '300rpx',
-    fontSize: '24rpx',
-    priceSize: '28rpx'
-  },
-  medium: {
-    cardWidth: '350rpx',
-    cardHeight: 'auto',
-    imageHeight: '360rpx',
-    fontSize: '26rpx',
-    priceSize: '42rpx'
-  },
-  large: {
-    cardWidth: '400rpx',
-    cardHeight: 'auto',
-    imageHeight: '400rpx',
-    fontSize: '28rpx',
-    priceSize: '36rpx'
-  }
-};
+		// 图片尺寸配置
+		imageConfig: {
+			type: Object,
+			default: () => ({
+				width: '100%',
+				height: '360rpx',
+				borderRadius: '10rpx'
+			})
+		},
 
-// ==================== 计算属性 ====================
-/**
- * 卡片类名
- */
-const cardClasses = computed(() => [
-  'product-card',
-  `product-card-${props.layout}`,
-  `product-card-${props.size}`,
-  props.customClass
-]);
+		// 是否显示评分
+		showRating: {
+			type: Boolean,
+			default: false
+		},
 
-/**
- * 卡片样式
- */
-const cardStyle = computed(() => {
-  const config = sizeConfigs[props.size];
-  return {
-    width: config.cardWidth,
-    height: config.cardHeight,
-    ...props.customStyle
-  };
-});
+		// 是否显示描述
+		showDescription: {
+			type: Boolean,
+			default: false
+		},
 
-/**
- * 图片宽度
- */
-const imageWidth = computed(() => {
-  return props.imageConfig.width || '100%';
-});
+		// 是否显示额外信息
+		showExtraInfo: {
+			type: Boolean,
+			default: false
+		},
 
-/**
- * 图片高度
- */
-const imageHeight = computed(() => {
-  return props.imageConfig.height || sizeConfigs[props.size].imageHeight;
-});
+		// 是否显示操作按钮
+		showActions: {
+			type: Boolean,
+			default: false
+		},
 
-/**
- * 图片圆角
- */
-const imageBorderRadius = computed(() => {
-  return props.imageConfig.borderRadius || '10rpx';
-});
+		// 操作按钮配置
+		actions: {
+			type: Array,
+			default: () => []
+		},
 
-/**
- * 显示的标签
- */
-const displayTags = computed(() => {
-  if (!props.product.tags) return [];
-  return props.product.tags.slice(0, props.maxTags);
-});
+		// 价格前缀
+		pricePrefix: {
+			type: String,
+			default: '¥'
+		},
 
-/**
- * 价格样式
- */
-const priceStyle = computed(() => ({
-  fontSize: sizeConfigs[props.size].priceSize,
-  fontWeight: 'bold',
-  color: '#e7717b'
-}));
+		// 最大显示标签数
+		maxTags: {
+			type: Number,
+			default: 3
+		},
 
-/**
- * 标题样式
- */
-const titleStyle = computed(() => ({
-  fontSize: sizeConfigs[props.size].fontSize,
-  lineHeight: '1.4',
-  color: '#333'
-}));
+		// 是否启用懒加载
+		enableLazyLoad: {
+			type: Boolean,
+			default: true
+		},
 
-/**
- * 标签样式
- */
-const tagStyle = computed(() => ({
-  fontSize: '20rpx',
-  backgroundColor: '#f7bf6c',
-  color: '#333',
-  padding: '4rpx 8rpx',
-  borderRadius: '4rpx'
-}));
+		// 自定义样式
+		customStyle: {
+			type: Object,
+			default: () => ({})
+		},
 
-/**
- * 促销标签样式
- */
-const promotionLabelStyle = computed(() => ({
-  backgroundColor: '#d33b2e',
-  color: '#fff',
-  fontSize: '22rpx',
-  fontWeight: 'bold'
-}));
+		// 自定义类名
+		customClass: {
+			type: String,
+			default: ''
+		}
+	});
 
-// ==================== 方法 ====================
-/**
- * 格式化价格
- * @param {number|string} price - 价格
- * @returns {string} 格式化后的价格
- */
-const formatPrice = (price) => {
-  if (price === undefined || price === null) return '';
-  
-  const numPrice = parseFloat(price);
-  if (isNaN(numPrice)) return price;
-  
-  return `${props.pricePrefix}${numPrice.toFixed(2)}`;
-};
+	// ==================== Emits定义 ====================
+	const emit = defineEmits(['click', 'image-load', 'image-error', 'action-click']);
 
-/**
- * 处理卡片点击
- */
-const handleCardClick = () => {
-  emit('click', props.product);
-};
+	// ==================== 常量定义 ====================
+	const defaultImages = {
+		placeholder: 'https://img1.baidu.com/it/u=2244894265,3017695745&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=1082',
+		error: 'https://img2.baidu.com/it/u=1455518479,3144936783&fm=253&fmt=auto&app=120&f=PNG?w=500&h=1065'
+	};
 
-/**
- * 处理图片加载成功
- */
-const handleImageLoad = () => {
-  emit('image-load', props.product);
-};
+	// 尺寸配置
+	const sizeConfigs = {
+		small: {
+			cardWidth: '300rpx',
+			cardHeight: 'auto',
+			imageHeight: '300rpx',
+			fontSize: '24rpx',
+			priceSize: '28rpx'
+		},
+		medium: {
+			cardWidth: '350rpx',
+			cardHeight: 'auto',
+			imageHeight: '360rpx',
+			fontSize: '26rpx',
+			priceSize: '42rpx'
+		},
+		large: {
+			cardWidth: '400rpx',
+			cardHeight: 'auto',
+			imageHeight: '400rpx',
+			fontSize: '28rpx',
+			priceSize: '36rpx'
+		}
+	};
 
-/**
- * 处理图片加载失败
- */
-const handleImageError = () => {
-  emit('image-error', props.product);
-};
+	// ==================== 计算属性 ====================
+	/**
+	 * 卡片类名
+	 */
+	const cardClasses = computed(() => [
+		'product-card',
+		`product-card-${props.layout}`,
+		`product-card-${props.size}`,
+		props.customClass
+	]);
 
-/**
- * 处理操作按钮点击
- * @param {Object} action - 操作配置
- */
-const handleActionClick = (action) => {
-  emit('action-click', {
-    action,
-    product: props.product
-  });
-};
+	/**
+	 * 卡片样式
+	 */
+	const cardStyle = computed(() => {
+		const config = sizeConfigs[props.size];
+		return {
+			width: config.cardWidth,
+			height: config.cardHeight,
+			...props.customStyle
+		};
+	});
+
+	/**
+	 * 图片宽度
+	 */
+	const imageWidth = computed(() => {
+		return props.imageConfig.width || '100%';
+	});
+
+	/**
+	 * 图片高度
+	 */
+	const imageHeight = computed(() => {
+		return props.imageConfig.height || sizeConfigs[props.size].imageHeight;
+	});
+
+	/**
+	 * 图片圆角
+	 */
+	const imageBorderRadius = computed(() => {
+		return props.imageConfig.borderRadius || '10rpx';
+	});
+
+	/**
+	 * 显示的标签
+	 */
+	const displayTags = computed(() => {
+		if (!props.product.tags) return [];
+		return props.product.tags.slice(0, props.maxTags);
+	});
+
+	/**
+	 * 价格样式
+	 */
+	const priceStyle = computed(() => ({
+		fontSize: sizeConfigs[props.size].priceSize,
+		fontWeight: 'bold',
+		color: '#e7717b'
+	}));
+
+	/**
+	 * 标题样式
+	 */
+	const titleStyle = computed(() => ({
+		fontSize: sizeConfigs[props.size].fontSize,
+		lineHeight: '1.4',
+		color: '#333'
+	}));
+
+	/**
+	 * 标签样式
+	 */
+	const tagStyle = computed(() => ({
+		fontSize: '20rpx',
+		backgroundColor: '#f7bf6c',
+		color: '#333',
+		padding: '4rpx 8rpx',
+		borderRadius: '4rpx'
+	}));
+
+	/**
+	 * 促销标签样式
+	 */
+	const promotionLabelStyle = computed(() => ({
+		backgroundColor: '#d33b2e',
+		color: '#fff',
+		fontSize: '22rpx',
+		fontWeight: 'bold'
+	}));
+
+	// ==================== 方法 ====================
+	/**
+	 * 格式化价格
+	 * @param {number|string} price - 价格
+	 * @returns {string} 格式化后的价格
+	 */
+	const formatPrice = (price) => {
+		if (price === undefined || price === null) return '';
+
+		const numPrice = parseFloat(price);
+		if (isNaN(numPrice)) return price;
+
+		return `${props.pricePrefix}${numPrice.toFixed(2)}`;
+	};
+
+	/**
+	 * 处理卡片点击
+	 */
+	const handleCardClick = () => {
+		emit('click', props.product);
+	};
+
+	/**
+	 * 处理图片加载成功
+	 */
+	const handleImageLoad = () => {
+		emit('image-load', props.product);
+	};
+
+	/**
+	 * 处理图片加载失败
+	 */
+	const handleImageError = () => {
+		emit('image-error', props.product);
+	};
+
+	/**
+	 * 处理操作按钮点击
+	 * @param {Object} action - 操作配置
+	 */
+	const handleActionClick = (action) => {
+		emit('action-click', {
+			action,
+			product: props.product
+		});
+	};
 </script>
 
 <style lang="scss" scoped>
-.product-card {
-  background-color: #fff;
-  border-radius: 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  
-  &:active {
-    transform: scale(0.98);
-    box-shadow: 0 1rpx 5rpx rgba(0, 0, 0, 0.1);
-  }
-  
-  // 垂直布局
-  &-vertical {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  // 水平布局
-  &-horizontal {
-    display: flex;
-    flex-direction: row;
-    
-    .product-image-container {
-      flex-shrink: 0;
-      width: 200rpx;
-    }
-    
-    .product-info {
-      flex: 1;
-      padding-left: 20rpx;
-    }
-  }
-  
-  // 网格布局
-  &-grid {
-    display: inline-block;
-    margin: 10rpx;
-  }
-}
+	.product-card {
+		background-color: #fff;
+		border-radius: 20rpx;
+		box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+		overflow: hidden;
+		transition: all 0.3s ease;
+		cursor: pointer;
 
-.product-image-container {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-}
-.label-Card {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			width: 170rpx;
-			height: 55rpx;
-			background-color: #d33b2e;
-			color: #fff;
-			font-size: 32rpx;
-			font-weight: 800;
-			text-align: center;
-			line-height: 50rpx;
-			border-radius: 10rpx;
-			z-index: 2;
-
-			&::before {
-				content: '';
-				position: absolute;
-				width: 40rpx;
-				height: 40rpx;
-				right: -40rpx;
-				bottom: 0;
-				border: 0;
-				background-color: transparent;
-				border-bottom-left-radius: 30rpx;
-				box-shadow: -8px 8px 0 5px #d33b2e;
-			}
+		&:active {
+			transform: scale(0.98);
+			box-shadow: 0 1rpx 5rpx rgba(0, 0, 0, 0.1);
 		}
-    .tag-Card {
-			position: absolute;
-			bottom: 0;
-			right: 0;
-			width: 200rpx;
-			height: 40rpx;
-			border-radius: 10rpx;
-			background-color: #f7bf6c;
+
+		// 垂直布局
+		&-vertical {
 			display: flex;
-			justify-content: flex-end;
-			align-items: center;
-			z-index: 1;
+			flex-direction: column;
+		}
 
-			.tag {
-				width: 10rpx;
-				height: 10rpx;
-				margin-right: 13rpx;
-				background-color: #fff;
-				border-radius: 0;
-				transform: rotate(45deg);
+		// 水平布局
+		&-horizontal {
+			display: flex;
+			flex-direction: row;
+
+			.product-image-container {
+				flex-shrink: 0;
+				width: 200rpx;
+			}
+
+			.product-info {
+				flex: 1;
+				padding-left: 20rpx;
 			}
 		}
 
-.product-tags {
-  position: absolute;
-  bottom: 10rpx;
-  right: 10rpx;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5rpx;
-  z-index: 2;
-  
-  .tag-item {
-    padding: 4rpx 8rpx;
-    border-radius: 4rpx;
-    font-size: 20rpx;
-    line-height: 1;
-  }
-}
+		// 网格布局
+		&-grid {
+			display: inline-block;
+			margin: 10rpx;
+		}
+	}
 
-.promotion-label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 10rpx 30rpx 10rpx 20rpx;
-  z-index: 3;
-  border-radius: 0 0 15rpx 0;
-  
-  .promotion-corner {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 0;
-    height: 0;
-    border-left: 15rpx solid transparent;
-    border-top: 15rpx solid rgba(211, 59, 46, 0.7);
-  }
-}
+	.product-image-container {
+		position: relative;
+		width: 100%;
+		overflow: hidden;
+	}
 
-.rating-container {
-  position: absolute;
-  top: 10rpx;
-  right: 10rpx;
-  
-  .rating-stars {
-    .star {
-      color: #ddd;
-      font-size: 24rpx;
-      
-      &-filled {
-        color: #ffa500;
-      }
-    }
-  }
-}
+	.label-Card {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 170rpx;
+		height: 55rpx;
+		background-color: #d33b2e;
+		color: #fff;
+		font-size: 32rpx;
+		font-weight: 800;
+		text-align: center;
+		line-height: 50rpx;
+		border-radius: 10rpx;
+		z-index: 2;
 
-.product-info {
-  padding: 20rpx;
-  flex: 1;
-}
+		&::before {
+			content: '';
+			position: absolute;
+			width: 40rpx;
+			height: 40rpx;
+			right: -40rpx;
+			bottom: 0;
+			border: 0;
+			background-color: transparent;
+			border-bottom-left-radius: 30rpx;
+			box-shadow: -8px 8px 0 5px #d33b2e;
+		}
+	}
 
-.price-container {
-  display: flex;
-  align-items: center;
-  // margin-bottom: 10rpx;
-  
-  .current-price {
-    color: #e7717b;
-    font-weight: bold;
-    margin-right: 10rpx;
-  }
-  
-  .original-price {
-    color: #999;
-    font-size: 30rpx;
-    text-decoration: line-through;
-  }
-}
+	.tag-Card {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		width: 200rpx;
+		height: 40rpx;
+		border-radius: 10rpx;
+		background-color: #f7bf6c;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		z-index: 1;
 
-.product-title {
-  font-weight: 500;
-  line-height: 1.4;
-  // margin-bottom: 10rpx;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+		.tag {
+			width: 10rpx;
+			height: 10rpx;
+			margin-right: 13rpx;
+			background-color: #fff;
+			border-radius: 0;
+			transform: rotate(45deg);
+		}
+	}
 
-.product-description {
-  font-size: 24rpx;
-  color: #666;
-  line-height: 1.4;
-  margin-bottom: 10rpx;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+	.product-tags {
+		position: absolute;
+		bottom: 10rpx;
+		right: 10rpx;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 5rpx;
+		z-index: 2;
 
-.extra-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 22rpx;
-  color: #999;
-  margin-top: 10rpx;
-  
-  .sold-count {
-    // 样式
-  }
-  
-  .shop-name {
-    // 样式
-  }
-}
+		.tag-item {
+			padding: 4rpx 8rpx;
+			border-radius: 4rpx;
+			font-size: 20rpx;
+			line-height: 1;
+		}
+	}
 
-.action-buttons {
-  padding: 0 20rpx 20rpx;
-  display: flex;
-  gap: 10rpx;
-  
-  .action-button {
-    flex: 1;
-    height: 60rpx;
-    border: none;
-    border-radius: 30rpx;
-    font-size: 24rpx;
-    background-color: #f0f0f0;
-    color: #333;
-    
-    &.primary {
-      background-color: #1890ff;
-      color: #fff;
-    }
-    
-    &.danger {
-      background-color: #ff4d4f;
-      color: #fff;
-    }
-    
-    &.success {
-      background-color: #52c41a;
-      color: #fff;
-    }
-  }
-}
+	.promotion-label {
+		position: absolute;
+		top: 0;
+		left: 0;
+		padding: 10rpx 30rpx 10rpx 20rpx;
+		z-index: 3;
+		border-radius: 0 0 15rpx 0;
 
-// 响应式适配
-@media screen and (max-width: 750rpx) {
-  .product-card {
-    &-horizontal {
-      flex-direction: column;
-      
-      .product-image-container {
-        width: 100%;
-      }
-      
-      .product-info {
-        padding-left: 20rpx;
-      }
-    }
-  }
-}
+		.promotion-corner {
+			position: absolute;
+			top: 100%;
+			left: 0;
+			width: 0;
+			height: 0;
+			border-left: 15rpx solid transparent;
+			border-top: 15rpx solid rgba(211, 59, 46, 0.7);
+		}
+	}
+
+	.rating-container {
+		position: absolute;
+		top: 10rpx;
+		right: 10rpx;
+
+		.rating-stars {
+			.star {
+				color: #ddd;
+				font-size: 24rpx;
+
+				&-filled {
+					color: #ffa500;
+				}
+			}
+		}
+	}
+
+	.product-info {
+		padding: 20rpx;
+		flex: 1;
+	}
+
+	.price-container {
+		display: flex;
+		align-items: center;
+		// margin-bottom: 10rpx;
+
+		.current-price {
+			color: #e7717b;
+			font-weight: bold;
+			margin-right: 10rpx;
+		}
+
+		.original-price {
+			color: #999;
+			font-size: 30rpx;
+			text-decoration: line-through;
+		}
+	}
+
+	.product-title {
+		font-weight: 500;
+		line-height: 1.4;
+		// margin-bottom: 10rpx;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.product-description {
+		font-size: 24rpx;
+		color: #666;
+		line-height: 1.4;
+		margin-bottom: 10rpx;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.extra-info {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: 22rpx;
+		color: #999;
+		margin-top: 10rpx;
+
+		.sold-count {
+			// 样式
+		}
+
+		.shop-name {
+			// 样式
+		}
+	}
+
+	.action-buttons {
+		padding: 0 20rpx 20rpx;
+		display: flex;
+		gap: 10rpx;
+
+		.action-button {
+			flex: 1;
+			height: 60rpx;
+			border: none;
+			border-radius: 30rpx;
+			font-size: 24rpx;
+			background-color: #f0f0f0;
+			color: #333;
+
+			&.primary {
+				background-color: #1890ff;
+				color: #fff;
+			}
+
+			&.danger {
+				background-color: #ff4d4f;
+				color: #fff;
+			}
+
+			&.success {
+				background-color: #52c41a;
+				color: #fff;
+			}
+		}
+	}
+
+	// 响应式适配
+	@media screen and (max-width: 750rpx) {
+		.product-card {
+			&-horizontal {
+				flex-direction: column;
+
+				.product-image-container {
+					width: 100%;
+				}
+
+				.product-info {
+					padding-left: 20rpx;
+				}
+			}
+		}
+	}
 </style>

@@ -136,4 +136,16 @@ const DETAIL_DATA_LIST = {
 	]
 };
 
-Mock.mock('http://localhost:3000/api/class/sublist', 'get', DETAIL_DATA_LIST)
+Mock.mock(/^http:\/\/[^\/]+\/api\/class\/sublist/, 'get', DETAIL_DATA_LIST)
+
+// Add mock handler for the product list
+Mock.mock(/^http:\/\/[^\/]+\/api\/class\/(无限赏|热门推荐|盒中盒|闯关|一番赏|全部|潮玩|周边|毛绒公仔)/, 'get', (options) => {
+    console.log('Mock API hit:', options.url);
+    // You can return different data based on the category (options.url) if needed
+    const response = {
+      code: 200,
+      msg: "success",
+      data: DATA_LIST.data.list
+    };
+    return response;
+});

@@ -1,9 +1,9 @@
 <template>
 	<view class="content">
-		<Home v-show="StoreTabbar.activeIndex === 0"></Home>
-		<Mall v-show="StoreTabbar.activeIndex === 1"></Mall>
-		<Warehouse v-show="StoreTabbar.activeIndex === 2"></Warehouse>
-		<Profile v-show="StoreTabbar.activeIndex === 3"></Profile>
+		<Home v-if="StoreTabbar.activeIndex === 0"></Home>
+		<Mall v-if="StoreTabbar.activeIndex === 1"></Mall>
+		<Warehouse v-if="StoreTabbar.activeIndex === 2"></Warehouse>
+		<Profile v-if="StoreTabbar.activeIndex === 3"></Profile>
 	</view>
 	<CustomTabBar />
 </template>

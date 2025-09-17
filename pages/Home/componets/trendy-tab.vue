@@ -121,19 +121,6 @@
 		paddingBottom: '100rpx'
 	};
 
-	// ==================== 计算属性 (此部分将被废弃) ====================
-	/**
-	 * 实际显示的商品列表
-	 */
-	// const productList = computed(() => {
-	// 	// 优先使用新的 productList，兼容旧的 CarListToChild
-	// 	return props.productList.length > 0 
-	// 		? props.productList 
-	// 		: (props.CarListToChild.length > 0 
-	// 			? props.CarListToChild 
-	// 			: localProductList.value);
-	// });
-
 	// ==================== 方法 ====================
 	/**
 	 * 处理商品点击
@@ -147,7 +134,7 @@
 		// 兼容原有的导航逻辑
 		if (productId) {
 			uni.navigateTo({
-				url: `/pages/Home/detail?id=${product.id}&&category=${category}`
+				url: `/pages/Home/detail?id=${product.id}&&category=${category}&&price=${product.price}`
 			});
 		}
 		

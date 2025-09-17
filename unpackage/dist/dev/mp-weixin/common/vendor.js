@@ -2237,9 +2237,6 @@ If this is a native custom element, make sure to exclude it from component resol
 function resolve(registry, name) {
   return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
 }
-function watchEffect(effect2, options) {
-  return doWatch(effect2, null, options);
-}
 const INITIAL_WATCHER_VALUE = {};
 function watch(source, cb, options) {
   if (!isFunction$2(cb)) {
@@ -7097,9 +7094,9 @@ function initOnError() {
   };
 }
 function initRuntimeSocketService() {
-  const hosts = "198.18.0.1,192.168.0.102,127.0.0.1";
+  const hosts = "198.18.0.1,192.168.0.105,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_DNejRu";
+  const id = "mp-weixin_HJCm5r";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -15555,6 +15552,7 @@ exports.mpMixin = mpMixin;
 exports.n = n;
 exports.nextTick$1 = nextTick$1;
 exports.o = o;
+exports.onBeforeUnmount = onBeforeUnmount;
 exports.onHide = onHide;
 exports.onLoad = onLoad;
 exports.onMounted = onMounted;
@@ -15585,5 +15583,4 @@ exports.transitionMixin = transitionMixin;
 exports.unref = unref;
 exports.uviewPlus = uviewPlus;
 exports.watch = watch;
-exports.watchEffect = watchEffect;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/vendor.js.map

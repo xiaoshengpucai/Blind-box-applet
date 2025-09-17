@@ -33,6 +33,7 @@
   background-color: rgba(0, 0, 0, 0.3);
   /* 设置背景颜色和透明度 */
   z-index: 999;
+  color: #fff;
 }
 .tab.data-v-45a02a3d {
   width: 100vw;
@@ -42,6 +43,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s ease-in-out;
 }
 .tab-box.data-v-45a02a3d {
   height: 70rpx;
@@ -214,7 +216,7 @@
 .record .record-list .record-item.data-v-45a02a3d {
   width: 130rpx;
   height: 80rpx;
-  font-size: 24rpx;
+  font-size: 28rpx;
   font-weight: bold;
   display: flex;
   justify-content: center;
@@ -225,28 +227,70 @@
   height: 7rpx;
   background-color: #FDA32E;
   border-radius: 10rpx;
-  bottom: 12rpx;
+  bottom: 10rpx;
   position: absolute;
   left: 0;
   transition: all 0.3s ease-in-out;
 }
-.record-detail-list.data-v-45a02a3d {
-  width: 90%;
-  height: 130rpx;
-  margin: 5rpx auto;
-  background-color: #B4B5A9;
-  border: 5rpx solid transparent;
-  border-radius: 10rpx;
+
+/* START: New styles for Record Detail */
+.record-detail-container.data-v-45a02a3d {
+  width: 100%;
+  padding: 0 30rpx;
+  box-sizing: border-box;
+  padding-bottom: 200rpx;
+  /* Add some padding at the bottom */
+}
+.record-detail-container .record-detail-list.data-v-45a02a3d {
   display: flex;
   align-items: center;
-  padding: 0 20rpx;
+  border-radius: 15rpx;
+  padding: 10rpx;
+  margin-bottom: 10rpx;
 }
-.record-detail .r-d-img.data-v-45a02a3d {
-  width: 110rpx;
-  height: 110rpx;
+.record-detail-container .record-detail-list .item-info.data-v-45a02a3d {
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+.record-detail-container .record-detail-list .item-info .item-image-left.data-v-45a02a3d {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 10rpx;
+}
+.record-detail-container .record-detail-list .record-content.data-v-45a02a3d {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10rpx;
   overflow: hidden;
 }
-.record-detail .r-d-img > ._image.data-v-45a02a3d {
-  width: 110rpx;
-  height: 110rpx;
+.record-detail-container .record-detail-list .record-content .item-title.data-v-45a02a3d {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.record-detail-container .record-detail-list .record-content .draw-info.data-v-45a02a3d {
+  display: flex;
+  align-items: baseline;
+  gap: 15rpx;
+}
+.record-detail-container .record-detail-list .record-content .draw-info .draw-count.data-v-45a02a3d {
+  font-size: 26rpx;
+  color: #555;
+}
+.record-detail-container .record-detail-list .record-content .draw-info .extra-info.data-v-45a02a3d {
+  font-size: 24rpx;
+  color: #999;
+}
+.record-detail-container .record-detail-list .timestamp-container.data-v-45a02a3d {
+  flex-shrink: 0;
+  margin-left: 20rpx;
+}
+.record-detail-container .record-detail-list .timestamp-container .timestamp.data-v-45a02a3d {
+  font-size: 18rpx;
+  color: #999;
 }

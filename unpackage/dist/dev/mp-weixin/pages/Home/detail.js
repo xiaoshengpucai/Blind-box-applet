@@ -46,20 +46,24 @@ const _sfc_main = {
       if (!data)
         return;
       tabClassShow.value = data;
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:92", tabClassShow.value, data, "-----data-----");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:90", tabClassShow.value, data, "-----data-----");
     };
     handleScroll();
     common_vendor.onReady(async () => {
       var _a;
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:97", "页面初次渲染完成时触发");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:95", "页面初次渲染完成时触发");
       instanceRef.value = (_a = common_vendor.getCurrentInstance()) == null ? void 0 : _a.proxy;
       common_vendor.index.createSelectorQuery().in(instanceRef.value);
     });
     common_vendor.onLoad(async (option) => {
       calssid.value = option.id;
       category.value = option.category;
-      const result = await src_api_layoutList.getInfinteLListDetail({ category: category.value });
-      datalist.value = result;
+      try {
+        const result = await src_api_layoutList.getInfinteLListDetail({ category: category.value });
+        datalist.value = result;
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/Home/detail.vue:106", "加载数据失败:", error);
+      }
     });
     common_vendor.onMounted(async () => {
     });
@@ -84,13 +88,13 @@ const _sfc_main = {
       }
     ];
     common_vendor.onShow(() => {
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:137", "页面显示时触发");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:139", "页面显示时触发");
     });
     common_vendor.onHide(() => {
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:141", "页面隐藏时触发");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:143", "页面隐藏时触发");
     });
     common_vendor.onUnload(() => {
-      common_vendor.index.__f__("log", "at pages/Home/detail.vue:144", "页面销毁");
+      common_vendor.index.__f__("log", "at pages/Home/detail.vue:146", "页面销毁");
     });
     const back = () => {
       let pages = getCurrentPages();
